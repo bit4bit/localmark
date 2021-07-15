@@ -1,4 +1,4 @@
-severify = 5
+severity = 5
 verbose = %f: [%p] %m at line %l, column %c.\n
 theme = core
 
