@@ -1,0 +1,9 @@
+severify = 5
+verbose = %f: [%p] %m at line %l, column %c.\n
+theme = core
+
+[TestingAndDebugging::RequireUseWarnings]
+severity = 5
+
+[Modules::ProhibitEvilModules]
+modules_file = .forbidden_modules
