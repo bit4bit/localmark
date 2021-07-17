@@ -11,7 +11,9 @@ WriteMakefile(
     LICENSE => 'MIT',
     PREREQ_PM => {
         'Dancer2' => '0.30',
-        'Moose' => '2.20'
+            'Moose' => '2.20',
+            'DBD::SQLite' => '1.66',
+            'File::Slurp' => '9999.32'
     },
     TEST_REQUIRES => {
         'Test2::Suite' => '0.000140'

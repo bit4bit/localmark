@@ -1,4 +1,10 @@
+#!perl
 use strict;
 use warnings;
 
-print "Localmark not implemented!!\n";
+use Localmark::App;
+
+use Dotenv -load => 'prod.env';
+
+Localmark::App->to_app;
+
