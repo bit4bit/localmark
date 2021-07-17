@@ -10,13 +10,14 @@ use strict;
 use warnings;
 use v5.32;
 
+use File::Spec;
 use Data::Dumper;
 use File::Basename qw(basename);
 
 use DBI;
 
 use Moose;
-use File::Slurp qw(read_file);
+use File::Slurper qw(read_text);
 
 use Localmark::Resource;
 use Localmark::Site;
@@ -34,7 +35,7 @@ sub import_page {
     my $site = $args{site};
     my $package = $args{package};
     my $uri = $args{uri} || '/'. basename($path);
-    my $content = read_file($path);
+    my $content = read_text($path);
     chomp $content;
 
     return $self->dbh(
@@ -106,13 +107,14 @@ sub resource {
 sub dbh() {
     my ($self, $package, $cb) = @_;
 
-    my $path = $self->path . "/$package";
+    my $path = File::Spec->catfile( $self->path, "$package" );
     
-    my $dbh = DBI->connect("dbi:SQLite:$path.localmark")
+    my $dbh = DBI->connect( "dbi:SQLite:$path.localmark" )
         or die "couldn't connect to database: " . DBI->error;
-    $self->init_db($dbh);
 
-    my $ret = $cb->($dbh);
+    $self->init_db( $dbh );
+
+    my $ret = $cb->( $dbh );
 
     $dbh->disconnect;
 
