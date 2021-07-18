@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use v5.32;
 
+use Cwd qw(abs_path);
+
 use Localmark::Storage::Localmark;
 
 my ($package, $pagepath, $site, $uri) = @ARGV;

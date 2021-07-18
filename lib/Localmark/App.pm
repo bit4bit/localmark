@@ -18,27 +18,29 @@ get '/localmark' => sub {
     return 'not implemented';
 };
 
-get '/**?' => sub {
-    my $package = current_package();
-    my $site = current_site();
+get '/view/:package/:site/**?' => sub {
+    
+    my $package = route_parameters->get('package');
+    my $site = route_parameters->get('site');
 
     # url relativa del sitio web
     my ($rest) = splat;
-
+    my $resource_path = join('/', @{$rest});
+    $resource_path = '/' . $resource_path;
+    
     my $storage = current_storage();
-
-    my ($resource_path) = @{$rest};
 
     try {
         my $resource = $storage->resource(
             package => $package,
             site  => $site,
-            path => "/" . $resource_path
+            path => $resource_path
             );
 
         if (not defined $resource) {
-            return send_error("not found", 404);
+            return send_error("not found package: $package site: $site path: $resource_path" , 404);
         } else {
+            header( 'content-type' => $resource->mime_type );
             return $resource->render;
         }
     }
@@ -52,23 +54,12 @@ get '/**?' => sub {
     }
 };
 
-# TODO(bit4bit) una estrategia
-# es usar una cookie para saber el valor seleccionado
-# pero no permitiria varias ventanas al tiempo
-sub current_package {
-    "test-package";
-}
-
-# TODO(bit4bit) una estrategia
-# es usar una cookie para saber el valor seleccionado
-# pero no permitiria varias ventanas al tiempo
-sub current_site {
-    "hello";
-}
 
 sub current_storage {
     my $storage_directory = $ENV{'STORAGE_DIRECTORY'}
     || die 'requires environment STORAGE_DIRECTORY';
+
+    print "Storage directory at: $storage_directory\n";
 
     my $storage =
         Localmark::Storage::Localmark->new( path => $storage_directory);

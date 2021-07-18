@@ -1,19 +1,26 @@
 package Localmark::Resource;
 
+=head1 DESCRIPTION
+
+Un recurso es el contenido de una URL, con la metadata requerida
+para renderizar nuevamente el recurso.
+
+=cut
+
 use strict;
 use warnings;
 
-
-
 use Moose;
 
-has 'id' => (is => 'rw');
+has 'id' => (is => 'ro');
 
-has 'site' => (is => 'rw');
+has 'site' => (is => 'ro');
 
-has 'uri' => (is => 'rw');
+has 'uri' => (is => 'ro');
 
-has 'content' => (is => 'rw');
+has 'content' => (is => 'ro');
+
+has 'mime_type' => (is => 'ro');
 
 sub render {
     my $self = shift;
