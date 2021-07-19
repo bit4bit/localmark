@@ -23,6 +23,6 @@ ok(not $response->is_success);
 
 $response = $test->request(GET '/view/test-package/hello/index.html');
 ok($response->is_success, Dumper($response));
-is($response->content, '<html><h1>hello</h1></html>', 'response content');
+is($response->content, "<html><h1>hello</h1></html>\n", 'response content');
 
 done_testing;
