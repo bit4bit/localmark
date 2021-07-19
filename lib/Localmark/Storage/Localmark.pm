@@ -25,11 +25,36 @@ use Localmark::Site;
 use Localmark::Util::File::Slurp qw(read_binary);
 
 has 'path' => (
-    is => 'rw',
+    is => 'ro',
     required => 1
     );
 
 has 'error' => (is => 'rw');
+
+sub sites {
+    my ($self, $package) = @_;
+
+    return $self->dbh(
+        $package,
+        sub {
+            my $dbh = shift;
+
+            my $rows = $dbh->selectall_arrayref( 'SELECT name, title, url FROM sites', { Slice => {} } )
+                or croak "fail execute query: " . $dbh->errstr;
+
+            my @sites;
+            foreach my $row ( @{ $rows } ) {
+                my $site = Localmark::Site->new(
+                    name => $row->{name},
+                    title => $row->{title}
+                    );
+
+                push @sites, $site;
+            }
+
+            return \@sites;
+        });
+}
 
 sub import_content {
     my ($self, $content, %args) = @_;
@@ -123,6 +148,7 @@ sub dbh() {
 
     $self->init_db( $dbh );
 
+    # TODO(bit4bit) aja si el callback va a retornar @?
     my $ret = $cb->( $dbh );
 
     $dbh->disconnect;
@@ -149,6 +175,7 @@ sub init_db {
     $dbh->do(q{
         CREATE TABLE IF NOT EXISTS sites (
                name CHAR(128) PRIMARY KEY,
+               title TEXT,
                url  TEXT,
                inserted_at DATETIME,
                updated_at DATETIME
