@@ -3,6 +3,17 @@
     <title>Localmark</title>
   </head>
   <body>
+    <div>
+      <h3>Ayuda</h3>
+      Localmark es aun muy inestable en la descarga de los sitios, algunas consideraciones a tener en cuenta al usar:
+      <ul>
+        <li>Los sitios web dinamicos no son descargables</li>
+        <li>La url del sitio debe finalizar con algun recurso ejemplo /index.html o /algo.html</li>
+        <li>La descarga se realiza usando wget, es posible que no todos los sitios se puedan descargar</li>
+        <li>La descarga bloquea el sitio temporalmente asi que porpaciencia y serenidad</li>
+      </ul>
+    </div>
+      
     <h3>Download</h3>
     <form action="/" method="POST">
       <input name="package" type="text" placeholder="package" value="[% package %]" />
@@ -14,10 +25,12 @@
       <input type="submit" value="Download"/>
     </form>
     
+    <h4>Debug</h4>
     <textarea cols="100">
       [% download_output %]
     </textarea>
-      
+
+    <h3>Sitios</h3>
     <ul>
       [% FOREACH site IN sites %]
       <!-- los sitios que no manje index.html?? -->
