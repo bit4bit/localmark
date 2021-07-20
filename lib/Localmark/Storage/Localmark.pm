@@ -10,14 +10,13 @@ uso sqlite como medio.
 use utf8;
 use strict;
 use warnings;
-use v5.32;
+use v5.16;
 
 use File::Spec;
 use Data::Dumper;
 use File::Basename qw(basename);
 use Carp;
 use DBI;
-
 use Moose;
 
 use Localmark::Resource;
@@ -39,7 +38,7 @@ sub sites {
         sub {
             my $dbh = shift;
 
-            my $rows = $dbh->selectall_arrayref( 'SELECT name, title, url FROM sites', { Slice => {} } )
+            my $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root FROM sites', { Slice => {} } )
                 or croak "fail execute query: " . $dbh->errstr;
 
             my @sites;
@@ -47,7 +46,8 @@ sub sites {
                 my $site = Localmark::Site->new(
                     name => $row->{name},
                     title => $row->{title},
-                    package => $package
+                    package => $package,
+                    root => $row->{root}
                     );
 
                 push @sites, $site;
@@ -62,11 +62,12 @@ sub import_content {
 
     my $site = $args{site} || croak "requires 'site'";
     my $site_title = $args{site_title} || $site;
+    my $site_root = $args{site_root} || '/index.html';
     my $package = $args{package} || croak "requires 'package'";
     my $uri = $args{uri} || croak "requires 'uri'";
     my $mime_type = $args{mime_type} || 'application/octet-stream';
     my $text = $args{text} || $content;
-    
+
     return $self->dbh(
         $package,
         sub {
@@ -74,10 +75,11 @@ sub import_content {
             
             # insertamos primero el sitio
             my $sth =
-                $dbh->prepare( 'INSERT INTO sites(name, title) VALUES(?, ?) ON CONFLICT(name) DO UPDATE SET name = excluded.name, title = excluded.title' )
+                $dbh->prepare( 'INSERT INTO sites(name, title, root) VALUES(?, ?, ?) ON CONFLICT(name) DO UPDATE SET name = excluded.name, title = excluded.title, root = excluded.root' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
+
             # TODO(bit4bit) como actualizamos el titulo segun el index.html?
-            $sth->execute( $site, $site_title )
+            $sth->execute( $site, $site_title, $site_root )
                 or croak "couldn't execute statement: " . $sth->errstr;
 
             # insertamos recurso
@@ -112,7 +114,7 @@ sub resource {
         sub {
             my $dbh = shift;
 
-            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type FROM resources WHERE resources.site = ? AND resources.uri = ?' )
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             $sth->execute( $args{site}, $args{path} )
@@ -126,7 +128,9 @@ sub resource {
 
             my $site = Localmark::Site->new(
                 name => $row_ref->{site},
-                title => $row_ref->{site_title}
+                title => $row_ref->{site_title},
+                root => $row_ref->{site_root},
+                package => $package
                 );
             my $resource = Localmark::Resource->new(
                 id => $row_ref->{id},
@@ -180,6 +184,7 @@ sub init_db {
                name CHAR(128) PRIMARY KEY,
                title TEXT,
                url  TEXT,
+               root TEXT,
                inserted_at DATETIME,
                updated_at DATETIME
                );

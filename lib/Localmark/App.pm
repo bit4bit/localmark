@@ -2,8 +2,7 @@ package Localmark::App;
 
 use strict;
 use warnings;
-use feature 'try';
-use feature 'switch';
+use Feature::Compat::Try;
 
 use Dotenv;
 use Data::Dumper;
@@ -31,48 +30,20 @@ post '/' => sub {
     my $storage = current_storage();
     my $sites = sites( $storage );
 
-    my $download_output = '';
     my $package = body_parameters->get('package');
     my $url = body_parameters->get('url');
     my $strategy = body_parameters->get('strategy');
     my $download = downloader();
 
-    given ($strategy) {
-        when ('single_page') {
-            my $uri = URI->new($url);
-
-            my $site = $uri->host;
-
-            
-            $download->single_page(
-                $url,
-                package => $package,
-                site => $site
-                );
-            $download_output = $download->output;
-            $sites = sites( $storage );
-        }
-        when ('single_website') {
-            my $uri = URI->new($url);
-
-            my $site = $uri->host;
-
-            $download->single_website(
-                $url,
-                package => $package,
-                site => $site
-                );
-            $download_output = $download->output;
-            $sites = sites( $storage );
-        }
-        default {
-
-        }
-    }
+    $download->using_strategy(
+        $strategy,
+        $url,
+        package => $package
+        );
 
     template index => {
         sites => $sites,
-        download_output => $download_output,
+        download_output => $download->output,
         package => $package
     };
 };
