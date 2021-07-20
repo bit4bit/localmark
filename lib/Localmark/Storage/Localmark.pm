@@ -17,7 +17,10 @@ use Data::Dumper;
 use File::Basename qw(basename);
 use Carp;
 use DBI;
+use Digest::MD5 qw(md5_hex);
+
 use Moose;
+use namespace::autoclean;
 
 use Localmark::Resource;
 use Localmark::Site;
@@ -47,7 +50,8 @@ sub sites {
                     name => $row->{name},
                     title => $row->{title},
                     package => $package,
-                    root => $row->{root}
+                    root => $row->{root},
+                    url => $row->{url}
                     );
 
                 push @sites, $site;
@@ -61,6 +65,9 @@ sub import_content {
     my ($self, $content, %args) = @_;
 
     my $site = $args{site} || croak "requires 'site'";
+    $site = md5_hex($site);
+
+    my $site_url = $args{site_url} || $site;
     my $site_title = $args{site_title} || $site;
     my $site_root = $args{site_root} || '/index.html';
     my $package = $args{package} || croak "requires 'package'";
@@ -75,11 +82,11 @@ sub import_content {
             
             # insertamos primero el sitio
             my $sth =
-                $dbh->prepare( 'INSERT INTO sites(name, title, root) VALUES(?, ?, ?) ON CONFLICT(name) DO UPDATE SET name = excluded.name, title = excluded.title, root = excluded.root' )
+                $dbh->prepare( 'INSERT INTO sites(name, title, root, url) VALUES(?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET name = excluded.name, title = excluded.title, root = excluded.root, url = excluded.url' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             # TODO(bit4bit) como actualizamos el titulo segun el index.html?
-            $sth->execute( $site, $site_title, $site_root )
+            $sth->execute( $site, $site_title, $site_root, $site_url )
                 or croak "couldn't execute statement: " . $sth->errstr;
 
             # insertamos recurso
@@ -114,7 +121,7 @@ sub resource {
         sub {
             my $dbh = shift;
 
-            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             $sth->execute( $args{site}, $args{path} )
@@ -130,8 +137,10 @@ sub resource {
                 name => $row_ref->{site},
                 title => $row_ref->{site_title},
                 root => $row_ref->{site_root},
+                url => $row_ref->{site_url},
                 package => $package
                 );
+
             my $resource = Localmark::Resource->new(
                 id => $row_ref->{id},
                 site => $site,

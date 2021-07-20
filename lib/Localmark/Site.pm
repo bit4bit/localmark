@@ -11,6 +11,8 @@ has 'title' => (is => 'ro');
 
 has 'package' => (is => 'ro');
 
+has 'url' => (is => 'ro');
+
 # path principal /indexh.tml
 has 'root' => (is => 'ro');
 
