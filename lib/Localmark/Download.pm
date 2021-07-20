@@ -13,7 +13,7 @@ use feature 'switch';
 
 use Carp;
 use Localmark::Util::File::Slurp qw( read_text );
-use Localmark::Util::MIME::Type qw(mime_type_from_path);
+use Localmark::Util::MIME::Type qw(mime_type_from_path mime_type_from_url);
 use URI ();
 
 use Moose;
@@ -42,26 +42,21 @@ sub using_strategy {
 
     given ($strategy) {
         when ( 'single_page' ) {
-            my $uri = URI->new($url);
+            my $site = $url;
 
-            my $site = $uri->host;
-
-            
-            $self->downloader->single_page(
+            $self->single_page(
                 $url,
                 package => $package,
                 site => $site
                 );
         }
         when ( 'single_website' ) {
-            my $uri = URI->new($url);
+            my $site = $url;
             
-            my $site = $uri->host;
-            
-            $self->downloader->single_website(
+            $self->single_website(
                 $url,
                 package => $package,
-                site => $site
+                site => $url
                 );
         }
         default {
@@ -81,24 +76,29 @@ sub single_page {
     my ($directory, @files) = $self->downloader->single_page($url);
     my $site_title = $self->guess_site_title($url, $directory, @files) || $site;
     my $site_root = $self->guess_site_root($url, $directory, @files) || '/index.html';
+    my $site_url = $url;
 
+    my $main_uri = URI->new($url);
+    my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
+    
     for my $file (@files) {
         my $filename = $file =~ s/^$directory//r;
-
+        my $file_url = $file =~ s/^$directory/$base_url/r;
+            
         # intentamos sanear las rutas con /mi.svg?data=1
-        my $uri_obj = URI->new("http://localhost$filename");
-        my $uri = $uri_obj->path;
+        my $uri = URI->new("http://localhost$filename")->path;
 
         # cual seria el mime type de sitios sin index.html
         # ejemplo: https://metacpan.org/pod/Moose
-        my $mime_type = mime_type_from_path($uri, 'text/html');
-
+        my $mime_type = guess_mime_type( $file, $file_url );
+        
         $self->storage->import_page(
             $file,
             package => $package,
             site => $site,
             site_title => $site_title,
             site_root => $site_root,
+            site_url => $site_url,
             uri => $uri,
             mime_type => $mime_type
             );
@@ -115,10 +115,14 @@ sub single_website {
 
     my $site_title = $self->guess_site_title($url, $directory, @files);
     my $site_root = $self->guess_site_root($url, $directory, @files) || '/index.html';
+    my $main_uri = URI->new($url);
+    my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
     
     for my $file (@files) {
         my $uri = $file =~ s/^$directory//r;
-        my $mime_type = mime_type_from_path($file);
+        my $file_url = $file =~ s/^$directory/$base_url/r;
+
+        my $mime_type = guess_mime_type( $file, $file_url );
         
         $self->storage->import_page(
             $file,
@@ -153,6 +157,12 @@ sub guess_site_root {
 
     my $uri = URI->new($url);
     return $uri->path;
+}
+
+sub guess_mime_type {
+    my ($path, $file_url) = @_;
+
+    mime_type_from_path($path) || mime_type_from_url($file_url) || croak "could't detect mime type for $path or $file_url";
 }
 
 no Moose;

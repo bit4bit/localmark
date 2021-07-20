@@ -28,7 +28,6 @@ get '/' => sub {
 
 post '/' => sub {
     my $storage = current_storage();
-    my $sites = sites( $storage );
 
     my $package = body_parameters->get('package');
     my $url = body_parameters->get('url');
@@ -41,6 +40,7 @@ post '/' => sub {
         package => $package
         );
 
+    my $sites = sites( $storage );
     template index => {
         sites => $sites,
         download_output => $download->output,

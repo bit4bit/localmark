@@ -29,12 +29,13 @@ my $download = Localmark::Download->new(
 
 $download->single_page( 'http://bit4bit.github.io' ,
                         package => 'testbit4bit',
-                        site => 'bit4bit.github.io' );
+                        site => 'bit4bit.github.io',
+                        site_url => 'bit4bit.github.io');
 
 my %site_of = $store->sites();
 my @sites = @{ $site_of{'testbit4bit'} };
 cmp_ok(scalar(@sites), '==', 1, 'length of array');
-cmp_ok($sites[0]->name, 'eq', 'bit4bit.github.io', 'found site');
+cmp_ok($sites[0]->url, 'eq', 'http://bit4bit.github.io', 'found site');
 
 
 done_testing;
