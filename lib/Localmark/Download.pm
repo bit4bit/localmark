@@ -91,6 +91,10 @@ sub single_page {
         # cual seria el mime type de sitios sin index.html
         # ejemplo: https://metacpan.org/pod/Moose
         my $mime_type = guess_mime_type( $file, $file_url );
+        if (not $mime_type) {
+            carp "OMIT: could't detect mime type for $file or $file_url";
+            next;
+        }
         
         $self->storage->import_page(
             $file,
@@ -123,7 +127,11 @@ sub single_website {
         my $file_url = $file =~ s/^$directory/$base_url/r;
 
         my $mime_type = guess_mime_type( $file, $file_url );
-        
+        if (not $mime_type) {
+            carp "OMIT: could't detect mime type for $file or $file_url";
+            next;
+        }
+
         $self->storage->import_page(
             $file,
             package => $package,
@@ -155,14 +163,27 @@ sub guess_site_title {
 sub guess_site_root {
     my ($self, $url, %args) = @_;
 
-    my $uri = URI->new($url);
-    return $uri->path;
+    my $mime_type = $args{mime_type} || guess_mime_type('none', $url);
+    my $path = URI->new($url)->path;
+
+    # al activar la opcion -E de wget
+    # este adiciona el sufijo a los archivo
+    # segun el contenido, se asume esta idea
+    # como parte de la funcionalidad
+    # asumimos que todo recurso tiene una extension
+    if (defined $mime_type && $mime_type eq 'text/html') {
+        if ($path !~ m{\..+$}) {
+            $path .= '.html';
+        }
+    }
+
+    return $path;
 }
 
 sub guess_mime_type {
     my ($path, $file_url) = @_;
 
-    mime_type_from_path($path) || mime_type_from_url($file_url) || croak "could't detect mime type for $path or $file_url";
+    mime_type_from_path($path) || mime_type_from_url($file_url);
 }
 
 no Moose;

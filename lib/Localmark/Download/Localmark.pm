@@ -13,6 +13,7 @@ use warnings;
 use File::Temp qw( mkdtemp mktemp );
 use File::Spec;
 use File::Find qw(find);
+use File::Copy qw( move );
 use Carp;
 
 use Localmark::Util::File::Slurp qw(read_text);
@@ -81,7 +82,16 @@ sub _wget {
             my $filename = $File::Find::name;
             return if ! -f $filename;
 
-            push @files, $filename;
+            # wget -E si no detecta el tipo correcto
+            # adiciona .html dejando archivos como panel.png.html
+            # intentamos corregir esto
+            if ($filename =~ /(.+\.[a-zA-Z]+)(\.html)$/) {
+                move $filename, $1;
+                push @files, $1;
+            } else {
+                push @files, $filename;
+            }
+
         },
         $website);
     
