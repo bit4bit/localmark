@@ -5,9 +5,12 @@ use warnings;
 
 use Moose;
 
-has 'name' => (is => 'rw');
+has 'name' => (is => 'ro');
 
-has 'title' => (is => 'rw');
+has 'title' => (is => 'ro');
+
+has 'package' => (is => 'ro');
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

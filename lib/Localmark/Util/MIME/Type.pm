@@ -12,12 +12,25 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(mime_type_from_path);
 
 my %mime = (
+    '.gif' => 'image/gif',
+    '.jpeg' => 'image/jpeg',
     '.jpg' => 'image/jpg',
     '.png' => 'image/png',
     '.css' => 'text/css',
     '.js' => 'text/javascript',
+    ".json" => "application/json",
     '.xml' => 'text/xml',
-    '.html' => 'text/html'
+    '.html' => 'text/html',
+    '.html' => 'text/html',
+    '.txt' => 'text/plain',
+    '.csv' => 'text/plain',
+    '.epub' => 'application/epub+zip',
+    '.pdf' => 'application/pdf',
+    '.svg' => 'image/svg+xml',
+    '.ttf' => 'font/ttf',
+    '.woff' => 'font/woff',
+    '.woff2' => 'font/woff2',
+    '.xhtml' => 'application/xhtml+xml',
     );
 
 sub mime_type_from_path {

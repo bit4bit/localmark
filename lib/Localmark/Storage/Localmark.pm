@@ -46,7 +46,8 @@ sub sites {
             foreach my $row ( @{ $rows } ) {
                 my $site = Localmark::Site->new(
                     name => $row->{name},
-                    title => $row->{title}
+                    title => $row->{title},
+                    package => $package
                     );
 
                 push @sites, $site;
@@ -60,6 +61,7 @@ sub import_content {
     my ($self, $content, %args) = @_;
 
     my $site = $args{site} || croak "requires 'site'";
+    my $site_title = $args{site_title} || $site;
     my $package = $args{package} || croak "requires 'package'";
     my $uri = $args{uri} || croak "requires 'uri'";
     my $mime_type = $args{mime_type} || 'application/octet-stream';
@@ -72,9 +74,10 @@ sub import_content {
             
             # insertamos primero el sitio
             my $sth =
-                $dbh->prepare( 'INSERT INTO sites(name) VALUES(?) ON CONFLICT(name) DO UPDATE SET name = excluded.name' )
+                $dbh->prepare( 'INSERT INTO sites(name, title) VALUES(?, ?) ON CONFLICT(name) DO UPDATE SET name = excluded.name, title = excluded.title' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
-            $sth->execute( $site )
+            # TODO(bit4bit) como actualizamos el titulo segun el index.html?
+            $sth->execute( $site, $site_title )
                 or croak "couldn't execute statement: " . $sth->errstr;
 
             # insertamos recurso

@@ -41,6 +41,12 @@ sub sites {
     return %site_of;
 }
 
+sub import_page {
+    my ($self, @args) = @_;
+
+    $self->storage->import_page(@args);
+}
+
 sub resource {
     my ($self, %args) = @_;
 

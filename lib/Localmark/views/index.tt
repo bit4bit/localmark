@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>Localmark</title>
+  </head>
+  <body>
+    <h3>Download</h3>
+    <form action="/" method="POST">
+      <input name="package" type="text" placeholder="package" value="[% package %]" />
+      <input name="url" type="text" placeholder="URL"/>
+      <select name="strategy">
+        <option value="single_page">Single Page</option>
+        <option value="single_website">Single Website</option>
+      </select>
+      <input type="submit" value="Download"/>
+    </form>
+    
+    <textarea cols="100">
+      [% download_output %]
+    </textarea>
+      
+    <ul>
+      [% FOREACH site IN sites %]
+        <li> <a href="/view/[% site.package %]/[% site.name %]/index.html" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a> </li>
+      [% END %]
+    </ul>
+  </body>
+</html>
