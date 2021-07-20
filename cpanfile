@@ -9,6 +9,7 @@ requires 'namespace::autoclean', '>= 0.29';
 requires 'Syntax::Keyword::Try', '== 0.24';
 requires 'Feature::Compat::Try', '>= 0.04';
 requires 'LWP::Protocol::https', '>= 6.10';
+requires 'Plack', '>= 1.0047';
 
 on 'test' => sub {
     requires 'Test2::Suite', '>= 0.000140, < 1.0'
