@@ -2,7 +2,7 @@ package Localmark::App;
 
 use strict;
 use warnings;
-use Feature::Compat::Try;
+use syntax 'try';
 
 use Dotenv;
 use Data::Dumper;
