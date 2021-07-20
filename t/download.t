@@ -27,6 +27,10 @@ my $download = Localmark::Download->new(
     downloader => $downloader
     );
 
+cmp_ok($download->guess_site_root('http://example.org/hola.pod', mime_type => 'text/html'), 'cmp', 'http://example.org/hola.pod');
+
+cmp_ok($download->guess_site_root('http://example.org/hola', mime_type => 'text/html'), 'cmp', 'http://example.org/hola.html');
+
 $download->single_page( 'http://bit4bit.github.io' ,
                         package => 'testbit4bit',
                         site => 'bit4bit.github.io',
