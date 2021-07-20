@@ -20,7 +20,8 @@
       
     <ul>
       [% FOREACH site IN sites %]
-        <li> <a href="/view/[% site.package %]/[% site.name %]/index.html" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a> </li>
+      <!-- los sitios que no manje index.html?? -->
+        <li> <a href="/view/[% site.package %]/[% site.name %][% site.root %]" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a> </li>
       [% END %]
     </ul>
   </body>

@@ -31,17 +31,20 @@ my %mime = (
     '.woff' => 'font/woff',
     '.woff2' => 'font/woff2',
     '.xhtml' => 'application/xhtml+xml',
+    '.eot' => 'application/vnd.ms-fontobject',
+    '.ico' => 'image/vnd.microsoft.icon'
     );
 
 sub mime_type_from_path {
-    my $filename = shift;
+    my ($filename, $default) = @_;
 
     my ($name, $path, $suffix) = fileparse( $filename, keys %mime );
 
     my $type = $mime{$suffix};
 
     return $type if $type;
-        
+    return $default if $default;
+    
     croak "can't find mime type $suffix for $filename";
 }
 

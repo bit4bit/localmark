@@ -18,6 +18,7 @@ use Carp;
 use Localmark::Util::File::Slurp qw(read_text);
 
 use Moose;
+use namespace::autoclean;
 
 has 'path_wget' => (
     is => 'ro',
@@ -54,6 +55,15 @@ sub single_website {
     return @{ $res->{files} };
 }
 
+# obtiene una pagina
+sub get {
+    my ($self, $url) = @_;
+
+    #https://perlmaven.com/simple-way-to-fetch-many-web-pages
+    my $html = qx{wget --quiet --output-document=- $url};
+    return $html;
+}
+
 sub _wget {
     my ($command, $url) = @_;
 
@@ -81,6 +91,7 @@ sub _wget {
         files => \@files
     };
 }
+
 sub BUILD {
     my $self = shift;
 
