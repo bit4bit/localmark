@@ -85,7 +85,8 @@ sub _wget {
             # wget -E si no detecta el tipo correcto
             # adiciona .html dejando archivos como panel.png.html
             # intentamos corregir esto
-            if ($filename =~ /(.+\.[a-zA-Z]+)(\.html)$/) {
+            if ($filename =~ /(.+\.png|jpg|jpeg|svg|ttf|woff|woff2|xhtml|ico|txt|html|xml|js|css|gif)(\.html)$/) {
+                carp "FIX: renaming $filename to $1\n";
                 move $filename, $1;
                 push @files, $1;
             } else {

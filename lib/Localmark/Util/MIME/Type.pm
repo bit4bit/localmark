@@ -6,11 +6,10 @@ use warnings;
 
 
 use LWP::Simple qw( head );
-
+use Data::Dumper;
 use File::Basename;
 use Carp;
 use namespace::autoclean;
-use Data::Dumper;
 
 require Exporter;
 our @ISA = qw(Exporter);
