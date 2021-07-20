@@ -1,7 +1,7 @@
 requires 'perl', '>= 5.28.0';
 requires 'Moose', '>= 2.20, < 3.0';
 requires 'Dancer2', '>= 0.265, < 1.0';
-requires 'DBD::SQLite', '>= 1.66';
+requires 'DBD::SQLite', '>= 1.62';
 requires 'Dotenv', '== 0.002';
 requires 'File::Slurper', '>= 0.012';
 requires 'namespace::autoclean', '>= 0.29';
