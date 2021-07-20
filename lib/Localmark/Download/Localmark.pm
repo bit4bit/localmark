@@ -72,7 +72,7 @@ sub _wget {
     my $command_output = mktemp( '/tmp/httrack-log-XXXX' );
         
     # usamos wget para obtener una sola pagina
-    qx( $command  -P $website -nH -a $command_output);
+    qx( $command  -P $website -nH -E -a $command_output);
     my $output = read_text( $command_output );
     
     # primer elemento es el directorio raiz
