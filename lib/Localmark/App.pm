@@ -18,9 +18,15 @@ our $VERSION = '0.001';
 
 
 get '/' => sub {
-    my $storage = current_storage();
-    my $sites = sites( $storage );
+    my $filter_package = query_parameters->get('filter_package');
+    my $filter_content = query_parameters->get('filter_content');
 
+    my $storage = current_storage();
+    my $sites = sites( $storage,
+                       filter => {
+                           package => $filter_package,
+                           content => $filter_content
+                       });
     template index => {
         sites => $sites,
     };
@@ -109,8 +115,13 @@ sub downloader {
 }
 
 sub sites {
-    my $storage = shift;
-    my %site_of = $storage->sites();
+    my ($storage, %opts) = @_;
+
+    my %site_of = $storage->sites(
+        filter => {
+            package => $opts{filter}->{package},
+            content => $opts{filter}->{content}
+        });
 
     my @sites;
     foreach my $package (keys %site_of) {
