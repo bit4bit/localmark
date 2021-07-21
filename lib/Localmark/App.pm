@@ -57,15 +57,14 @@ post '/' => sub {
 };
 
 get '/view/:package/:site/**?' => sub {
-    
+
     my $package = route_parameters->get('package');
     my $site = route_parameters->get('site');
 
     # url relativa del sitio web
-    my ($rest) = splat;
-    my $resource_path = join('/', @{$rest});
-    $resource_path = '/' . $resource_path;
-    
+    # no usa splat debido a que todo el resto de la ruta
+    # es la uri incluido los parametros query
+    my $resource_path = request->path =~ s/\/view\/$package\/$site//r;
     my $storage = current_storage();
 
     try {
