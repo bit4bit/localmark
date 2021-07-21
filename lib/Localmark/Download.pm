@@ -86,12 +86,11 @@ sub single_page {
     my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
     
     for my $file (@files) {
-        my $filename = $file =~ s/^$directory//r;
+        # se almacena talcual ya que wget
+        # espera la misma ruta exacta
+        my $uri = $file =~ s/^$directory//r;
         my $file_url = $file =~ s/^$directory/$base_url/r;
             
-        # intentamos sanear las rutas con /mi.svg?data=1
-        my $uri = URI->new("http://localhost$filename")->path;
-
         # cual seria el mime type de sitios sin index.html
         # ejemplo: https://metacpan.org/pod/Moose
         my $mime_type = guess_mime_type( $file, $file_url );
