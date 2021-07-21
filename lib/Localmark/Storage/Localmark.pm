@@ -34,15 +34,27 @@ has 'path' => (
 has 'error' => (is => 'rw');
 
 sub sites {
-    my ($self, $package) = @_;
+    my ($self, $package, %opts) = @_;
 
     return $self->dbh(
         $package,
         sub {
             my $dbh = shift;
+            my $rows;
+            my $filter_content = $opts{filter}->{content};
 
-            my $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root FROM sites', { Slice => {} } )
-                or croak "fail execute query: " . $dbh->errstr;
+            if (defined $filter_content) {
+                # SQLITE no soporta right join
+                my $site_rows = $dbh->selectall_arrayref( 'SELECT DISTINCT site FROM resources WHERE text LIKE ?', { Slice => {} }, $filter_content)
+                    or croak "fail execute query: " . $dbh->errstr;
+
+                my @sites = map { $_->{site} } @{ $site_rows };
+                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root FROM sites WHERE name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, @sites )
+                    or croak "fail execute query: " . $dbh->errstr;
+            } else {
+                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root FROM sites', { Slice => {} } )
+                    or croak "fail execute query: " . $dbh->errstr;
+            }
 
             my @sites;
             foreach my $row ( @{ $rows } ) {
@@ -82,7 +94,7 @@ sub import_content {
             
             # insertamos primero el sitio
             my $sth =
-                $dbh->prepare( 'INSERT INTO sites(name, title, root, url) VALUES(?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET name = excluded.name, title = excluded.title, root = excluded.root, url = excluded.url' )
+                $dbh->prepare( 'INSERT INTO sites(name, title, root, url) VALUES(?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET title = excluded.title, root = excluded.root, url = excluded.url' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             # TODO(bit4bit) como actualizamos el titulo segun el index.html?

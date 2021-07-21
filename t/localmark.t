@@ -45,4 +45,45 @@ cmp_ok(scalar(@sites2), '==', 1, 'length of array');
 cmp_ok($sites2[0]->root, 'eq', '/index2.html', 'site root');
 cmp_ok($sites2[0]->url, 'eq', 'misite2', 'found site');
 
+
+$storer->import_content(
+    "hola mundo",
+    package => 'mipackagesearch',
+    site => 'misite1',
+    uri => '/index.html',
+    site_url => 'misite',
+    site_root => '/index1.html',
+    mime_type => 'text/html'
+    ) or fail( 'import content' );
+
+$storer->import_content(
+    "hola mundo",
+    package => 'mipackagesearch',
+    site => 'misite2',
+    uri => '/index.html',
+    site_url => 'misite',
+    site_root => '/index1.html',
+    mime_type => 'text/html'
+    ) or fail( 'import content' );
+
+$storer->import_content(
+    "hola mando",
+    package => 'mipackagesearch',
+    site => 'misite3',
+    uri => '/index.html',
+    site_url => 'misite',
+    site_root => '/index1.html',
+    mime_type => 'text/html'
+    ) or fail( 'import content' );
+
+%site_of = $store->sites(
+    filter => {
+        content => '%mando%'
+    });
+cmp_ok(scalar(@{ $site_of{mipackagesearch} }), '==', 1, 'length of array');
+ %site_of = $store->sites(
+    filter => {
+        content => '%mundo%'
+    });
+cmp_ok(scalar(@{ $site_of{mipackagesearch} }), '==', 2, 'length of array');
 done_testing;

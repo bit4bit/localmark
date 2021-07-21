@@ -22,16 +22,22 @@ has 'storage' => (
 
 # returns %{ 'package name' => Localmark::Site }
 sub sites {
-    my ($self) = @_;
+    my ($self, %opts) = @_;
 
     my $directory_packages = $self->storage->path;
-    my @package_fullpaths = bsd_glob( "$directory_packages/*.localmark" );
+
+    my $package_glob = $opts{filter}->{package} || '*';
+    my @package_fullpaths = bsd_glob( "$directory_packages/$package_glob.localmark"  );
 
     my %site_of;
     for my $package_path (@package_fullpaths) {
         my $package = basename( $package_path ) =~ s/(.+)\..+/$1/r;
 
-        my $sites = $self->storage->sites( $package );
+        my $sites = $self->storage->sites(
+            $package,
+            filter => {
+                content => $opts{filter}->{content}
+            });
 
         for my $site ( @{ $sites }) {
             push @{ $site_of{$package} }, $site;

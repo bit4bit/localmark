@@ -31,6 +31,12 @@
     </textarea>
 
     <h3>Sitios</h3>
+    <form action="/" method="GET">
+      <input name="filter_package" type="text" placeholder="package"/>
+      <input name="filter_content" text="text" placeholder="filter"/>
+      <input type="submit" value="Search"/>
+    </form>
+
     <ul>
       [% FOREACH site IN sites %]
       <!-- los sitios que no manje index.html?? -->
