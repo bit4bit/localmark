@@ -49,10 +49,10 @@ sub sites {
                     or croak "fail execute query: " . $dbh->errstr;
 
                 my @sites = map { $_->{site} } @{ $site_rows };
-                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root FROM sites WHERE name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, @sites )
+                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites WHERE name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, @sites )
                     or croak "fail execute query: " . $dbh->errstr;
             } else {
-                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root FROM sites', { Slice => {} } )
+                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites', { Slice => {} } )
                     or croak "fail execute query: " . $dbh->errstr;
             }
 
@@ -61,6 +61,7 @@ sub sites {
                 my $site = Localmark::Site->new(
                     name => $row->{name},
                     title => $row->{title},
+                    note => $row->{note},
                     package => $package,
                     root => $row->{root},
                     url => $row->{url}
@@ -82,6 +83,7 @@ sub import_content {
     my $site_url = $args{site_url} || $site;
     my $site_title = $args{site_title} || $site;
     my $site_root = $args{site_root} || '/index.html';
+    my $site_note =  $args{site_note} || '';
     my $package = $args{package} || croak "requires 'package'";
     my $uri = $args{uri} || croak "requires 'uri'";
     my $mime_type = $args{mime_type} || 'application/octet-stream';
@@ -94,11 +96,11 @@ sub import_content {
             
             # insertamos primero el sitio
             my $sth =
-                $dbh->prepare( 'INSERT INTO sites(name, title, root, url) VALUES(?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET title = excluded.title, root = excluded.root, url = excluded.url' )
+                $dbh->prepare( 'INSERT INTO sites(name, title, root, url, note) VALUES(?, ?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET title = excluded.title, root = excluded.root, url = excluded.url, note = excluded.note' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             # TODO(bit4bit) como actualizamos el titulo segun el index.html?
-            $sth->execute( $site, $site_title, $site_root, $site_url )
+            $sth->execute( $site, $site_title, $site_root, $site_url, $site_note )
                 or croak "couldn't execute statement: " . $sth->errstr;
 
             # insertamos recurso
@@ -133,7 +135,7 @@ sub resource {
         sub {
             my $dbh = shift;
 
-            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.note as site_note FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             $sth->execute( $args{site}, $args{path} )
@@ -150,6 +152,7 @@ sub resource {
                 title => $row_ref->{site_title},
                 root => $row_ref->{site_root},
                 url => $row_ref->{site_url},
+                note => $row_ref->{site_note},
                 package => $package
                 );
 
@@ -211,8 +214,14 @@ sub init_db {
                );
                })  or croak $dbh->errstr;
 
-    $dbh->do( 'CREATE UNIQUE INDEX IF NOT EXISTS resources_unique ON resources(site, uri)' )
+    $dbh->do( 'CREATE UNIQUE INDEX IF NOT EXISTS resources_unique ON resources(site, uri)' );
 
+    # NOTE(bit4bit) de que otra manera podemos confirmar que existe la columna?
+    my $sth = $dbh->column_info( undef, undef, 'sites', 'name' );
+    if (not $sth->fetchrow_array()) {
+        $dbh->do( 'ALTER TABLE sites ADD COLUMN note TEXT');
+    }
+        
 }
 
 no Moose;

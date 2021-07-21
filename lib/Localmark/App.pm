@@ -38,12 +38,14 @@ post '/' => sub {
     my $package = body_parameters->get('package');
     my $url = body_parameters->get('url');
     my $strategy = body_parameters->get('strategy');
+    my $note = body_parameters->get('note');
     my $download = downloader();
 
     $download->using_strategy(
         $strategy,
         $url,
-        package => $package
+        package => $package,
+        note => $note
         );
 
     my $sites = sites( $storage );

@@ -16,5 +16,7 @@ has 'url' => (is => 'ro');
 # path principal /indexh.tml
 has 'root' => (is => 'ro');
 
+has 'note' => (is => 'ro');
+
 no Moose;
 __PACKAGE__->meta->make_immutable;

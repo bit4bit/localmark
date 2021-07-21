@@ -39,7 +39,8 @@ sub using_strategy {
     my ($self, $strategy, $url, %args) = @_;
 
     my $package = $args{package} || croak "requires 'package'";
-
+    my $note = $args{note} || '';
+    
     given ($strategy) {
         when ( 'single_page' ) {
             my $site = $url;
@@ -47,7 +48,8 @@ sub using_strategy {
             $self->single_page(
                 $url,
                 package => $package,
-                site => $site
+                site => $site,
+                site_note => $note
                 );
         }
         when ( 'single_website' ) {
@@ -56,7 +58,8 @@ sub using_strategy {
             $self->single_website(
                 $url,
                 package => $package,
-                site => $url
+                site => $url,
+                site_note => $note
                 );
         }
         default {
@@ -72,6 +75,7 @@ sub single_page {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
+    my $site_note = $args{site_note} || '';
     
     my ($directory, @files) = $self->downloader->single_page($url);
     my $site_title = $self->guess_site_title($url, $directory, @files) || $site;
@@ -103,6 +107,7 @@ sub single_page {
             site_title => $site_title,
             site_root => $site_root,
             site_url => $site_url,
+            site_note => $site_note,
             uri => $uri,
             mime_type => $mime_type
             );

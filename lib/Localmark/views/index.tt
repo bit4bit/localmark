@@ -16,12 +16,17 @@
       
     <h3>Download</h3>
     <form action="/" method="POST">
-      <input name="package" type="text" placeholder="package" value="[% package %]" />
-      <input name="url" type="text" placeholder="URL"/>
-      <select name="strategy">
-        <option value="single_page">Single Page</option>
-        <option value="single_website">Single Website</option>
-      </select>
+      <div>
+        <input name="package" type="text" placeholder="package" value="[% package %]" />
+        <input name="url" type="text" placeholder="URL"/>
+        <select name="strategy">
+          <option value="single_page">Single Page</option>
+          <option value="single_website">Single Website</option>
+        </select>
+      </div>
+      <div>
+        <textarea name="note" cols="100"></textarea>
+      </div>
       <input type="submit" value="Download"/>
     </form>
     
@@ -40,7 +45,10 @@
     <ul>
       [% FOREACH site IN sites %]
       <!-- los sitios que no manje index.html?? -->
-        <li> <a href="/view/[% site.package %]/[% site.name %][% site.root %]" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a> </li>
+        <li>
+          <a href="/view/[% site.package %]/[% site.name %][% site.root %]" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a>
+          <p>[% site.note %]</p>
+        </li>
       [% END %]
     </ul>
   </body>
