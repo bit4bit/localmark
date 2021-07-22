@@ -18,5 +18,7 @@ has 'root' => (is => 'ro');
 
 has 'note' => (is => 'ro');
 
+has 'quotes' => (is => 'ro');
+
 no Moose;
 __PACKAGE__->meta->make_immutable;

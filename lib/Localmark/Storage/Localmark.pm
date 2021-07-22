@@ -24,6 +24,7 @@ use namespace::autoclean;
 
 use Localmark::Resource;
 use Localmark::Site;
+use Localmark::Quote;
 use Localmark::Util::File::Slurp qw(read_binary);
 
 has 'path' => (
@@ -43,12 +44,14 @@ sub sites {
             my $rows;
             my $filter_content = $opts{filter}->{content};
 
+            my $search_resources;
+
             if (defined $filter_content) {
                 # SQLITE no soporta right join
-                my $site_rows = $dbh->selectall_arrayref( 'SELECT DISTINCT site FROM resources WHERE text LIKE ?', { Slice => {} }, $filter_content)
+                $search_resources = $dbh->selectall_arrayref( 'SELECT id, site FROM resources WHERE text LIKE ?', { Slice => {} }, $filter_content)
                     or croak "fail execute query: " . $dbh->errstr;
 
-                my @sites = map { $_->{site} } @{ $site_rows };
+                my @sites = map { $_->{site} } @{ $search_resources };
                 $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites WHERE name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, @sites )
                     or croak "fail execute query: " . $dbh->errstr;
             } else {
@@ -56,6 +59,21 @@ sub sites {
                     or croak "fail execute query: " . $dbh->errstr;
             }
 
+            my @quotes;
+            foreach my $search_resource ( @{ $search_resources } ) {
+                my $row = $dbh->selectrow_hashref( 'SELECT id, uri, text FROM resources WHERE id = ?', { Slice => {} }, $search_resource->{id})
+                    or croak "fail execute query: " . $dbh->errstr;
+
+                my $quote = Localmark::Quote->new(
+                    resource_id => $row->{id},
+                    title => $row->{uri},
+                    url => $row->{uri},
+                    content => $row->{text}
+                    );
+
+                push @quotes, $quote;
+            }
+            
             my @sites;
             foreach my $row ( @{ $rows } ) {
                 my $site = Localmark::Site->new(
@@ -64,7 +82,8 @@ sub sites {
                     note => $row->{note},
                     package => $package,
                     root => $row->{root},
-                    url => $row->{url}
+                    url => $row->{url},
+                    quotes => \@quotes
                     );
 
                 push @sites, $site;

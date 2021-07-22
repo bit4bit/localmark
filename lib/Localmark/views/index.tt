@@ -51,6 +51,13 @@
         <li>
           <a href="/view/[% site.package %]/[% site.name %][% site.root %]" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a>
           <p>[% site.note %]</p>
+          [% IF site.quotes -%]
+            <ul>
+              [% FOREACH quote IN site.quotes -%]
+                <li><a href="/view/[% site.package %]/[% site.name %][% quote.url %]" target="[% site.package %].[% site.name %]">[% quote.title %] </a></li>
+              [% END -%]
+            </ul>
+          [% END -%]
         </li>
       [% END %]
     </ul>
