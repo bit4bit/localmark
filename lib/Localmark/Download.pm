@@ -40,6 +40,7 @@ sub using_strategy {
 
     my $package = $args{package} || croak "requires 'package'";
     my $note = $args{note} || '';
+    my $title = $args{title};
     
     given ($strategy) {
         when ( 'single_page' ) {
@@ -49,7 +50,8 @@ sub using_strategy {
                 $url,
                 package => $package,
                 site => $site,
-                site_note => $note
+                site_note => $note,
+                site_title => $title
                 );
         }
         when ( 'single_website' ) {
@@ -59,7 +61,8 @@ sub using_strategy {
                 $url,
                 package => $package,
                 site => $url,
-                site_note => $note
+                site_note => $note,
+                site_title => $title
                 );
         }
         default {
@@ -78,7 +81,7 @@ sub single_page {
     my $site_note = $args{site_note} || '';
     
     my ($directory, @files) = $self->downloader->single_page($url);
-    my $site_title = $self->guess_site_title($url, $directory, @files) || $site;
+    my $site_title = $args{site_title} || $self->guess_site_title($url, $directory, @files) || $site;
     my $site_root = $self->guess_site_root($url, $directory, @files) || '/index.html';
     my $site_url = $url;
 
@@ -118,11 +121,14 @@ sub single_website {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
+    my $site_note = $args{site_note} || '';
     
     my ($directory, @files) = $self->downloader->single_website($url);
 
-    my $site_title = $self->guess_site_title($url, $directory, @files);
+    my $site_title = $args{site_title} || $self->guess_site_title($url, $directory, @files) || $site;
     my $site_root = $self->guess_site_root($url, $directory, @files) || '/index.html';
+    my $site_url = $url;
+
     my $main_uri = URI->new($url);
     my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
     
@@ -142,6 +148,8 @@ sub single_website {
             site => $site,
             site_title => $site_title,
             site_root => $site_root,
+            site_url => $site_url,
+            site_note => $site_note,
             uri => $uri,
             mime_type => $mime_type
             );
