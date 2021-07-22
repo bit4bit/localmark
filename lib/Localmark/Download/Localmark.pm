@@ -94,10 +94,11 @@ sub _wget {
             # wget -E si no detecta el tipo correcto
             # adiciona .html dejando archivos como panel.png.html
             # intentamos corregir esto
-            if ($filename =~ /(.+\.png|jpg|jpeg|svg|ttf|woff|woff2|xhtml|ico|txt|html|xml|js|css|gif)(\.html)$/) {
-                carp "FIX: renaming $filename to $1\n";
-                move $filename, $1;
-                push @files, $1;
+            if ($filename =~ /(.+\.)(png|jpg|jpeg|svg|ttf|woff|woff2|xhtml|ico|txt|html|xml|js|css|gif|data)(\.html)(.*)$/) {
+                my $new_filename = $1 . $2 . $4;
+                carp "FIX: renaming $filename to $new_filename\n";
+                move $filename, $new_filename;
+                push @files, $new_filename;
             } else {
                 push @files, $filename;
             }
