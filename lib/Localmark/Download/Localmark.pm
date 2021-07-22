@@ -33,24 +33,28 @@ has 'output' => (
     );
 
 sub single_page {
-    my ($self, $url) = @_;
+    my ($self, $url, %args) = @_;
 
     my $path = $self->path_wget;
     my $command = qq( $path --no-check-certificate -k -p $url);
 
     my $res = _wget( $command );
+
     $self->output($res->{output});
 
     return @{ $res->{files} };
 }
 
 sub single_website {
-    my ($self, $url) = @_;
+    my ($self, $url, %args) = @_;
 
     my $path = $self->path_wget;
-    my $command = qq( $path --no-check-certificate -k -p $url -r -l 2 );
+    my $command = qq( $path --no-check-certificate -k -r -l 2 -p $url );
 
-    my $res = _wget( $command );
+
+    my $res = _wget( $command, {
+        allow_parent => $args{allow_parent}
+                     });
     $self->output($res->{output});
 
     return @{ $res->{files} };
@@ -66,13 +70,18 @@ sub get {
 }
 
 sub _wget {
-    my ($command, $url) = @_;
+    my ($command, $args) = @_;
 
     my $website = mkdtemp( '/tmp/httrack-XXXX' );
     my $command_output = mktemp( '/tmp/httrack-log-XXXX' );
-        
-    # usamos wget para obtener una sola pagina
-    qx( $command --no-parent -P $website -nH -E -a $command_output);
+
+    my @extra_options = ();
+    push @extra_options, "--no-parent" if (not $args->{allow_parent});
+    
+    my $wget_options = join ' ', @extra_options;
+
+    qx( $command $wget_options -P $website -nH -E -a $command_output);
+
     my $output = read_text( $command_output );
     
     # primer elemento es el directorio raiz
