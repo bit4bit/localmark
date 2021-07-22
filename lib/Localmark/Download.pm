@@ -176,9 +176,13 @@ sub guess_site_root {
     # como parte de la funcionalidad
     # asumimos que todo recurso tiene una extension
     if (defined $mime_type && $mime_type eq 'text/html') {
-        if ($path !~ m{\.[hH][tT][mM][lL]?$}) {
+        if ($path =~ m{\/$}) {
+            $path .= 'index.html';
+        }
+        elsif ($path !~ m{\.[hH][tT][mM][lL]?$}) {
             $path .= '.html';
         }
+
     }
 
     return $path;
