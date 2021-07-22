@@ -217,7 +217,7 @@ sub init_db {
     $dbh->do( 'CREATE UNIQUE INDEX IF NOT EXISTS resources_unique ON resources(site, uri)' );
 
     # NOTE(bit4bit) de que otra manera podemos confirmar que existe la columna?
-    my $sth = $dbh->column_info( undef, undef, 'sites', 'name' );
+    my $sth = $dbh->column_info( undef, undef, 'sites', 'note' );
     if (not $sth->fetchrow_array()) {
         $dbh->do( 'ALTER TABLE sites ADD COLUMN note TEXT');
     }

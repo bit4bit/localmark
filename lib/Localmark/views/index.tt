@@ -27,6 +27,9 @@
       <div>
         <textarea name="note" cols="100"></textarea>
       </div>
+      <div>
+        <input name="title" type="text" placeholder="custom title default detected"/>
+      </div>
       <input type="submit" value="Download"/>
     </form>
     

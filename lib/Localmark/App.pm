@@ -39,13 +39,15 @@ post '/' => sub {
     my $url = body_parameters->get('url');
     my $strategy = body_parameters->get('strategy');
     my $note = body_parameters->get('note');
+    my $title = body_parameters->get('title');
     my $download = downloader();
 
     $download->using_strategy(
         $strategy,
         $url,
         package => $package,
-        note => $note
+        note => $note,
+        title => $title
         );
 
     my $sites = sites( $storage );
