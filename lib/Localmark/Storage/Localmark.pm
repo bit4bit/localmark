@@ -59,23 +59,29 @@ sub sites {
                     or croak "fail execute query: " . $dbh->errstr;
             }
 
-            my @quotes;
-            foreach my $search_resource ( @{ $search_resources } ) {
-                my $row = $dbh->selectrow_hashref( 'SELECT id, uri, text FROM resources WHERE id = ?', { Slice => {} }, $search_resource->{id})
-                    or croak "fail execute query: " . $dbh->errstr;
 
-                my $quote = Localmark::Quote->new(
-                    resource_id => $row->{id},
-                    title => $row->{uri},
-                    url => $row->{uri},
-                    content => $row->{text}
-                    );
-
-                push @quotes, $quote;
-            }
-            
             my @sites;
+
+
             foreach my $row ( @{ $rows } ) {
+                # construimos quotes
+                my @quotes;
+                my @search_resources_by_site = grep { $_->{site} eq $row->{name} } @{ $search_resources };
+                foreach my $search_resource ( @search_resources_by_site ) {
+                    my $row_resource = $dbh->selectrow_hashref( 'SELECT id, uri, text FROM resources WHERE id = ?', { Slice => {} }, $search_resource->{id})
+                        or croak "fail execute query: " . $dbh->errstr;
+
+                    my $quote = Localmark::Quote->new(
+                        resource_id => $row_resource->{id},
+                        title => $row_resource->{uri},
+                        url => $row_resource->{uri},
+                        # TODO(bit4bit) solo el fragmento de lo encontrado
+                        content => $row_resource->{text}
+                        );
+
+                    push @quotes, $quote;
+                }
+            
                 my $site = Localmark::Site->new(
                     name => $row->{name},
                     title => $row->{title},
