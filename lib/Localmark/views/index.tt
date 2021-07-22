@@ -4,6 +4,12 @@
   </head>
   <body>
     <div>
+      <form action="/" method="GET">
+        <input type="submit" value="Reload"/>
+      </form>
+    </div>
+
+    <div>
       <h3>Ayuda</h3>
       Localmark es aun muy inestable en la descarga de los sitios, algunas consideraciones a tener en cuenta al usar:
       <ul>
