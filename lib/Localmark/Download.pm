@@ -54,7 +54,7 @@ sub using_strategy {
                 site_title => $title
                 );
         }
-        when ( 'single_website' ) {
+        when ( 'downward_website' ) {
             my $site = $url;
             
             $self->single_website(
@@ -63,6 +63,18 @@ sub using_strategy {
                 site => $url,
                 site_note => $note,
                 site_title => $title
+                );
+        }
+        when ( 'upward_website' ) {
+            my $site = $url;
+            
+            $self->single_website(
+                $url,
+                package => $package,
+                site => $url,
+                site_note => $note,
+                site_title => $title,
+                allow_parent => 1
                 );
         }
         default {
@@ -123,7 +135,7 @@ sub single_website {
     my $site = $args{site} or croak "requires 'site'";
     my $site_note = $args{site_note} || '';
     
-    my ($directory, @files) = $self->downloader->single_website($url);
+    my ($directory, @files) = $self->downloader->single_website($url,  allow_parent => $args{allow_parent} || 0 );
 
     my $site_title = $args{site_title} || $self->guess_site_title($url, $directory, @files) || $site;
     my $site_root = $self->guess_site_root($url, $directory, @files) || '/index.html';

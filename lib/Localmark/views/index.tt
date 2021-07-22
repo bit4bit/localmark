@@ -21,7 +21,8 @@
         <input name="url" type="text" placeholder="URL"/>
         <select name="strategy">
           <option value="single_page">Single Page</option>
-          <option value="single_website">Single Website</option>
+          <option value="downward_website">Downward Website</option>
+          <option value="upward_website">Upward Website</option>
         </select>
       </div>
       <div>
