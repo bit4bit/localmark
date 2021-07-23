@@ -21,6 +21,7 @@ use Digest::MD5 qw(md5_hex);
 
 use Moose;
 use namespace::autoclean;
+use syntax 'try';
 
 use Localmark::Resource;
 use Localmark::Site;
@@ -33,6 +34,55 @@ has 'path' => (
     );
 
 has 'error' => (is => 'rw');
+
+sub delete_site {
+    my ($self, $package, $name) = @_;
+
+    croak "requires 'package'" if not $package;
+    croak "requires 'name'" if not $name;
+
+    return $self->dbh(
+        $package,
+        sub {
+            my $dbh = shift;
+            local $dbh->{AutoCommit} = 0;
+            local $dbh->{RaiseError} = 1;
+
+            try {
+                $dbh->do( 'DELETE FROM sites WHERE name = ?', undef, $name );
+                $dbh->do ( 'DELETE FROM resources WHERE site = ?', undef, $name );
+                $dbh->commit;
+            }
+            catch {
+                eval { $dbh->rollback };
+            }
+        });
+}
+
+sub site {
+    my ($self, $package, $name) = @_;
+
+    croak "requires 'package'" if not $package;
+    croak "requires 'name'" if not $name;
+
+    return $self->dbh(
+        $package,
+        sub {
+            my $dbh = shift;
+            my $row = $dbh->selectrow_hashref( 'SELECT name, title, url, root, note FROM sites WHERE name = ?', { Slice => {} }, $name);
+            
+            return Localmark::Site->new(
+                name => $row->{name},
+                title => $row->{title},
+                note => $row->{note},
+                package => $package,
+                root => $row->{root},
+                url => $row->{url},
+                quotes => []
+                );
+        }
+        );
+}
 
 sub sites {
     my ($self, $package, %opts) = @_;
