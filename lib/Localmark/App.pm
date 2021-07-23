@@ -15,7 +15,7 @@ use Localmark::Download::Localmark;
 
 use Dancer2;
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
 
 
 get '/' => sub {

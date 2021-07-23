@@ -27,6 +27,7 @@ use Localmark::Resource;
 use Localmark::Site;
 use Localmark::Quote;
 use Localmark::Util::File::Slurp qw(read_binary);
+use Localmark::Util::MIME::Type qw( is_mime_type_readable );
 
 has 'path' => (
     is => 'ro',
@@ -153,17 +154,23 @@ sub import_content {
     my ($self, $content, %args) = @_;
 
     my $site = $args{site} || croak "requires 'site'";
+    my $package = $args{package} || croak "requires 'package'";
+
     $site = md5_hex($site);
 
     my $site_url = $args{site_url} || $site;
     my $site_title = $args{site_title} || $site;
     my $site_root = $args{site_root} || '/index.html';
     my $site_note =  $args{site_note} || '';
-    my $package = $args{package} || croak "requires 'package'";
     my $uri = $args{uri} || croak "requires 'uri'";
     my $mime_type = $args{mime_type} || 'application/octet-stream';
-    my $text = $args{text} || $content;
 
+
+    my $text;
+    if (is_mime_type_readable($mime_type)) {
+        $text = $content
+    }
+    
     return $self->dbh(
         $package,
         sub {
@@ -204,7 +211,7 @@ sub resource {
     my ($self, %args) = @_;
 
     my $package = $args{package};
-    
+
     return $self->dbh(
         $package,
         sub {
@@ -217,7 +224,6 @@ sub resource {
                 or croak "couldn't execute statement: " . $sth->errstr;
 
             my $row_ref = $sth->fetchrow_hashref();
-
             if (not defined $row_ref) {
                 return;
             }
@@ -296,7 +302,9 @@ sub init_db {
     if (not $sth->fetchrow_array()) {
         $dbh->do( 'ALTER TABLE sites ADD COLUMN note TEXT');
     }
-        
+
+    # since v0.002
+    # UPDATE resources SET text = NULL WHERE mime_type not IN ("text/xml", "application/xhtml+xml", "image/svg+xml", "text/javascript", "application/json", "text/html", "text/plain", "text/csv", "text/css", "application/x-httpd-php");
 }
 
 no Moose;

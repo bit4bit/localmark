@@ -70,8 +70,8 @@ sub resource {
 
     croak "argument 'path'" if not defined $args{path};
     croak "argument 'package'" if not defined $args{package};
-    croak "argument 'path'" if not defined $args{path};
-
+    croak "argument 'site'" if not defined $args{site};
+    
     my $resource = $self->storage->resource(
         package => $args{package},
         site => $args{site},
