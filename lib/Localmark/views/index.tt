@@ -19,31 +19,40 @@
         <li>La descarga bloquea el sitio temporalmente asi que porpaciencia y serenidad</li>
       </ul>
     </div>
-      
-    <h3>Download</h3>
-    <form action="/" method="POST">
-      <div>
-        <input name="package" type="text" placeholder="package" value="[% package %]" />
-        <input name="url" type="text" placeholder="URL"/>
-        <select name="strategy">
-          <option value="single_page">Single Page</option>
-          <option value="downward_website">Downward Website</option>
-          <option value="upward_website">Upward Website</option>
-        </select>
-      </div>
-      <div>
-        <textarea name="note" cols="100"></textarea>
-      </div>
-      <div>
-        <input name="title" type="text" placeholder="custom title default detected"/>
-      </div>
-      <input type="submit" value="Download"/>
-    </form>
-    
-    <h4>Debug</h4>
-    <textarea cols="100">
-      [% download_output %]
-    </textarea>
+
+    <table>
+      <tbody>
+        <tr>
+          <td>
+            <h3>Download</h3>
+            <form action="/" method="POST">
+              <div>
+                <input name="package" type="text" placeholder="package" value="[% package %]" />
+                <input name="url" type="text" placeholder="URL"/>
+                <select name="strategy">
+                  <option value="single_page">Single Page</option>
+                  <option value="downward_website">Downward Website</option>
+                  <option value="upward_website">Upward Website</option>
+                </select>
+              </div>
+              <div>
+                <textarea placeholder="note for website" name="note" cols="100"></textarea>
+              </div>
+              <div>
+                <input name="title" type="text" placeholder="custom title default detected"/>
+              </div>
+              <input type="submit" value="Download"/>
+            </form>
+          </td>
+          <td>
+            <h4>Download Debug</h4>
+            <textarea cols="100">
+              [% download_output %]
+            </textarea>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <h3>Sitios</h3>
     <form action="/" method="GET">
