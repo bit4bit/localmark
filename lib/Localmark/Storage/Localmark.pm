@@ -103,7 +103,7 @@ sub sites {
                     or croak "fail execute query: " . $dbh->errstr;
 
                 my @sites = map { $_->{site} } @{ $search_resources };
-                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites WHERE name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, @sites )
+                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites WHERE title LIKE ? or name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, "%$filter_content%", @sites )
                     or croak "fail execute query: " . $dbh->errstr;
             } else {
                 $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites', { Slice => {} } )
