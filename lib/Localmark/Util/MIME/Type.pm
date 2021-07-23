@@ -13,7 +13,7 @@ use namespace::autoclean;
 
 require Exporter;
 our @ISA = qw(Exporter);
-our @EXPORT = qw( mime_type_from_path mime_type_from_url );
+our @EXPORT = qw( mime_type_from_path mime_type_from_url is_mime_type_readable );
 
 my %mime = (
     '.gif' => 'image/gif',
@@ -36,7 +36,21 @@ my %mime = (
     '.woff2' => 'font/woff2',
     '.xhtml' => 'application/xhtml+xml',
     '.eot' => 'application/vnd.ms-fontobject',
-    '.ico' => 'image/vnd.microsoft.icon'
+    '.ico' => 'image/vnd.microsoft.icon',
+    '.php' => 'application/x-httpd-php'
+    );
+
+my %mime_readable = (
+    'text/xml' => 1,
+    'application/xhtml+xml' => 1,
+    'image/svg+xml' => 1,
+    'text/javascript' => 1,
+    'application/json' => 1,
+    'text/html'  => 1,
+    'text/plain' => 1,
+    'text/csv' => 1,
+    'text/css' => 1,
+    'application/x-httpd-php'  => 1
     );
 
 sub mime_type_from_path {
@@ -62,4 +76,12 @@ sub mime_type_from_url {
 
     return;
 }
+
+sub is_mime_type_readable {
+    my ($type) = @_;
+
+    return 1 if (defined $mime_readable{$type});
+    return 0
+}
+
 1;

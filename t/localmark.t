@@ -86,4 +86,40 @@ cmp_ok(scalar(@{ $site_of{mipackagesearch} }), '==', 1, 'length of array');
         content => '%mundo%'
     });
 cmp_ok(scalar(@{ $site_of{mipackagesearch} }), '==', 2, 'length of array');
+
+
+# content readable
+
+$storer->import_content(
+    "hola mundo",
+    package => 'mipackagereadable',
+    site => 'misite1',
+    uri => '/index.html',
+    site_url => 'misite',
+    site_root => '/index1.html',
+    mime_type => 'image/png'
+    ) or fail( 'import content' );
+
+$storer->import_content(
+    "hola mundo",
+    package => 'mipackagereadable2',
+    site => 'misite1',
+    uri => '/index.html',
+    site_url => 'misite',
+    site_root => '/index1.html',
+    mime_type => 'text/plain'
+    ) or fail( 'import content' );
+
+%site_of = $store->sites(
+    filter => {
+        content => "hola mundo"
+    });
+cmp_ok(scalar(@{ $site_of{mipackagereadable} }), '==', 0, 'not search by type of content');
+
+%site_of = $store->sites(
+    filter => {
+        content => "hola mundo"
+    });
+cmp_ok(scalar(@{ $site_of{mipackagereadable2} }), '==', 1, 'search by type of content');
+
 done_testing;
