@@ -29,7 +29,8 @@ has 'path_wget' => (
     );
 
 has 'output' => (
-    is => 'rw'
+    is => 'rw',
+    isa => 'Str'
     );
 
 sub single_page {

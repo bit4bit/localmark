@@ -12,10 +12,25 @@ use warnings;
 use Moose;
 use namespace::autoclean;
 
-has 'title' => (is => 'ro');
-has 'url' => (is => 'ro');
-has 'content' => (is => 'ro');
-has 'resource_id' => (is => 'ro');
+has 'title' => (
+    is => 'ro',
+    isa => 'Str'
+    );
+
+has 'url' => (
+    is => 'ro',
+    isa => 'Str'
+    );
+
+has 'content' => (
+    is => 'ro',
+    isa => 'Str'
+    );
+
+has 'resource_id' => (
+    is => 'ro',
+    isa => 'Str'
+    );
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
