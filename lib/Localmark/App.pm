@@ -3,6 +3,7 @@ package Localmark::App;
 use strict;
 use warnings;
 use syntax 'try';
+use v5.14;
 
 use Dotenv;
 use Data::Dumper;
@@ -93,6 +94,30 @@ get '/view/:package/:site/**?' => sub {
     }
 };
 
+post '/action' => sub {
+    my $storage = current_storage();
+    my $action = body_parameters->get('action');
+    my $site_package = body_parameters->get('site_package');
+    my $site_name = body_parameters->get('site_name');
+
+    
+    for ($action) {
+        when ('view') {
+            my $site = $storage->site($site_package, $site_name);
+            my $site_root = $site->root;
+
+            return redirect "/view/$site_package/$site_name$site_root";
+        }
+        when ('delete') {
+            $storage->delete($site_package, $site_name);
+
+            return redirect '/';
+        }
+        default {
+            return send_error('unknown action', 418);
+        }
+    }
+};
 
 sub current_storage {
     my $storage_directory = $ENV{'STORAGE_DIRECTORY'}

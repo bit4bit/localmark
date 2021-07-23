@@ -57,6 +57,16 @@
       <!-- los sitios que no manje index.html?? -->
         <li>
           <a href="/view/[% site.package %]/[% site.name %][% site.root %]" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a>
+          <form style="display: inline;" action="/action" method="POST">
+            <input type="hidden" name="site_package" value="[% site.package %]"/>
+            <input type="hidden" name="site_name" value="[% site.name %]"/>
+
+            <select name="action" style="font-size: 12px; padding: 0;">
+              <option value="view">View</option>
+              <option value="delete">Delete</option>
+            </select>
+            <input type="submit" style="font-size: 12px; padding: 0;" value="DO"/>
+          </form>
           <p>[% site.note %]</p>
           [% IF site.quotes -%]
             <ul>

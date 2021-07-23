@@ -20,6 +20,18 @@ has 'storage' => (
     required => 1
     );
 
+sub delete {
+    my ($self, $package, $name) = @_;
+
+    $self->storage->delete_site($package, $name);
+}
+
+sub site {
+    my ($self, $package, $name) = @_;
+
+    $self->storage->site($package, $name);
+}
+
 # returns %{ 'package name' => Localmark::Site }
 sub sites {
     my ($self, %opts) = @_;
