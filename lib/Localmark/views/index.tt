@@ -24,7 +24,7 @@
       <tbody>
         <tr>
           <td>
-            <h3>Download</h3>
+            <h3 id="download">Download</h3>
             <form action="/" method="POST">
               <div>
                 <input name="package" type="text" placeholder="package" value="[% package %]" />
@@ -54,8 +54,8 @@
       </tbody>
     </table>
 
-    <h3>Sitios</h3>
-    <form action="/" method="GET">
+    <h3 id="sites">Sitios</h3>
+    <form action="/#sites" method="GET">
       <input name="filter_package" type="text" placeholder="package"/>
       <input name="filter_content" text="text" placeholder="keyword"/>
       <input type="submit" value="Search"/>
@@ -66,7 +66,7 @@
       <!-- los sitios que no manje index.html?? -->
         <li>
           <a href="/view/[% site.package %]/[% site.name %][% site.root %]" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a>
-          <form style="display: inline;" action="/action" method="POST">
+          <form style="display: inline;" action="/action#sites" method="POST">
             <input type="hidden" name="site_package" value="[% site.package %]"/>
             <input type="hidden" name="site_name" value="[% site.name %]"/>
 
