@@ -189,7 +189,8 @@ sub guess_site_root {
 
     my $mime_type = $args{mime_type} || guess_mime_type('none', $url);
     my $path = URI->new($url)->path;
-
+    my $rest = $url =~ s/.+$path//r || '';
+    
     # al activar la opcion -E de wget
     # este adiciona el sufijo a los archivo
     # segun el contenido, se asume esta idea
@@ -199,13 +200,13 @@ sub guess_site_root {
         if ($path =~ m{\/$}) {
             $path .= 'index.html';
         }
-        elsif ($path !~ m{\.[hH][tT][mM][lL]?$}) {
+        elsif ($path !~ m{\.[hH][tT][mM][lL]?(\?.+)?$}) {
             $path .= '.html';
         }
 
     }
 
-    return $path;
+    return $path . $rest;
 }
 
 sub guess_mime_type {
