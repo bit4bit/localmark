@@ -48,7 +48,7 @@
     <h3>Sitios</h3>
     <form action="/" method="GET">
       <input name="filter_package" type="text" placeholder="package"/>
-      <input name="filter_content" text="text" placeholder="filter"/>
+      <input name="filter_content" text="text" placeholder="keyword"/>
       <input type="submit" value="Search"/>
     </form>
 

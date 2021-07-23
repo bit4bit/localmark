@@ -22,6 +22,10 @@ get '/' => sub {
     my $filter_package = query_parameters->get('filter_package');
     my $filter_content = query_parameters->get('filter_content');
 
+    if ($filter_content) {
+        $filter_content =~ s/^[^%](.+)[^%]$/%$1%/ms;
+    }
+
     my $storage = current_storage();
     my $sites = sites( $storage,
                        filter => {
