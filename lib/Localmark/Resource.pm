@@ -12,15 +12,29 @@ use warnings;
 
 use Moose;
 
-has 'id' => (is => 'ro');
+has 'id' => (
+    is => 'ro',
+    isa => 'Str');
 
-has 'site' => (is => 'ro');
+has 'site' => (
+    is => 'ro',
+    isa => 'Localmark::Site'
+    );
 
-has 'uri' => (is => 'ro');
+has 'uri' => (
+    is => 'ro',
+    isa => 'Str'
+    );
 
-has 'content' => (is => 'ro');
+has 'content' => (
+    is => 'ro',
+    isa => 'Str'
+    );
 
-has 'mime_type' => (is => 'ro');
+has 'mime_type' => (
+    is => 'ro',
+    isa => 'Str'
+    );
 
 sub render {
     my $self = shift;
