@@ -12,13 +12,16 @@ use warnings;
 use feature 'switch';
 
 use Carp;
-use Localmark::Util::File::Slurp qw( read_text );
-use Localmark::Util::MIME::Type qw(mime_type_from_path mime_type_from_url);
 use URI ();
 use Data::Dumper;
 
 use Moose;
 use namespace::autoclean;
+
+use Localmark::Util::File::Slurp qw( read_text );
+use Localmark::Util::MIME::Type qw(mime_type_from_path mime_type_from_url);
+
+
 
 has 'storage' => (
     is => 'ro',

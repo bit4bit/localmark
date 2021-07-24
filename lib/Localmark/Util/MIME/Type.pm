@@ -4,6 +4,7 @@ use utf8;
 use strict;
 use warnings;
 
+use Localmark::Constant;
 
 use LWP::Simple qw( head );
 use LWP::UserAgent ();
@@ -69,7 +70,7 @@ sub mime_type_from_url {
     my ($url, $default) = @_;
 
     my $ua = LWP::UserAgent->new(timeout => 10);
-    $ua->agent('Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0');
+    $ua->agent(Localmark::Constant::WebAgent);
     my $response = $ua->head($url);
     my $content_type = $response->header('content-type');
 
