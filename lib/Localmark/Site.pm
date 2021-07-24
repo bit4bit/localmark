@@ -5,6 +5,10 @@ use warnings;
 
 use Moose;
 
+use Text::Markdown qw( markdown );
+
+use namespace::autoclean;
+
 has 'id' => (
     is => 'ro',
     lazy => 1,
@@ -50,6 +54,17 @@ has 'quotes' => (
     is => 'ro',
     isa => 'ArrayRef[Localmark::Quote]'
     );
+
+
+sub description_as_markdown {
+    my $self = shift;
+
+    if (defined $self->description) {
+        return markdown($self->description);
+    }
+
+    return '';
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

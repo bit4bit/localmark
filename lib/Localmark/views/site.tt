@@ -7,7 +7,7 @@
     <h2>Site</h2>
     <h3>[% site.title %]</h3>
     <p>
-      [% site.description %]
+      [% site.description_as_markdown %]
     </p>
 
     <h2>Resources</h2>

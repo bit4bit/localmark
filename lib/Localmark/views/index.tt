@@ -13,10 +13,9 @@
       <h3>Ayuda</h3>
       Localmark es aun muy inestable en la descarga de los sitios, algunas consideraciones a tener en cuenta al usar:
       <ul>
-        <li>Los sitios web dinamicos no son descargables</li>
-        <li>La url del sitio debe finalizar con algun recurso ejemplo /index.html o /algo.html</li>
-        <li>La descarga se realiza usando wget, es posible que no todos los sitios se puedan descargar</li>
-        <li>La descarga bloquea el sitio temporalmente asi que porpaciencia y serenidad</li>
+        <li>Se usa wget para la descarga, es posible que no todos los sitios se puedan descargar (ejemplo generados por javascript)</li>
+        <li>La descarga bloquea el sitio temporalmente asi que paciencia y serenidad</li>
+        <li>la description para el sitio es en <a href="http://daringfireball.net/projects/markdown/">markdown</a></li>
       </ul>
     </div>
 
@@ -36,7 +35,7 @@
                 </select>
               </div>
               <div>
-                <textarea placeholder="note for website" name="description" cols="100"></textarea>
+                <textarea placeholder="description for website in original markdown syntax" name="description" cols="100"></textarea>
               </div>
               <div>
                 <input name="title" type="text" placeholder="custom title default detected"/>
@@ -76,7 +75,7 @@
             </select>
             <input type="submit" style="font-size: 12px; padding: 0;" value="DO"/>
           </form>
-          <p>[% site.description %]</p>
+          <p>[% site.description_as_markdown %]</p>
           [% IF site.quotes -%]
             <ul>
               [% FOREACH quote IN site.quotes -%]
