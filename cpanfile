@@ -10,6 +10,7 @@ requires 'LWP::Protocol::https', '>= 6.10';
 requires 'Plack', '>= 1.0047';
 requires 'Syntax::Feature::Try', '>= 1.005';
 requires 'DBIx::Migration', '>= 0.07';
+requires 'File::MimeInfo', '>= 0.30';
 
 on 'test' => sub {
     requires 'Test2::Suite', '>= 0.000140, < 1.0'
