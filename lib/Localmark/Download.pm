@@ -94,42 +94,20 @@ sub single_page {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    
     my ($directory, @files) = $self->downloader->single_page($url);
-    my $site_title = $args{site_title} || $self->guess_site_title($url, $directory, @files) || $site;
-    my $site_root = $self->guess_site_root($url, $directory, @files) || '/index.html';
-    my $site_url = $url;
+    my $site_description = $args{site_description} || '';
+    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
+    my $site_root = $self->guess_site_root($url) || '/index.html';
 
-    my $main_uri = URI->new($url);
-    my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
-    
-    for my $file (@files) {
-        # se almacena talcual ya que wget
-        # espera la misma ruta exacta
-        my $uri = $file =~ s/^$directory//r;
-        my $file_url = $file =~ s/^$directory/$base_url/r;
-            
-        # cual seria el mime type de sitios sin index.html
-        # ejemplo: https://metacpan.org/pod/Moose
-        my $mime_type = guess_mime_type( $file, $file_url );
-        if (not $mime_type) {
-            carp "OMIT: could't detect mime type for $file or $file_url";
-            next;
-        }
-        
-        $self->storage->import_page(
-            $file,
-            package => $package,
-            site => $site,
-            site_title => $site_title,
-            site_root => $site_root,
-            site_url => $site_url,
-            site_description => $site_description,
-            uri => $uri,
-            mime_type => $mime_type
-            );
-    }
+    $self->storage->import_files(
+        $directory, \@files,
+        package => $package,
+        site => $site,
+        site_title => $site_title,
+        site_root => $site_root,
+        site_description => $site_description,
+        site_url => $url
+        );
 }
 
 sub single_website {
@@ -137,43 +115,25 @@ sub single_website {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    
     my ($directory, @files) = $self->downloader->single_website($url,  allow_parent => $args{allow_parent} || 0 );
 
-    my $site_title = $args{site_title} || $self->guess_site_title($url, $directory, @files) || $site;
-    my $site_root = $self->guess_site_root($url, $directory, @files) || '/index.html';
-    my $site_url = $url;
+    my $site_description = $args{site_description} || '';
+    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
+    my $site_root = $self->guess_site_root($url) || '/index.html';
 
-    my $main_uri = URI->new($url);
-    my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
-    
-    for my $file (@files) {
-        my $uri = $file =~ s/^$directory//r;
-        my $file_url = $file =~ s/^$directory/$base_url/r;
-
-        my $mime_type = guess_mime_type( $file, $file_url );
-        if (not $mime_type) {
-            carp "OMIT: could't detect mime type for $file or $file_url";
-            next;
-        }
-
-        $self->storage->import_page(
-            $file,
-            package => $package,
-            site => $site,
-            site_title => $site_title,
-            site_root => $site_root,
-            site_url => $site_url,
-            site_description => $site_description,
-            uri => $uri,
-            mime_type => $mime_type
-            );
-    }
+    $self->storage->import_files(
+        $directory, \@files,
+        package => $package,
+        site => $site,
+        site_title => $site_title,
+        site_root => $site_root,
+        site_description => $site_description,
+        site_url => $url
+        );
 }
 
 sub guess_site_title {
-    my ($self, $url, %args) = @_;
+    my ($self, $url) = @_;
 
     my $html = $self->downloader->get($url);
 
@@ -191,10 +151,9 @@ sub guess_site_title {
 sub guess_site_root {
     my ($self, $url, %args) = @_;
 
-    my $mime_type = $args{mime_type} || guess_mime_type('none', $url);
+    my $mime_type = $args{mime_type} || mime_type_from_url($url);
     my $path = URI->new($url)->path;
     my $rest = $url =~ s/.+$path//r || '';
-
 
     # al activar la opcion -E de wget
     # este adiciona el sufijo a los archivo
@@ -212,12 +171,6 @@ sub guess_site_root {
     }
  
     return $path . $rest;
-}
-
-sub guess_mime_type {
-    my ($path, $file_url) = @_;
-
-    mime_type_from_path($path) || mime_type_from_url($file_url);
 }
 
 no Moose;

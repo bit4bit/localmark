@@ -18,6 +18,7 @@ use File::Basename qw(basename);
 use Carp;
 use DBI;
 use Digest::MD5 qw(md5_hex);
+use URI ();
 
 use DBIx::Migration;
 use Moose;
@@ -28,7 +29,7 @@ use Localmark::Resource;
 use Localmark::Site;
 use Localmark::Quote;
 use Localmark::Util::File::Slurp qw(read_binary);
-use Localmark::Util::MIME::Type qw( is_mime_type_readable );
+use Localmark::Util::MIME::Type qw( is_mime_type_readable mime_type_from_path mime_type_from_url );
 
 has 'path' => (
     is => 'ro',
@@ -206,6 +207,48 @@ sub import_page {
     $args{uri} = $args{uri} || '/'. basename($path);
     
     $self->import_content($content, %args);
+}
+
+sub import_files {
+    my ($self, $directory, $files, %args) = @_;
+
+    my $package = $args{package} || croak "argument 'package'";
+    my $site = $args{site} || croak "argument 'site'";
+    my $site_root = $args{site_root} || croak "argument 'site_root'";
+    my $site_url = $args{site_url} || croak "argument 'site_url'";
+    my $site_description = $args{site_description} || '';
+    my $site_title = $args{site_title} || $site;
+
+    my $main_uri = URI->new($site_url);
+    my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
+    
+    for my $file ( @{ $files } ) {
+        # se almacena talcual ya que wget
+        # espera la misma ruta exacta
+        my $file_url = $file =~ s/^$directory/$base_url/r;
+            
+        # cual seria el mime type de sitios sin index.html
+        # ejemplo: https://metacpan.org/pod/Moose
+        my $mime_type = mime_type_from_path($file) || mime_type_from_url($file_url);
+        if (not $mime_type) {
+            carp "OMIT: could't detect mime type for $file or $file_url";
+            next;
+        }
+        
+        my $uri = $file =~ s/^$directory//r;
+
+        $self->import_page(
+            $file,
+            package => $package,
+            site => $site,
+            site_title => $site_title,
+            site_root => $site_root,
+            site_url => $site_url,
+            site_description => $site_description,
+            uri => $uri,
+            mime_type => $mime_type
+            );
+    }
 }
 
 sub resource {

@@ -12,7 +12,7 @@ use Data::Dumper;
 
 use Localmark::Resource;
 use Localmark::Exception;
-
+use Localmark::Util::MIME::Type qw ( mime_type_from_path mime_type_from_url );
 use Moose;
 
 has 'storage' => (
@@ -93,5 +93,12 @@ sub resources {
         );
 
     return @resources;
+}
+
+
+sub import_files {
+    my ($self, $directory, $files, %args) = @_;
+
+    $self->storage->import_files($directory, $files, %args);
 }
 1;
