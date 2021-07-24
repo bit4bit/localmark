@@ -64,7 +64,7 @@
     <ul>
       [% FOREACH site IN sites %]
       <!-- los sitios que no manje index.html?? -->
-        <li id="[% site.package %].[% site.name %]">
+        <li id="[% site.id %]">
           <a href="/view/[% site.package %]/[% site.name %][% site.root %]" target="[% site.name %]" />[% site.package %]/[% site.name %] : [% site.title %]</a>
           <form style="display: inline;" action="/action#sites" method="POST">
             <input type="hidden" name="site_package" value="[% site.package %]"/>
