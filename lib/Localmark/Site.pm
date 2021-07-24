@@ -10,7 +10,7 @@ has 'id' => (
     lazy => 1,
     default => sub {
         my $self = shift;
-
+        
         return $self->package . '.' . $self->name;
     }
     );
