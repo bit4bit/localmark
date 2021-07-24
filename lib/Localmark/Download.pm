@@ -43,7 +43,7 @@ sub using_strategy {
     my ($self, $strategy, $url, %args) = @_;
 
     my $package = $args{package} || croak "requires 'package'";
-    my $note = $args{note} || '';
+    my $description = $args{description} || '';
     my $title = $args{title};
     
     given ($strategy) {
@@ -54,7 +54,7 @@ sub using_strategy {
                 $url,
                 package => $package,
                 site => $site,
-                site_note => $note,
+                site_description => $description,
                 site_title => $title
                 );
         }
@@ -65,7 +65,7 @@ sub using_strategy {
                 $url,
                 package => $package,
                 site => $url,
-                site_note => $note,
+                site_descriptio => $description,
                 site_title => $title
                 );
         }
@@ -76,7 +76,7 @@ sub using_strategy {
                 $url,
                 package => $package,
                 site => $url,
-                site_note => $note,
+                site_description => $description,
                 site_title => $title,
                 allow_parent => 1
                 );
@@ -94,7 +94,7 @@ sub single_page {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
-    my $site_note = $args{site_note} || '';
+    my $site_description = $args{site_description} || '';
     
     my ($directory, @files) = $self->downloader->single_page($url);
     my $site_title = $args{site_title} || $self->guess_site_title($url, $directory, @files) || $site;
@@ -125,7 +125,7 @@ sub single_page {
             site_title => $site_title,
             site_root => $site_root,
             site_url => $site_url,
-            site_note => $site_note,
+            site_description => $site_description,
             uri => $uri,
             mime_type => $mime_type
             );
@@ -137,7 +137,7 @@ sub single_website {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
-    my $site_note = $args{site_note} || '';
+    my $site_description = $args{site_description} || '';
     
     my ($directory, @files) = $self->downloader->single_website($url,  allow_parent => $args{allow_parent} || 0 );
 
@@ -165,7 +165,7 @@ sub single_website {
             site_title => $site_title,
             site_root => $site_root,
             site_url => $site_url,
-            site_note => $site_note,
+            site_description => $site_description,
             uri => $uri,
             mime_type => $mime_type
             );
