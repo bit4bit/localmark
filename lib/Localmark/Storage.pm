@@ -80,4 +80,18 @@ sub resource {
     
     return $resource;
 }
+
+sub resources {
+    my ($self, $package, $name) = @_;
+
+    croak "argument 'package'" if not defined $package;
+    croak "argument 'name'" if not defined $name;
+
+    my @resources = $self->storage->resources(
+        package => $package,
+        site => $name
+        );
+
+    return @resources;
+}
 1;

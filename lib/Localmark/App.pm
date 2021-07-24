@@ -63,6 +63,18 @@ post '/' => sub {
     };
 };
 
+get '/site/:package/:site' => sub {
+    my $package = route_parameters->get('package');
+    my $name = route_parameters->get('site');
+    my $storage = current_storage();
+
+    
+    template site => {
+        site => $storage->site($package, $name),
+        resources => $storage->resources($package, $name)
+    };
+};
+
 get '/view/:package/:site/**?' => sub {
 
     my $package = route_parameters->get('package');
@@ -110,7 +122,7 @@ post '/action' => sub {
             my $site = $storage->site($site_package, $site_name);
             my $site_root = $site->root;
 
-            return redirect "/view/$site_package/$site_name$site_root";
+            return redirect "/site/$site_package/$site_name";
         }
         when ('delete') {
             $storage->delete($site_package, $site_name);

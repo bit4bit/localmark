@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <title>Localmark Site</title>
+  </head>
+  <body>
+    <a href="/#[% site.package %].[% site.name %]">Back</a>
+    <h2>Site</h2>
+    <h3>[% site.title %]</h3>
+    <p>
+      [% site.description %]
+    </p>
+
+    <h2>Resources</h2>
+    <ul>
+      [% FOREACH resource IN resources %]
+        <li>
+          <a href="/view/[% site.package %]/[% site.name %][% resource.uri %]">[% resource.uri %]</a>
+        </li>
+      [% END %]
+    </ul>
+  </body>
+</html>
