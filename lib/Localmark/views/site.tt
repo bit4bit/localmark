@@ -3,7 +3,7 @@
     <title>Localmark Site</title>
   </head>
   <body>
-    <a href="/#[% site.package %].[% site.name %]">Back</a>
+    <a href="/#[% site.id %]">Back</a>
     <h2>Site</h2>
     <h3>[% site.title %]</h3>
     <p>
