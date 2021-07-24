@@ -6,6 +6,7 @@ use warnings;
 
 
 use LWP::Simple qw( head );
+use LWP::UserAgent ();
 use Data::Dumper;
 use File::Basename;
 use Carp;
@@ -67,7 +68,10 @@ sub mime_type_from_path {
 sub mime_type_from_url {
     my ($url, $default) = @_;
 
-    my ($content_type) = head($url);
+    my $ua = LWP::UserAgent->new(timeout => 10);
+    $ua->agent('Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0');
+    my $response = $ua->head($url);
+    my $content_type = $response->header('content-type');
 
     if ($content_type) {
         $content_type =~ s/;.+//;
