@@ -15,7 +15,7 @@ use Localmark::Download::Localmark;
 
 use Dancer2;
 
-our $VERSION = '0.002';
+our $VERSION = '0.003';
 
 
 get '/' => sub {
@@ -43,7 +43,7 @@ post '/' => sub {
     my $package = body_parameters->get('package');
     my $url = body_parameters->get('url');
     my $strategy = body_parameters->get('strategy');
-    my $note = body_parameters->get('note');
+    my $description = body_parameters->get('description');
     my $title = body_parameters->get('title');
     my $download = downloader();
 
@@ -51,7 +51,7 @@ post '/' => sub {
         $strategy,
         $url,
         package => $package,
-        note => $note,
+        description => $description,
         title => $title
         );
 

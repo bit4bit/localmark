@@ -19,6 +19,7 @@ use Carp;
 use DBI;
 use Digest::MD5 qw(md5_hex);
 
+use DBIx::Migration;
 use Moose;
 use namespace::autoclean;
 use syntax 'try';
@@ -70,12 +71,12 @@ sub site {
         $package,
         sub {
             my $dbh = shift;
-            my $row = $dbh->selectrow_hashref( 'SELECT name, title, url, root, note FROM sites WHERE name = ?', { Slice => {} }, $name);
+            my $row = $dbh->selectrow_hashref( 'SELECT name, title, url, root, description FROM sites WHERE name = ?', { Slice => {} }, $name);
             
             return Localmark::Site->new(
                 name => $row->{name},
                 title => $row->{title},
-                note => $row->{note},
+                description => $row->{description},
                 package => $package,
                 root => $row->{root},
                 url => $row->{url},
@@ -103,10 +104,10 @@ sub sites {
                     or croak "fail execute query: " . $dbh->errstr;
 
                 my @sites = map { $_->{site} } @{ $search_resources };
-                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites WHERE title LIKE ? or name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, "%$filter_content%", @sites )
+                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, description FROM sites WHERE title LIKE ? or name IN (' . join( ',', map { '?' } @sites) . ')', {Slice => {}}, "%$filter_content%", @sites )
                     or croak "fail execute query: " . $dbh->errstr;
             } else {
-                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, note FROM sites', { Slice => {} } )
+                $rows = $dbh->selectall_arrayref( 'SELECT name, title, url, root, description FROM sites', { Slice => {} } )
                     or croak "fail execute query: " . $dbh->errstr;
             }
 
@@ -136,7 +137,7 @@ sub sites {
                 my $site = Localmark::Site->new(
                     name => $row->{name},
                     title => $row->{title},
-                    note => $row->{note},
+                    description => $row->{description},
                     package => $package,
                     root => $row->{root},
                     url => $row->{url},
@@ -161,7 +162,7 @@ sub import_content {
     my $site_url = $args{site_url} || $site;
     my $site_title = $args{site_title} || $site;
     my $site_root = $args{site_root} || '/index.html';
-    my $site_note =  $args{site_note} || '';
+    my $site_description =  $args{site_description} || '';
     my $uri = $args{uri} || croak "requires 'uri'";
     my $mime_type = $args{mime_type} || 'application/octet-stream';
 
@@ -178,11 +179,11 @@ sub import_content {
             
             # insertamos primero el sitio
             my $sth =
-                $dbh->prepare( 'INSERT INTO sites(name, title, root, url, note) VALUES(?, ?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET title = excluded.title, root = excluded.root, url = excluded.url, note = excluded.note' )
+                $dbh->prepare( 'INSERT INTO sites(name, title, root, url, description) VALUES(?, ?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET title = excluded.title, root = excluded.root, url = excluded.url, description = excluded.description' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             # TODO(bit4bit) como actualizamos el titulo segun el index.html?
-            $sth->execute( $site, $site_title, $site_root, $site_url, $site_note )
+            $sth->execute( $site, $site_title, $site_root, $site_url, $site_description )
                 or croak "couldn't execute statement: " . $sth->errstr;
 
             # insertamos recurso
@@ -217,7 +218,7 @@ sub resource {
         sub {
             my $dbh = shift;
 
-            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.note as site_note FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             $sth->execute( $args{site}, $args{path} )
@@ -233,7 +234,7 @@ sub resource {
                 title => $row_ref->{site_title},
                 root => $row_ref->{site_root},
                 url => $row_ref->{site_url},
-                note => $row_ref->{site_note},
+                description => $row_ref->{site_description},
                 package => $package
                 );
 
@@ -254,11 +255,12 @@ sub dbh() {
     my ($self, $package, $cb) = @_;
 
     my $path = File::Spec->catfile( $self->path, "$package.localmark" );
-    
+
     my $dbh = DBI->connect( "dbi:SQLite:$path" )
         or croak "couldn't connect to database: " . DBI->errstr;
 
-    $self->init_db( $dbh );
+    $self->_deprecated_init_db( $dbh );
+    $self->migrate_db($path);
 
     # TODO(bit4bit) aja si el callback va a retornar @?
     my $ret = $cb->( $dbh );
@@ -268,7 +270,9 @@ sub dbh() {
     return $ret;
 }
 
-sub init_db {
+# mantenemos para mantener compatibilidad anterior
+# pero en adelante se usan las migraciones
+sub _deprecated_init_db {
     my ($self, $dbh) = @_;
 
     $dbh->do(q{
@@ -307,5 +311,20 @@ sub init_db {
     # UPDATE resources SET text = NULL WHERE mime_type not IN ("text/xml", "application/xhtml+xml", "image/svg+xml", "text/javascript", "application/json", "text/html", "text/plain", "text/csv", "text/css", "application/x-httpd-php");
 }
 
+sub migrate_db {
+    my ($self, $db_path) = @_;
+
+    my $directory_migrations = File::Spec->catdir(File::Basename::dirname(Cwd::abs_path __FILE__), 'migrations');
+
+    my $m = DBIx::Migration->new(
+        {
+            dsn => "dbi:SQLite:$db_path",
+            dir => $directory_migrations
+        }
+        );
+    
+    $m->migrate(1);   
+    
+}
 no Moose;
 __PACKAGE__->meta->make_immutable;
