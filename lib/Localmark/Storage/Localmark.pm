@@ -251,6 +251,57 @@ sub resource {
         );
 }
 
+sub resources {
+    my ($self, %args) = @_;
+
+    my $package = $args{package};
+
+    return $self->dbh(
+        $package,
+        sub {
+            my $dbh = shift;
+
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ?' )
+                or croak "couldn't prepare statement: " . $dbh->errstr;
+
+            $sth->execute( $args{site})
+                or croak "couldn't execute statement: " . $sth->errstr;
+
+            
+            my $rows_ref = $sth->fetchall_arrayref({});
+            if (not defined $rows_ref) {
+                return [];
+            }
+
+            my @resources;
+
+            for my $row_ref (@{ $rows_ref }) {
+
+                my $site = Localmark::Site->new(
+                    name => $row_ref->{site},
+                    title => $row_ref->{site_title},
+                    root => $row_ref->{site_root},
+                    url => $row_ref->{site_url},
+                    description => $row_ref->{site_description},
+                    package => $package
+                    );
+                
+                my $resource = Localmark::Resource->new(
+                    id => $row_ref->{id},
+                    site => $site,
+                    uri => $row_ref->{uri},
+                    content => $row_ref->{content},
+                    mime_type => $row_ref->{mime_type}
+                    );
+
+                push @resources, $resource;
+            }
+
+            return \@resources;
+        }
+        );
+}
+
 sub dbh() {
     my ($self, $package, $cb) = @_;
 
