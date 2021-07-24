@@ -36,7 +36,7 @@
                 </select>
               </div>
               <div>
-                <textarea placeholder="note for website" name="note" cols="100"></textarea>
+                <textarea placeholder="note for website" name="description" cols="100"></textarea>
               </div>
               <div>
                 <input name="title" type="text" placeholder="custom title default detected"/>
@@ -76,7 +76,7 @@
             </select>
             <input type="submit" style="font-size: 12px; padding: 0;" value="DO"/>
           </form>
-          <p>[% site.note %]</p>
+          <p>[% site.description %]</p>
           [% IF site.quotes -%]
             <ul>
               [% FOREACH quote IN site.quotes -%]

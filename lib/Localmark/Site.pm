@@ -31,7 +31,7 @@ has 'root' => (
     isa => 'Str'
     );
 
-has 'note' => (
+has 'description' => (
     is => 'ro',
     isa => 'Maybe[Str]',
 );
