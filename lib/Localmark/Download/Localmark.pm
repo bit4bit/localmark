@@ -16,10 +16,11 @@ use File::Find qw(find);
 use File::Copy qw( move );
 use Carp;
 
-use Localmark::Util::File::Slurp qw(read_text);
-
 use Moose;
 use namespace::autoclean;
+
+use Localmark::Util::File::Slurp qw(read_text);
+use Localmark::Constant;
 
 has 'path_wget' => (
     is => 'ro',
@@ -76,12 +77,14 @@ sub _wget {
     my $website = mkdtemp( '/tmp/httrack-XXXX' );
     my $command_output = mktemp( '/tmp/httrack-log-XXXX' );
 
-    my @extra_options = ();
+    my @extra_options = ( "-U '" . Localmark::Constant::WebAgent . "'" );
     push @extra_options, "--no-parent" if (not $args->{allow_parent});
     
     my $wget_options = join ' ', @extra_options;
-
-    qx( $command $wget_options -P $website -nH -E -a $command_output);
+    my $wget_command = qq( $command $wget_options -P $website -nH -E -a $command_output );
+    carp 'WGET:', $wget_command;
+       
+    qx( $wget_command );
 
     my $output = read_text( $command_output );
     
