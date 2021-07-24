@@ -15,6 +15,7 @@ use Carp;
 use Localmark::Util::File::Slurp qw( read_text );
 use Localmark::Util::MIME::Type qw(mime_type_from_path mime_type_from_url);
 use URI ();
+use Data::Dumper;
 
 use Moose;
 use namespace::autoclean;
@@ -190,14 +191,15 @@ sub guess_site_root {
     my $mime_type = $args{mime_type} || guess_mime_type('none', $url);
     my $path = URI->new($url)->path;
     my $rest = $url =~ s/.+$path//r || '';
-    
+
+
     # al activar la opcion -E de wget
     # este adiciona el sufijo a los archivo
     # segun el contenido, se asume esta idea
     # como parte de la funcionalidad
     # asumimos que todo recurso tiene una extension
     if (defined $mime_type && $mime_type eq 'text/html') {
-        if ($path =~ m{\/$}) {
+        if ($path =~ m{/$}) {
             $path .= 'index.html';
         }
         elsif ($path !~ m{\.[hH][tT][mM][lL]?(\?.+)?$}) {
@@ -205,7 +207,7 @@ sub guess_site_root {
         }
 
     }
-
+ 
     return $path . $rest;
 }
 
