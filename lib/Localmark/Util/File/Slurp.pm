@@ -5,9 +5,8 @@ use warnings;
 
 use File::Slurper ();
 
-require Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(read_binary read_text);
+use base qw( Exporter );
+our @EXPORT_OK = qw(read_binary read_text write_text);
 
 sub read_binary {
     my $path = shift;
@@ -21,4 +20,9 @@ sub read_text {
     return File::Slurper::read_text($path);
 }
 
+sub write_text {
+    my ($path, $content) = @_;
+
+    return File::Slurper::write_text( $path, $content );
+}
 1;

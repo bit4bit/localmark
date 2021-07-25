@@ -93,6 +93,17 @@ sub using_strategy {
                 allow_parent => 1
                 );
         }
+        when( 'code' ) {
+            my $site = $url;
+
+            $self->code(
+                $url,
+                package => $package,
+                site => $url,
+                site_description => $description,
+                site_title => $title,
+                );
+        }
         default {
             croak "unknown strategy";
         }
@@ -170,6 +181,27 @@ sub single_website {
         );
 }
 
+sub code {
+    my ($self, $url, %args) = @_;
+
+    my $package = $args{package} or croak "requires 'package'";
+    my $site = $args{site} or croak "requires 'site'";
+    my ($directory, @files) = $self->downloader->code($url);
+
+    my $site_description = $args{site_description} || '';
+    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
+    my $site_root = '/index.html';
+
+    $self->storage->import_files(
+        $directory, \@files,
+        package => $package,
+        site => $site,
+        site_title => $site_title,
+        site_root => $site_root,
+        site_description => $site_description,
+        site_url => $url
+        );
+}
 sub guess_site_title {
     my ($self, $url) = @_;
 
