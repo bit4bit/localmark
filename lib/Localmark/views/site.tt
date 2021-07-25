@@ -14,8 +14,15 @@
     <h2>Resources</h2>
     <ul>
       [% FOREACH resource IN resources %]
-        <li>
+        <li id="resource-[% resource.id %]">
           <a href="/view/[% site.package %]/[% site.name %][% resource.uri %]">[% resource.uri %]</a>
+          <form action="/site/[% site.package %]/[% site.name %]/comment/[% resource.id %]" method="POST">
+            <textarea name="comment" style="width: 100%; display: block">[% resource.comment.comment_as_markdown %]</textarea>
+            <p>
+              <input type="submit" value="Comment"/>
+              version: [% resource.comment.version %] inserted_at: [% resource.comment.inserted_at %]
+            </p>
+          </form>
         </li>
       [% END %]
     </ul>

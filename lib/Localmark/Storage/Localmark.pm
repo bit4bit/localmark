@@ -28,6 +28,7 @@ use syntax 'try';
 use Localmark::Resource;
 use Localmark::Site;
 use Localmark::Quote;
+use Localmark::Comment;
 use Localmark::Util::File::Slurp qw(read_binary);
 use Localmark::Util::MIME::Type qw( is_mime_type_readable mime_type_from_path mime_type_from_url );
 
@@ -158,7 +159,7 @@ sub import_content {
     my $site = $args{site} || croak "requires 'site'";
     my $package = $args{package} || croak "requires 'package'";
 
-    $site = md5_hex($site);
+    $site = $self->site_as_id( $site );
 
     my $site_url = $args{site_url} || $site;
     my $site_title = $args{site_title} || $site;
@@ -261,7 +262,7 @@ sub resource {
         sub {
             my $dbh = shift;
 
-            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ? AND resources.uri = ?' )
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description, comments.resource_id as comment_resource_id, comments.comment as comment_comment, comments.inserted_at as comment_inserted_at, comments.version as comment_version FROM resources LEFT JOIN sites ON sites.name = resources.site LEFT JOIN (SELECT resource_id, inserted_at, comment, MAX(version) as version FROM comments GROUP BY resource_id) AS comments ON comments.resource_id = resources.id WHERE resources.site = ? AND resources.uri = ?' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             $sth->execute( $args{site}, $args{path} )
@@ -281,12 +282,23 @@ sub resource {
                 package => $package
                 );
 
+            my $comment;
+            if (defined $row_ref->{comment_resource_id}) {
+                $comment = Localmark::Comment->new(
+                    resource_id => $row_ref->{comment_resource_id},
+                    comment => $row_ref->{comment_comment} || '',
+                    version => $row_ref->{comment_version},
+                    inserted_at => $row_ref->{comment_inserted_at}
+                    );
+            }
+            
             my $resource = Localmark::Resource->new(
                 id => $row_ref->{id},
                 site => $site,
                 uri => $row_ref->{uri},
                 content => $row_ref->{content},
-                mime_type => $row_ref->{mime_type}
+                mime_type => $row_ref->{mime_type},
+                comment => $comment
                 );
             
             return $resource;
@@ -304,7 +316,7 @@ sub resources {
         sub {
             my $dbh = shift;
 
-            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description FROM resources LEFT JOIN sites ON sites.name = resources.site WHERE resources.site = ?' )
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description, comments.resource_id as comment_resource_id, comments.comment as comment_comment, comments.inserted_at as comment_inserted_at, comments.version as comment_version FROM resources LEFT JOIN sites ON sites.name = resources.site LEFT JOIN (SELECT resource_id, inserted_at, comment, MAX(version) as version FROM comments GROUP BY resource_id) AS comments ON comments.resource_id = resources.id WHERE resources.site = ?' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             $sth->execute( $args{site})
@@ -328,13 +340,24 @@ sub resources {
                     description => $row_ref->{site_description},
                     package => $package
                     );
+               
+                my $comment;
+                if (defined $row_ref->{comment_resource_id}) {
+                    $comment = Localmark::Comment->new(
+                        resource_id => $row_ref->{comment_resource_id},
+                        comment => $row_ref->{comment_comment} || '',
+                        version => $row_ref->{comment_version},
+                        inserted_at => $row_ref->{comment_inserted_at}
+                        );
+                }
                 
                 my $resource = Localmark::Resource->new(
                     id => $row_ref->{id},
                     site => $site,
                     uri => $row_ref->{uri},
                     content => $row_ref->{content},
-                    mime_type => $row_ref->{mime_type}
+                    mime_type => $row_ref->{mime_type},
+                    comment => $comment
                     );
 
                 push @resources, $resource;
@@ -343,6 +366,34 @@ sub resources {
             return \@resources;
         }
         );
+}
+
+sub insert_comment {
+    my ($self, $package, $resource_id, $commentary) = @_;
+
+    return $self->dbh(
+        $package,
+        sub {
+            my $dbh = shift;
+
+            my $comment = $dbh->selectrow_hashref( 'SELECT MAX(version) as version FROM comments WHERE resource_id = ? GROUP BY resource_id', { Slice => {} }, $resource_id );
+
+            my $version = 0;
+            if (defined $comment) {
+                $version = $comment->{version} + 1;
+            }
+
+            $dbh->do ( q{INSERT INTO comments(resource_id, version, comment, inserted_at) VALUES(?, ?, ?, datetime("now"))}, undef, $resource_id, $version, $commentary)
+                or croak "cloudn't instert comment: " . $dbh->errstr;
+
+            return 1;
+        });
+}
+
+sub site_as_id {
+    my ($self, $site) = @_;
+
+    md5_hex($site);
 }
 
 sub dbh() {
@@ -417,7 +468,7 @@ sub migrate_db {
         }
         );
     
-    $m->migrate(1);   
+    $m->migrate(2);   
     
 }
 no Moose;

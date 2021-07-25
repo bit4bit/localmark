@@ -101,4 +101,14 @@ sub import_files {
 
     $self->storage->import_files($directory, $files, %args);
 }
+
+sub insert_comment {
+    my ($self, $package, $resource_id, $comment) = @_;
+
+    croak "argument 'package'" if not defined $package;
+    croak "argument 'resource_id'" if not defined $resource_id;
+    croak "argument 'comment'" if not defined $comment;
+
+    $self->storage->insert_comment($package, $resource_id, $comment);
+}
 1;
