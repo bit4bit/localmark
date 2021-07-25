@@ -1,3 +1,4 @@
+<!DOCTYPE>
 <html>
   <head>
     <title>Localmark</title>
@@ -30,6 +31,7 @@
                 <input name="url" type="text" placeholder="URL"/>
                 <select name="strategy">
                   <option value="single_page">Single Page</option>
+                  <option value="link">Link</option>
                   <option value="downward_website">Downward Website</option>
                   <option value="upward_website">Upward Website</option>
                 </select>

@@ -11,6 +11,9 @@ use strict;
 use warnings;
 use feature 'switch';
 
+use File::Temp qw( mkdtemp mktemp );
+use File::Copy qw( move );
+use File::Spec;
 use Carp;
 use URI ();
 use Data::Dumper;
@@ -58,6 +61,15 @@ sub using_strategy {
                 site_title => $title
                 );
         }
+        when ( 'link' ) {
+            $self->link(
+                $url,
+                package => $package,
+                site => $url,
+                site_description => $description,
+                site_title => $title
+                );
+        }
         when ( 'downward_website' ) {
             my $site = $url;
             
@@ -87,6 +99,32 @@ sub using_strategy {
     }
     
 }
+
+sub link {
+    my ($self, $url, %args) = @_;
+
+    my $package = $args{package} or croak "requires 'package'";
+    my $site = $args{site} or croak "requires 'site'";
+    my $site_description = $args{site_description} || '';
+    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
+    my $site_root = $self->guess_site_root($url) || '/index.html';
+
+    my $dirwebsite = mkdtemp( '/tmp/download-link-XXXX' );
+    my $empty_page = File::Spec->catfile( $dirwebsite, 'index.html' );
+    open( my $fh, '>', $empty_page ) or croak "couldn't open file: $!";
+    print $fh qq{<!DOCTYPE><html><head><meta http-equiv="refresh" content="1; url = $url"/></head><body><h1>localmark link to $url</h1></body></html> };
+    close( $fh );
+
+    $self->storage->import_files(
+        $dirwebsite, [$empty_page],
+        package => $package,
+        site => $site,
+        site_title => $site_title,
+        site_root => '/index.html',
+        site_description => $site_description,
+        site_url => $url
+        );
+};
 
 # descargar una unica pagina
 sub single_page {
