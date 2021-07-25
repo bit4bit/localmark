@@ -17,6 +17,7 @@ use Dancer2;
 
 our $VERSION = '0.003';
 
+set template => 'template_toolkit';
 
 get '/' => sub {
     my $filter_package = query_parameters->get('filter_package');
@@ -67,11 +68,12 @@ get '/site/:package/:site' => sub {
     my $package = route_parameters->get('package');
     my $name = route_parameters->get('site');
     my $storage = current_storage();
-
+    my $add_comment_resource = query_parameters->get('add-comment-resource');
     
     template site => {
         site => $storage->site($package, $name),
-        resources => $storage->resources($package, $name)
+        resources => $storage->resources($package, $name),
+        add_comment_resource => $add_comment_resource
     };
 };
 
