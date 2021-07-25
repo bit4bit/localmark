@@ -5,7 +5,7 @@ use warnings;
 
 use Moose;
 
-use Text::Markdown qw( markdown );
+use Localmark::Util::Markdown qw( markdown );
 
 use namespace::autoclean;
 

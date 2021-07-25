@@ -36,6 +36,11 @@ has 'mime_type' => (
     isa => 'Str'
     );
 
+has 'comment' => (
+    is => 'ro',
+    isa => 'Maybe[Localmark::Comment]',
+    );
+
 sub render {
     my $self = shift;
     return $self->content;

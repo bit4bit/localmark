@@ -75,6 +75,24 @@ get '/site/:package/:site' => sub {
     };
 };
 
+post '/site/:package/:site/comment/:resource_id' => sub {
+    my $storage = current_storage();
+    
+    my $package = route_parameters->get('package');
+    my $name = route_parameters->get('site');
+    my $resource_id = route_parameters->get('resource_id');
+
+    my $comment = body_parameters->get('comment');
+
+    $storage->insert_comment(
+        $package,
+        $resource_id,
+        $comment
+        );
+        
+    redirect "/site/$package/$name#resource-$resource_id";
+};
+
 get '/view/:package/:site/**?' => sub {
 
     my $package = route_parameters->get('package');
