@@ -17,7 +17,7 @@
     [% FOREACH resource IN resources %]
       <a id="resource-[% resource.id %]" href="/view/[% site.package %]/[% site.name %][% resource.uri %]" target="view-[% site.id %]">[% resource.uri %]</a> <a href="/site/[% site.package %]/[% site.name %]?add-comment-resource=[% resource.id %]#resource-[% resource.id %]" style="color: green;">Add Comment</a> <br/>
 
-      [% IF resource.comment or resource.id == add_comment_resource %]
+      [% IF resource.id == add_comment_resource %]
         <form action="/site/[% site.package %]/[% site.name %]/comment/[% resource.id %]" method="POST">
           <textarea name="comment" style="border: 0; width: 100%; display: block">[% resource.comment.comment %]</textarea>
           <p>
@@ -25,6 +25,8 @@
             version: [% resource.comment.version %] inserted_at: [% resource.comment.inserted_at %]
           </p>
         </form>
+      [% ELSIF resource.comment %]
+        [% resource.comment.comment_as_markdown %]
       [% END %]
     [% END %]
   </body>
