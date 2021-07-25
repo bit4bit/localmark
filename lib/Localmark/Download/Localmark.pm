@@ -14,6 +14,7 @@ use File::Temp qw( mkdtemp mktemp );
 use File::Spec;
 use File::Find qw(find);
 use File::Copy qw( move );
+use Data::Dumper;
 use Carp;
 
 use Moose;
@@ -21,6 +22,7 @@ use namespace::autoclean;
 
 use Localmark::Util::File::Slurp qw(read_text);
 use Localmark::Constant;
+use Localmark::SourceCode ();
 
 has 'path_wget' => (
     is => 'ro',
@@ -60,6 +62,27 @@ sub single_website {
     $self->output($res->{output});
 
     return @{ $res->{files} };
+}
+
+sub code {
+    my ($self, $url, %args) = @_;
+
+    my $source = Localmark::SourceCode::clone($url)
+        or croak "could'nt clone repository $url";
+
+    my $directory = Localmark::SourceCode::htmlify($source);
+
+    my @files = ( $directory );
+    find(
+        sub {
+            my $filename = $File::Find::name;
+            return if ! -f $filename;
+
+            push @files, $filename;
+        },
+        $directory);
+
+    return @files;
 }
 
 # obtiene una pagina
