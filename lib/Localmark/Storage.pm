@@ -26,6 +26,11 @@ sub delete {
     $self->storage->delete_site($package, $name);
 }
 
+sub update {
+    my ($self, $package, $name, %params) = @_;
+    $self->storage->update_site($package, $name, %params);
+}
+
 sub site {
     my ($self, $package, $name) = @_;
 

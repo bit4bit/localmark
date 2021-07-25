@@ -6,10 +6,12 @@
   <body>
     <a href="/#[% site.id %]">Back</a>
     <h2>Site</h2>
-    <h3>[% site.title %]</h3>
-    <p>
-      [% site.description_as_markdown %]
-    </p>
+    <form action="/site/[% site.package %]/[% site.name %]/info" method="POST">
+      <h3><input style="border: 0; width: 100%" type="text" name="title" value="[% site.title %]"/></h3>
+      <textarea name="description" style="border: 0; width: 100%; display: block; min-height: 10em">[% site.description %]</textarea>
+      <br/>
+      <input type="submit" value="Update"/>
+    </form>
 
     <h2>Resources</h2>
     <ul>
@@ -17,7 +19,7 @@
         <li id="resource-[% resource.id %]">
           <a href="/view/[% site.package %]/[% site.name %][% resource.uri %]">[% resource.uri %]</a>
           <form action="/site/[% site.package %]/[% site.name %]/comment/[% resource.id %]" method="POST">
-            <textarea name="comment" style="width: 100%; display: block">[% resource.comment.comment_as_markdown %]</textarea>
+            <textarea name="comment" style="border: 0; width: 100%; display: block">[% resource.comment.comment %]</textarea>
             <p>
               <input type="submit" value="Comment"/>
               version: [% resource.comment.version %] inserted_at: [% resource.comment.inserted_at %]
