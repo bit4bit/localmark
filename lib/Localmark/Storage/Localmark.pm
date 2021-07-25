@@ -37,7 +37,25 @@ has 'path' => (
     required => 1
     );
 
-has 'error' => (is => 'rw');
+sub update_site {
+    my ($self, $package, $name, %params) = @_;
+
+    croak "argument 'package'" if not $package;
+    croak "argument 'name'" if not $name;
+
+    return $self->dbh(
+        $package,
+        sub {
+            my $dbh = shift;
+
+            my @fields = map { "$_=?" } keys %params;
+            $dbh->do( 'UPDATE sites SET ' . (join(',', @fields)) . ' WHERE name = ?', undef, values %params, $name )
+                or croak "couldn't update site: " . $dbh->errstr;
+
+            return 1;
+        }
+        );
+}
 
 sub delete_site {
     my ($self, $package, $name) = @_;

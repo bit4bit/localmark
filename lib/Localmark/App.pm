@@ -75,6 +75,22 @@ get '/site/:package/:site' => sub {
     };
 };
 
+post '/site/:package/:site/info' => sub {
+    my $storage = current_storage();
+
+    my $package = route_parameters->get('package');
+    my $name = route_parameters->get('site');
+
+    my $title = body_parameters->get('title');
+    my $description = body_parameters->get('description');
+
+    $storage->update($package, $name,
+                     title => $title,
+                     description => $description);
+
+    redirect "/site/$package/$name";
+};
+
 post '/site/:package/:site/comment/:resource_id' => sub {
     my $storage = current_storage();
     
