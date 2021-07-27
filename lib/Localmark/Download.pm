@@ -78,7 +78,8 @@ sub using_strategy {
                 package => $package,
                 site => $url,
                 site_descriptio => $description,
-                site_title => $title
+                site_title => $title,
+                filter => $args{filter}
                 );
         }
         when ( 'upward_website' ) {
@@ -90,7 +91,8 @@ sub using_strategy {
                 site => $url,
                 site_description => $description,
                 site_title => $title,
-                allow_parent => 1
+                allow_parent => 1,
+                filter => $args{filter}
                 );
         }
         when( 'code' ) {
@@ -102,6 +104,7 @@ sub using_strategy {
                 site => $url,
                 site_description => $description,
                 site_title => $title,
+                filter => $args{filter}
                 );
         }
         default {
@@ -170,6 +173,11 @@ sub single_website {
     my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
     my $site_root = $self->guess_site_root($url) || '/index.html';
 
+    my $include_matchs = defined $args{filter}->{include_matchs} ? $args{filter}->{include_matchs} : '';
+    if ($include_matchs ne '') {
+        @files = grep{ m{$include_matchs} } @files;
+    }
+
     $self->storage->import_files(
         $directory, \@files,
         package => $package,
@@ -191,6 +199,11 @@ sub code {
     my $site_description = $args{site_description} || '';
     my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
     my $site_root = '/index.html';
+
+    my $include_matchs = defined $args{filter}->{include_matchs} ? $args{filter}->{include_matchs} : '';
+    if ($include_matchs ne '') {
+        @files = grep{ m{$include_matchs} } @files;
+    }
 
     $self->storage->import_files(
         $directory, \@files,

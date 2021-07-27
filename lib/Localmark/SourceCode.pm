@@ -34,7 +34,7 @@ sub clone {
     my $dest_directory = mkdtemp( '/tmp/localmark-source-code-XXXX' );
 
     my %clone_cmd_of = (
-        "git" => qq{git clone --single-branch "$url" "$dest_directory"},
+        "git" => qq{git clone --depth 1 --single-branch "$url" "$dest_directory"},
         "fossil" => qq{fossil open -f "$url" --repodir "$dest_directory" --workdir "$dest_directory"},
         "hg" => qq{hg clone "$url" "$dest_directory"}
         );
@@ -70,6 +70,8 @@ sub htmlify {
             my $filename = $File::Find::name;
             return if ! -f $filename;
             return if $filename =~ m|/\.|;
+            return if $filename =~ m|\.git[/]?|;
+            return if $filename =~ m|\.fossil|;
             
             my $filename_relative = $filename =~ s|$src_directory/?||r;
             my $filename_relative_out = "$filename_relative.html";

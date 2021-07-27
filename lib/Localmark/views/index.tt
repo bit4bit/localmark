@@ -37,7 +37,9 @@
                   <option value="code">Source Code</option>
                 </select>
               </div>
+
               <div>
+                <input type="text" name="filter-include-files" cols="100" placeholder="only include files match perl regexp"></textarea>
                 <textarea placeholder="description for website in original markdown syntax" name="description" cols="100"></textarea>
               </div>
               <div>
