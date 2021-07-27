@@ -46,6 +46,7 @@ post '/' => sub {
     my $strategy = body_parameters->get('strategy');
     my $description = body_parameters->get('description');
     my $title = body_parameters->get('title');
+    my $filter_include_files = body_parameters->get('filter-include-files');
     my $download = downloader();
 
     $download->using_strategy(
@@ -53,7 +54,10 @@ post '/' => sub {
         $url,
         package => $package,
         description => $description,
-        title => $title
+        title => $title,
+        filter => {
+            include_matchs => $filter_include_files
+        }
         );
 
     my $sites = sites( $storage );
