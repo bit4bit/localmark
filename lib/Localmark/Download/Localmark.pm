@@ -52,6 +52,8 @@ sub single_page {
 sub single_website {
     my ($self, $url, %args) = @_;
 
+    my $filter = $args{filter};
+    
     my $path = $self->path_wget;
     my $command = qq( $path --no-check-certificate -k -r -l 2 -p $url );
 
@@ -61,12 +63,25 @@ sub single_website {
                      });
     $self->output($res->{output});
 
-    return @{ $res->{files} };
+
+    my ($directory, @files) = @{ $res->{files} };
+    
+    # TODO(bit4bit) aplica el filtro despues de descargar todo el contenido
+    my @files_filtered = ($directory);
+
+    if (defined $filter && $filter ne '') {
+        push @files_filtered, grep { m{$filter}xmg } @files;
+    } else {
+        push @files_filtered, @files
+    }
+
+    return @files_filtered;
 }
 
 sub code {
     my ($self, $url, %args) = @_;
 
+    my $filter = $args{filter};
     my $source = Localmark::SourceCode::clone($url)
         or croak "could'nt clone repository $url";
 
@@ -77,7 +92,12 @@ sub code {
         sub {
             my $filename = $File::Find::name;
             return if ! -f $filename;
-
+            # TODO(bit4bit) aplica el filtro despues de descargar todo el contenido
+            if (defined $filter && $filter ne '' && $filename !~ m{ $filter }xmg) {
+                carp "OMIT: $filename by filter $filter";
+                return 
+            }
+            
             push @files, $filename;
         },
         $directory);

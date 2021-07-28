@@ -39,7 +39,17 @@
               </div>
 
               <div>
-                <input type="text" name="filter-include-files" cols="100" placeholder="only include files match perl regexp"></textarea>
+                <select name="filter-files">
+                  <option value="">All</option>
+                  <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.md|\.txt|\.proto|\.sql|go.mod|\.go">Go Project</option>
+                  <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.md|\.txt|\.proto|\.sql|Gemfile|Rake|spec|\.rb|\.erb|\.clj">Ruby Project</option>
+                  <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.md|\.txt|\.proto|\.sql|mix|\.ex|\.exs|\.eex">Elixir Project</option>
+                  <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.pod|\.txt|\.md|\.proto|\.sql|cpan|\.PL|\.pl|\.pm|\.c|\.h|\.cpp|\.cxx">Perl Project</option>
+                  <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.pod|\.txt|\.md|\.proto|\.sql|\.py|\.c|\.h|\.cpp|\.cxx">Python Project</option>
+                  <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.md|\.txt|\.proto|\.sql|\.php|\.inc|\.html">PHP Project</option>
+                </select>
+                <input type="text" name="filter-files-extras" cols="100" placeholder="only include files match perl regexp"></textarea>
+
                 <textarea placeholder="description for website in original markdown syntax" name="description" cols="100"></textarea>
               </div>
               <div>
