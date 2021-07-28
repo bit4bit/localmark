@@ -167,16 +167,16 @@ sub single_website {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
-    my ($directory, @files) = $self->downloader->single_website($url,  allow_parent => $args{allow_parent} || 0 );
+
+    my $filter_files = $args{filter}->{files} || '';
+    my ($directory, @files) = $self->downloader->single_website(
+        $url,
+        allow_parent => $args{allow_parent} || 0,
+        filter => $filter_files);
 
     my $site_description = $args{site_description} || '';
     my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
     my $site_root = $self->guess_site_root($url) || '/index.html';
-
-    my $include_matchs = defined $args{filter}->{include_matchs} ? $args{filter}->{include_matchs} : '';
-    if ($include_matchs ne '') {
-        @files = grep{ m{$include_matchs} } @files;
-    }
 
     $self->storage->import_files(
         $directory, \@files,
@@ -194,16 +194,14 @@ sub code {
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
-    my ($directory, @files) = $self->downloader->code($url);
+    
+    my $filter_files = $args{filter}->{files} || '';
+    my ($directory, @files) = $self->downloader->code($url, filter => $filter_files);
 
     my $site_description = $args{site_description} || '';
     my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
     my $site_root = '/index.html';
 
-    my $include_matchs = defined $args{filter}->{include_matchs} ? $args{filter}->{include_matchs} : '';
-    if ($include_matchs ne '') {
-        @files = grep{ m{$include_matchs} } @files;
-    }
 
     $self->storage->import_files(
         $directory, \@files,
