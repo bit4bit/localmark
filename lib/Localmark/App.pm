@@ -15,7 +15,7 @@ use Localmark::Download::Localmark;
 
 use Dancer2;
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 set template => 'template_toolkit';
 
