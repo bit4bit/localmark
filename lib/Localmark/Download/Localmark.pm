@@ -25,7 +25,7 @@ use Localmark::Constant;
 use Localmark::SourceCode ();
 
 has 'path_wget' => (
-    is => 'ro',
+    is => 'rw',
     isa => 'Str',
     required => 1,
     default => '/usr/bin/wget'
@@ -163,7 +163,15 @@ sub _wget {
 sub BUILD {
     my $self = shift;
 
-    croak "not found wget binary at: ${$self->path_wget}" if ! -f $self->path_wget;
+    my $path_wget2 = qx(sh -c 'type -p wget2');
+    if ($? == 0) {
+        chomp $path_wget2;
+        carp "WGET2 FOUND AT $path_wget2";
+        $self->path_wget( $path_wget2 );
+    }
+
+    my $path_binary = $self->path_wget;
+    croak "not found wget binary at: $path_binary" if ! -f $path_binary;
 }
 
 no Moose;
