@@ -84,7 +84,8 @@ sub process_fence_blocks {
     for my $item (@outputs) {
         my ($fence_id, $fence_body) = $item->@*;
 
-        $text =~ s/~{3}\s*$fence_id[^~]+~{3}/$fence_body/s;
+        # thanks gordonfish
+        $text =~ s/~~~\s*$fence_id\R.*?\R~~~/$fence_body/sg;
     }
     
     return $text;
