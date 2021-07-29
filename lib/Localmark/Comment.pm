@@ -9,7 +9,7 @@ Comentarios de recursos.
 use strict;
 use warnings;
 
-use Localmark::Util::Markdown qw( markdown );
+use Localmark::Util::Markdown qw( markdown plantuml_fence_block );
 use Moose;
 use namespace::autoclean;
 
@@ -38,7 +38,13 @@ sub comment_as_markdown {
     my $self = shift;
 
     if (defined $self->comment) {
-        return markdown($self->comment);
+        return markdown
+            (
+             $self->comment,
+             fence_blocks => {
+                 plantuml => \&plantuml_fence_block
+             }
+            );
     }
 
     return '';

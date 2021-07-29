@@ -238,20 +238,30 @@ sub import_files {
     my $site_description = $args{site_description} || '';
     my $site_title = $args{site_title} || $site;
 
-    my $main_uri = URI->new($site_url);
-    my $base_url = $main_uri->scheme . '://' . $main_uri->host_port;
+
     
     for my $file ( @{ $files } ) {
-        # se almacena talcual ya que wget
-        # espera la misma ruta exacta
-        my $file_url = $file =~ s/^$directory/$base_url/r;
             
-        # cual seria el mime type de sitios sin index.html
-        # ejemplo: https://metacpan.org/pod/Moose
-        my $mime_type = mime_type_from_path($file) || mime_type_from_url($file_url);
-        if (not $mime_type) {
-            carp "OMIT: could't detect mime type for $file or $file_url";
-            next;
+        my $mime_type = mime_type_from_path($file);
+
+        # verificar mime type por url
+        if (not defined $mime_type) {
+            my $main_uri = URI->new($site_url);
+            my $base_url = $main_uri->scheme . '://';
+
+            if (defined $main_uri->host_port) {
+                $base_url .= $main_uri->host_port;
+            }
+
+            # se almacena talcual ya que wget
+            # espera la misma ruta exacta
+            my $file_url = $file =~ s/^$directory/$base_url/r;
+            
+            $mime_type =  mime_type_from_url($file_url);
+            if (not $mime_type) {
+                carp "OMIT: could't detect mime type for $file or $file_url";
+                next;
+            }
         }
         
         my $uri = $file =~ s/^$directory//r;

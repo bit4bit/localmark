@@ -5,7 +5,7 @@ use warnings;
 
 use Moose;
 
-use Localmark::Util::Markdown qw( markdown );
+use Localmark::Util::Markdown qw( markdown plantuml_fence_block );
 
 use namespace::autoclean;
 
@@ -60,7 +60,13 @@ sub description_as_markdown {
     my $self = shift;
 
     if (defined $self->description) {
-        return markdown($self->description);
+        return markdown
+            (
+             $self->description,
+             fence_blocks => {
+                 plantuml => \&plantuml_fence_block
+             }
+            );
     }
 
     return '';
