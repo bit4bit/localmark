@@ -344,7 +344,7 @@ sub resources {
         sub {
             my $dbh = shift;
 
-            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description, comments.resource_id as comment_resource_id, comments.comment as comment_comment, comments.inserted_at as comment_inserted_at, comments.version as comment_version FROM resources LEFT JOIN sites ON sites.name = resources.site LEFT JOIN (SELECT resource_id, inserted_at, comment, MAX(version) as version FROM comments GROUP BY resource_id) AS comments ON comments.resource_id = resources.id WHERE resources.site = ?' )
+            my $sth = $dbh->prepare( 'SELECT resources.id, resources.site, resources.uri, resources.content, resources.text, resources.mime_type, sites.title as site_title, sites.root as site_root, sites.url as site_url, sites.description as site_description, comments.resource_id as comment_resource_id, comments.comment as comment_comment, comments.inserted_at as comment_inserted_at, comments.version as comment_version FROM resources LEFT JOIN sites ON sites.name = resources.site LEFT JOIN (SELECT resource_id, inserted_at, comment, MAX(version) as version FROM comments GROUP BY resource_id) AS comments ON comments.resource_id = resources.id WHERE resources.site = ? ORDER BY resources.id ASC' )
                 or croak "couldn't prepare statement: " . $dbh->errstr;
 
             $sth->execute( $args{site})
