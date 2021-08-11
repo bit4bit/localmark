@@ -16,6 +16,7 @@ use File::Find qw( find );
 use File::Spec::Functions qw( catfile );
 use File::Basename qw( dirname );
 use File::Temp qw( mkdtemp );
+use File::Copy qw( copy );
 use Digest::MD5 qw(md5_hex);
 use Localmark::Util::File::Slurp qw( write_text );
 
@@ -36,7 +37,7 @@ sub clone {
     my %clone_cmd_of = (
         "git" => qq{git clone --depth 1 --single-branch "$url" "$dest_directory"},
         "fossil" => qq{fossil open -f "$url" --repodir "$dest_directory" --workdir "$dest_directory"},
-        "hg" => qq{hg clone "$url" "$dest_directory"}
+        "hg" => qq{hg clone -yv --insecure "$url" "$dest_directory"}
         );
 
     for my $repo (keys %clone_cmd_of) {
@@ -81,10 +82,12 @@ sub htmlify {
             
             my $cmd = qq{highlight --inline-css -a -l -i "$filename" -o "$filename_out"};
             carp "HTMLIFY: " . $cmd;
-            
-            system($cmd) == 0
-                or croak "command $cmd failed: $?";
 
+            
+            if (system($cmd) != 0) {
+                carp "command $cmd failed: $?";
+                copy( $filename, $filename_out );
+            }
             push @converted_files, $filename_relative_out;
         },
         $src_directory);
