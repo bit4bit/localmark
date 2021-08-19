@@ -32,18 +32,27 @@ sub clone {
     my ($url) = @_;
 
     my $repo_id = md5_hex($url);
-    my $dest_directory = mkdtemp( '/tmp/localmark-source-code-XXXX' );
-
     my %clone_cmd_of = (
-        "git" => qq{git clone --depth 1 --single-branch "$url" "$dest_directory"},
-        "fossil" => qq{fossil open -f "$url" --repodir "$dest_directory" --workdir "$dest_directory"},
-        "hg" => qq{hg clone -yv --insecure "$url" "$dest_directory"}
+        "git" => sub {
+            my ($dest_directory) = @_;
+            qq{git clone --depth 1 --single-branch "$url" "$dest_directory"}
+        },
+        "fossil" => sub {
+            my ($dest_directory) = @_;
+            qq{fossil open -f "$url" --repodir "$dest_directory" --workdir "$dest_directory"}
+        },
+        "hg" => sub {
+            my ($dest_directory) = @_;
+            qq{hg clone -yv --insecure "$url" "$dest_directory"}
+        }
         );
-
+    
     for my $repo (keys %clone_cmd_of) {
+        my $dest_directory = mkdtemp( '/tmp/localmark-source-code-XXXX' );
+
         next if (not defined $cloners{$repo});
         
-        my $clone_cmd = $clone_cmd_of{$repo};
+        my $clone_cmd = $clone_cmd_of{$repo}->($dest_directory);
         carp "CLONE: $clone_cmd";
         
         return $dest_directory if system($clone_cmd) == 0;
