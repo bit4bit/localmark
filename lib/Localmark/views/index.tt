@@ -94,7 +94,7 @@
           [% IF site.quotes -%]
             <ul>
               [% FOREACH quote IN site.quotes -%]
-                <li><a href="/view/[% site.package %]/[% site.name %][% quote.url %]" target="[% site.package %].[% site.name %]">[% quote.title %] </a></li>
+                <li><a href="/view/[% site.package %]/[% site.name %][% quote.url %]" target="[% site.package %].[% site.name %].[% quote.resource_id %]">[% quote.title %] </a></li>
               [% END -%]
             </ul>
           [% END -%]
