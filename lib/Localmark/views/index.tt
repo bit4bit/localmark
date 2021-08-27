@@ -70,8 +70,8 @@
 
     <h3 id="sites">Sitios</h3>
     <form action="/#sites" method="GET">
-      <input name="filter_package" type="text" placeholder="package"/>
-      <input name="filter_content" text="text" placeholder="keyword"/>
+      <input name="filter_package" type="text" placeholder="package"  value="[% filter_package %]"/>
+      <input name="filter_content" text="text" placeholder="keyword" />
       <input type="submit" value="Search"/>
     </form>
 
