@@ -35,6 +35,7 @@ get '/' => sub {
                        });
     template index => {
         sites => $sites,
+        filter_package => $filter_package
     };
 };
 
