@@ -1,0 +1,10 @@
+(specifications->manifest
+ '("perl"
+   "gcc"
+   "linux-libre"
+   "plantuml"
+   "highlight"
+   "git-minimal"
+   "fossil"
+   "mercurial"
+ ))
