@@ -28,7 +28,7 @@ has 'path_wget' => (
     is => 'rw',
     isa => 'Str',
     required => 1,
-    default => '/usr/bin/wget'
+    default => qx(sh -c 'type -p wget')
     );
 
 has 'output' => (
@@ -40,7 +40,7 @@ sub single_page {
     my ($self, $url, %args) = @_;
 
     my $path = $self->path_wget;
-    my $command = qq( $path --no-check-certificate -k -p $url);
+    my $command = qq( $path --no-check-certificate -k -p $url );
 
     my $res = _wget( $command );
 
@@ -171,6 +171,10 @@ sub BUILD {
     }
 
     my $path_binary = $self->path_wget;
+
+    chomp $path_binary;
+    $self->path_wget( $path_binary );
+
     croak "not found wget binary at: $path_binary" if ! -f $path_binary;
 }
 
