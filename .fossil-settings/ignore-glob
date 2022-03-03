@@ -32,6 +32,7 @@ Build.bat
 # Module::Install
 inc/
 
+local/
 # ExtUtils::MakeMaker
 blib/
 _eumm/

@@ -19,6 +19,26 @@ our $VERSION = '0.005';
 
 set template => 'template_toolkit';
 
+get '/diagramer' => sub {
+    template diagramer => {
+        diagram => "",
+        code => "",
+        cursor_position => 0
+    };
+};
+
+post '/diagramer' => sub {
+    my $code = body_parameters->get('code');
+    my $cursor_position = body_parameters->get('area-code-cursor-position');
+    my $diagram = Localmark::Util::Markdown::plantuml_fence_block($code);
+
+    template diagramer => {
+        diagram => $diagram,
+        code => $code,
+        cursor_position => $cursor_position
+    };
+};
+
 get '/' => sub {
     my $filter_package = query_parameters->get('filter_package');
     my $filter_content = query_parameters->get('filter_content');
@@ -77,7 +97,7 @@ get '/site/:package/:site' => sub {
     my $name = route_parameters->get('site');
     my $storage = current_storage();
     my $add_comment_resource = query_parameters->get('add-comment-resource');
-    
+
     template site => {
         site => $storage->site($package, $name),
         resources => $storage->resources($package, $name),
@@ -103,7 +123,7 @@ post '/site/:package/:site/info' => sub {
 
 post '/site/:package/:site/comment/:resource_id' => sub {
     my $storage = current_storage();
-    
+
     my $package = route_parameters->get('package');
     my $name = route_parameters->get('site');
     my $resource_id = route_parameters->get('resource_id');
@@ -115,7 +135,7 @@ post '/site/:package/:site/comment/:resource_id' => sub {
         $resource_id,
         $comment
         );
-        
+
     redirect "/site/$package/$name#resource-$resource_id";
 };
 
@@ -160,7 +180,7 @@ post '/action' => sub {
     my $site_package = body_parameters->get('site_package');
     my $site_name = body_parameters->get('site_name');
 
-    
+
     for ($action) {
         when ('view') {
             my $site = $storage->site($site_package, $site_name);
