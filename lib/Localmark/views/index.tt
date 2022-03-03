@@ -4,10 +4,23 @@
     <title>Localmark</title>
   </head>
   <body>
-    <div>
-      <form action="/" method="GET">
-        <input type="submit" value="Reload"/>
-      </form>
+      <div>
+          <table>
+              <tbody>
+                  <tr>
+                      <td>
+                          <form action="/" method="GET">
+                              <input type="submit" value="Reload"/>
+                          </form>
+                      </td>
+                      <td>
+                          <form action="/diagramer" method="GET">
+                              <input type="submit" value="Diagramer"/>
+                          </form>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
     </div>
 
     <div>

@@ -1,0 +1,40 @@
+<!DOCTYPE>
+<html>
+  <head>
+      <title>Localmark</title>
+  </head>
+  <body>
+      <a href="/">Back</a> <a href="https://plantuml.com/class-diagram" target="diagramer-help">help syntax</a>
+      <div style="display: flex; flex-direction: row">
+          <div style="border-right: 1px solid black">
+              <form id="form-code" action="/diagramer" method="POST">
+                  <input type="hidden" id="area-code-cursor-position" name="area-code-cursor-position" value="[% cursor_position %]" />
+                  <textarea tabindex="0" id="area-code" name="code" style="min-height: 300px" placeholder="use plantuml syntax" onkeypress="return autoSubmit(event)" autofocus>[% code %]</textarea>
+                  <br/>
+                  <input type="submit" value="Refresh"/>
+              </form>
+          </div>
+          <div tabindex="2">
+              [% diagram %]
+          </div>
+      </div>
+
+      <script>
+          var eFormCode = document.getElementById('form-code');
+          var eAreaCodeCursorPosition = document.getElementById('area-code-cursor-position');
+          var eAreaCode = document.getElementById('area-code');
+
+          function autoSubmit(event) {
+              if (event.keyCode == 13 && event.ctrlKey == true) {
+                  eAreaCodeCursorPosition.value = eAreaCode.selectionStart;
+                  eFormCode.submit();
+              }
+              return true;
+          }
+
+          // mover el cursor a la ultima posicion registrada
+          eAreaCode.selectionStart = eAreaCodeCursorPosition.value;
+          eAreaCode.selectionEnd = eAreaCodeCursorPosition.value;
+      </script>
+  </body>
+</html>
