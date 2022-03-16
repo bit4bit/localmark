@@ -48,7 +48,7 @@ sub using_strategy {
     my $package = $args{package} || croak "requires 'package'";
     my $description = $args{description} || '';
     my $title = $args{title};
-    
+
     given ($strategy) {
         when ( 'single_page' ) {
             my $site = $url;
@@ -72,7 +72,7 @@ sub using_strategy {
         }
         when ( 'downward_website' ) {
             my $site = $url;
-            
+
             $self->single_website(
                 $url,
                 package => $package,
@@ -84,7 +84,7 @@ sub using_strategy {
         }
         when ( 'upward_website' ) {
             my $site = $url;
-            
+
             $self->single_website(
                 $url,
                 package => $package,
@@ -93,6 +93,17 @@ sub using_strategy {
                 site_title => $title,
                 allow_parent => 1,
                 filter => $args{filter}
+                );
+        }
+        when ( 'mirror_website' ) {
+            my $site = $url;
+
+            $self->mirror_website(
+                $url,
+                package => $package,
+                site => $url,
+                site_description => $description,
+                site_title => $title
                 );
         }
         when( 'code' ) {
@@ -111,7 +122,7 @@ sub using_strategy {
             croak "unknown strategy";
         }
     }
-    
+
 }
 
 sub link {
@@ -189,12 +200,35 @@ sub single_website {
         );
 }
 
+sub mirror_website {
+    my ($self, $url, %args) = @_;
+
+    my $package = $args{package} or croak "requires 'package'";
+    my $site = $args{site} or croak "requires 'site'";
+
+    my ($directory, @files) = $self->downloader->mirror_website( $url );
+
+    my $site_description = $args{site_description} || '';
+    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
+    my $site_root = $self->guess_site_root($url) || '/index.html';
+
+    $self->storage->import_files(
+        $directory, \@files,
+        package => $package,
+        site => $site,
+        site_title => $site_title,
+        site_root => $site_root,
+        site_description => $site_description,
+        site_url => $url
+        );
+}
+
 sub code {
     my ($self, $url, %args) = @_;
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
-    
+
     my $filter_files = $args{filter}->{files} || '';
     my ($directory, @files) = $self->downloader->code($url, filter => $filter_files);
 
@@ -250,7 +284,7 @@ sub guess_site_root {
         }
 
     }
- 
+
     return $path . $rest;
 }
 

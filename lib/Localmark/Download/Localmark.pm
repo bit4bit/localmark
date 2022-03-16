@@ -49,11 +49,23 @@ sub single_page {
     return @{ $res->{files} };
 }
 
+sub mirror_website {
+    my ($self, $url, %args) = @_;
+
+    my $path = $self->path_wget;
+    my $command = qq( $path --mirror --convert-links --html-extension $url );
+
+    my $res = _wget( $command, { allow_parent => 1 } );
+    $self->output($res->{output});
+
+    return @{ $res->{files} };
+}
+
 sub single_website {
     my ($self, $url, %args) = @_;
 
     my $filter = $args{filter};
-    
+
     my $path = $self->path_wget;
     my $command = qq( $path --no-check-certificate -k -r -l 2 -p $url );
 
@@ -65,7 +77,7 @@ sub single_website {
 
 
     my ($directory, @files) = @{ $res->{files} };
-    
+
     # TODO(bit4bit) aplica el filtro despues de descargar todo el contenido
     my @files_filtered = ($directory);
 
@@ -95,9 +107,9 @@ sub code {
             # TODO(bit4bit) aplica el filtro despues de descargar todo el contenido
             if (defined $filter && $filter ne '' && $filename !~ m{ $filter }xmg) {
                 carp "OMIT: $filename by filter $filter";
-                return 
+                return
             }
-            
+
             push @files, $filename;
         },
         $directory);
@@ -122,15 +134,15 @@ sub _wget {
 
     my @extra_options = ( "-U '" . Localmark::Constant::WebAgent . "'" );
     push @extra_options, "--no-parent" if (not $args->{allow_parent});
-    
+
     my $wget_options = join ' ', @extra_options;
     my $wget_command = qq( $command $wget_options -P $website -nH -E -a $command_output );
     carp 'WGET:', $wget_command;
-       
+
     qx( $wget_command );
 
     my $output = read_text( $command_output );
-    
+
     # primer elemento es el directorio raiz
     my @files = ( $website );
     find(
@@ -152,7 +164,7 @@ sub _wget {
 
         },
         $website);
-    
+
 
     return {
         output => $output,

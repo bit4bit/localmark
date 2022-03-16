@@ -47,6 +47,7 @@
                   <option value="link">Link</option>
                   <option value="downward_website">Downward Website</option>
                   <option value="upward_website">Upward Website</option>
+                  <option value="mirror_website">Mirror Website</option>
                   <option value="code">Source Code</option>
                 </select>
               </div>
