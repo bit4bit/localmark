@@ -28,7 +28,7 @@ has 'path_wget' => (
     is => 'rw',
     isa => 'Str',
     required => 1,
-    default => qx(sh -c 'type -p wget')
+    default => 0
     );
 
 has 'output' => (
@@ -180,6 +180,8 @@ sub BUILD {
         chomp $path_wget2;
         carp "WGET2 FOUND AT $path_wget2";
         $self->path_wget( $path_wget2 );
+    } else {
+	$self->path_wget( qx(sh -c 'type -p wget') );
     }
 
     my $path_binary = $self->path_wget;

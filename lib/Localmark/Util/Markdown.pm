@@ -35,9 +35,13 @@ sub plantuml_fence_block {
 
     my ($fh, $filename) = tempfile();
 
-    say $fh '@startuml';
-    say $fh $content;
-    say $fh '@enduml';
+    if ($content =~ '@startuml') {
+	    say $fh $content;
+    } else {
+	    say $fh '@startuml';
+	    say $fh $content;
+	    say $fh '@enduml';
+    }
 
     close $fh;
 
