@@ -92,7 +92,7 @@ sub site {
         sub {
             my $dbh = shift;
             my $row = $dbh->selectrow_hashref( 'SELECT name, title, url, root, description FROM sites WHERE name = ?', { Slice => {} }, $name);
-            
+
             return Localmark::Site->new(
                 name => $row->{name},
                 title => $row->{title},
@@ -153,7 +153,7 @@ sub sites {
 
                     push @quotes, $quote;
                 }
-            
+
                 my $site = Localmark::Site->new(
                     name => $row->{name},
                     title => $row->{title},
@@ -191,12 +191,12 @@ sub import_content {
     if (is_mime_type_readable($mime_type)) {
         $text = $content
     }
-    
+
     return $self->dbh(
         $package,
         sub {
             my $dbh = shift;
-            
+
             # insertamos primero el sitio
             my $sth =
                 $dbh->prepare( 'INSERT INTO sites(name, title, root, url, description) VALUES(?, ?, ?, ?, ?) ON CONFLICT(name) DO UPDATE SET title = excluded.title, root = excluded.root, url = excluded.url, description = excluded.description' )
@@ -224,7 +224,7 @@ sub import_page {
     my $content = read_binary($path);
 
     $args{uri} = $args{uri} || '/'. basename($path);
-    
+
     $self->import_content($content, %args);
 }
 
@@ -239,9 +239,9 @@ sub import_files {
     my $site_title = $args{site_title} || $site;
 
 
-    
+
     for my $file ( @{ $files } ) {
-            
+
         my $mime_type = mime_type_from_path($file);
 
         # verificar mime type por url
@@ -256,14 +256,14 @@ sub import_files {
             # se almacena talcual ya que wget
             # espera la misma ruta exacta
             my $file_url = $file =~ s/^$directory/$base_url/r;
-            
+
             $mime_type =  mime_type_from_url($file_url);
             if (not $mime_type) {
                 carp "OMIT: could't detect mime type for $file or $file_url";
                 next;
             }
         }
-        
+
         my $uri = $file =~ s/^$directory//r;
 
         $self->import_page(
@@ -312,23 +312,11 @@ sub resource {
 
             my $comment;
             if (defined $row_ref->{comment_resource_id}) {
-                $comment = Localmark::Comment->new(
-                    resource_id => $row_ref->{comment_resource_id},
-                    comment => $row_ref->{comment_comment} || '',
-                    version => $row_ref->{comment_version},
-                    inserted_at => $row_ref->{comment_inserted_at}
-                    );
+                my $comment = $self->_new_comment($row_ref, $site);
             }
-            
-            my $resource = Localmark::Resource->new(
-                id => $row_ref->{id},
-                site => $site,
-                uri => $row_ref->{uri},
-                content => $row_ref->{content},
-                mime_type => $row_ref->{mime_type},
-                comment => $comment
-                );
-            
+
+            my $resource = $self->_new_resource($row_ref, $site, $comment);
+
             return $resource;
         }
         );
@@ -350,7 +338,7 @@ sub resources {
             $sth->execute( $args{site})
                 or croak "couldn't execute statement: " . $sth->errstr;
 
-            
+
             my $rows_ref = $sth->fetchall_arrayref({});
             if (not defined $rows_ref) {
                 return [];
@@ -368,26 +356,13 @@ sub resources {
                     description => $row_ref->{site_description},
                     package => $package
                     );
-               
+
                 my $comment;
                 if (defined $row_ref->{comment_resource_id}) {
-                    $comment = Localmark::Comment->new(
-                        resource_id => $row_ref->{comment_resource_id},
-                        comment => $row_ref->{comment_comment} || '',
-                        version => $row_ref->{comment_version},
-                        inserted_at => $row_ref->{comment_inserted_at}
-                        );
+                    $comment = $self->_new_comment($row_ref, $site);
                 }
-                
-                my $resource = Localmark::Resource->new(
-                    id => $row_ref->{id},
-                    site => $site,
-                    uri => $row_ref->{uri},
-                    content => $row_ref->{content},
-                    mime_type => $row_ref->{mime_type},
-                    comment => $comment
-                    );
 
+                my $resource = $self->_new_resource($row_ref, $site, $comment);
                 push @resources, $resource;
             }
 
@@ -495,9 +470,49 @@ sub migrate_db {
             dir => $directory_migrations
         }
         );
-    
-    $m->migrate(2);   
-    
+
+    $m->migrate(2);
+
+}
+
+sub build_resource_abs_uri {
+    my ($self, $row_ref, $site) = @_;
+
+    my $site_package = $site->package;
+    my $site_name = $site->name;
+    my $resource_uri = $row_ref->{uri};
+
+    return "${site_package}/${site_name}${resource_uri}";
+}
+
+sub _new_comment {
+    my ($self, $row_ref, $site) = @_;
+
+    my $resource_abs_uri = $self->build_resource_abs_uri($row_ref, $site);
+
+    return Localmark::Comment->new(
+        resource_id => $row_ref->{comment_resource_id},
+        resource_abs_uri => $resource_abs_uri,
+        comment => $row_ref->{comment_comment} || '',
+        version => $row_ref->{comment_version},
+        inserted_at => $row_ref->{comment_inserted_at}
+        );
+}
+
+sub _new_resource {
+    my ($self, $row_ref, $site, $comment) = @_;
+    my $resource_abs_uri = $self->build_resource_abs_uri($row_ref, $site);
+
+    return Localmark::Resource->new(
+        id => $row_ref->{id},
+        site => $site,
+        uri => $row_ref->{uri},
+        abs_uri => $resource_abs_uri,
+        content => $row_ref->{content},
+        mime_type => $row_ref->{mime_type},
+        comment => $comment
+        );
+
 }
 no Moose;
 __PACKAGE__->meta->make_immutable;

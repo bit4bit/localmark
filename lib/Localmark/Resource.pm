@@ -26,6 +26,11 @@ has 'uri' => (
     isa => 'Str'
     );
 
+has 'abs_uri' => (
+    is => 'ro',
+    isa => 'Str'
+    );
+
 has 'content' => (
     is => 'ro',
     isa => 'Str'
@@ -48,7 +53,7 @@ sub render {
 
 sub error {
     my ($class, $msg) = @_;
-    
+
     my $content =  "<html><h1>$msg</h1></html>";
     return $class->new(content => $content);
 }
