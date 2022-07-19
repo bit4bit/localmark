@@ -18,6 +18,11 @@ has 'resource_id' => (
     isa => 'Int'
     );
 
+has 'resource_abs_uri' => (
+    is => 'ro',
+    isa => 'Str'
+    );
+
 has 'comment' => (
     is => 'ro',
     isa => 'Str'
@@ -38,9 +43,13 @@ sub comment_as_markdown {
     my $self = shift;
 
     if (defined $self->comment) {
+        my $content = $self->comment;
+        my $resource_abs_uri = $self->resource_abs_uri;
+        $content =~ s/%%view%%/\/view\/$resource_abs_uri/xg;
+
         return markdown
             (
-             $self->comment,
+             $content,
              fence_blocks => {
                  plantuml => \&plantuml_fence_block
              }
