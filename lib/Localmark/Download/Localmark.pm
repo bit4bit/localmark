@@ -175,13 +175,13 @@ sub _wget {
 sub BUILD {
     my $self = shift;
 
-    my $path_wget2 = qx(sh -c 'type -p wget2');
+    my $path_wget2 = qx(bash -c 'type -p wget2');
     if ($? == 0) {
         chomp $path_wget2;
         carp "WGET2 FOUND AT $path_wget2";
         $self->path_wget( $path_wget2 );
     } else {
-	$self->path_wget( qx(sh -c 'type -p wget') );
+	$self->path_wget( qx(bash -c 'type -p wget') );
     }
 
     my $path_binary = $self->path_wget;
