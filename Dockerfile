@@ -1,7 +1,7 @@
+FROM perl:5.36.0
 LABEL org.opencontainers.image.authors="Jovany Leandro G. C <bit4bit@riseup.net>"
-FROM perl:5.34.0
 
-RUN apt-get update && apt-get install -y wget2 highlight plantuml git fossil mercurial
+RUN apt-get update && apt-get install -y wget2 highlight plantuml git fossil mercurial youtube-dl
 
 COPY . /usr/src/app
 
