@@ -124,7 +124,7 @@ cmp_ok(scalar(@{ $site_of{mipackagereadable2} }), '==', 1, 'search by type of co
 
 subtest 'comments' => sub {
     my $package = 'comments';
-        
+
     $storer->import_content(
         "hola mundo",
         package => $package,
@@ -140,7 +140,7 @@ subtest 'comments' => sub {
         site => $storer->site_as_id('misite1'),
         path => '/index.html'
         ) or fail( 'read resource');
-    
+
     $storer->insert_comment(
         $package, $resource->id,
         'excelente'
@@ -156,8 +156,8 @@ subtest 'comments' => sub {
         site => $storer->site_as_id('misite1'),
         path => '/index.html'
         ) or fail( 'read resource');
-
-    ok $resource_with_comment->comment, 'excelente last', 'resource comment';
+    ok $resource_with_comment->id, $resource->id;
+    ok $resource_with_comment->comment, 'excelente last', 'resource comment ';
 };
 
 done_testing;
