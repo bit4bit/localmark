@@ -117,6 +117,27 @@ sub code {
     return @files;
 }
 
+sub video {
+    my ($self, $url, %args) = @_;
+
+    my $command = qq( youtube-dl -q --no-progress --abort-on-error --no-cache-dir --prefer-free-formats --youtube-skip-dash-manifest --no-check-certificate $url );
+
+    my $video_output = mkdtemp( '/tmp/video-output-XXXX' );
+    qx( cd $video_output && $command );
+
+    my @files = ( );
+    find(
+        sub {
+            my $filename = $File::Find::name;
+            return if ! -f $filename;
+            push @files, $filename
+        },
+        $video_output
+        );
+
+    return ($video_output, @files);
+}
+
 # obtiene una pagina
 sub get {
     my ($self, $url) = @_;

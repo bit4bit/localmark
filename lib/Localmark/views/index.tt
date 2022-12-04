@@ -49,6 +49,7 @@
                   <option value="upward_website">Upward Website</option>
                   <option value="mirror_website">Mirror Website</option>
                   <option value="code">Source Code</option>
+                  <option value="video">Video</option>
                 </select>
               </div>
 
