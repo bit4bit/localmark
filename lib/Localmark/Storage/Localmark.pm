@@ -312,7 +312,7 @@ sub resource {
 
             my $comment;
             if (defined $row_ref->{comment_resource_id}) {
-                my $comment = $self->_new_comment($row_ref, $site);
+                $comment = $self->_new_comment($row_ref, $site);
             }
 
             my $resource = $self->_new_resource($row_ref, $site, $comment);

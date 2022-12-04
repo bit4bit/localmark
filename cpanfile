@@ -1,5 +1,6 @@
 requires 'perl', '>= 5.28.0';
 requires 'Moose', '>= 2.20, < 3.0';
+requires 'Object::Pad', '>= 0.73';
 requires 'Dancer2', '>= 0.265, < 1.0';
 requires 'Dancer2::Template::Mason2', '>= 0.00';
 requires 'DBD::SQLite', '>= 1.62';
