@@ -1,5 +1,5 @@
 use strict;
-use warnings;
+use warnings "all";
 
 use Test2::V0;
 
@@ -41,5 +41,18 @@ my @sites = @{ $site_of{'testbit4bit'} };
 cmp_ok(scalar(@sites), '==', 1, 'length of array');
 cmp_ok($sites[0]->url, 'eq', 'http://bit4bit.github.io', 'found site');
 
+
+# download a video
+
+$download->video( 'https://www.youtube.com/watch?v=Z2d4OkX8GBg',
+                  package => 'videotest',
+                  site => 'videotest',
+                  site_url => 'videotest' );
+%site_of = $store->sites();
+@sites = @{ $site_of{'videotest'} };
+cmp_ok(scalar(@sites), '==', 1, 'length of array');
+cmp_ok($sites[0]->title, 'eq', 'GNU MediaLab logo animation - YouTube', 'video download');
+cmp_ok($sites[0]->url, 'eq', "https://www.youtube.com/watch?v=Z2d4OkX8GBg");
+cmp_ok($sites[0]->root, 'eq', "/GNU MediaLab logo animation-Z2d4OkX8GBg.mp4");
 
 done_testing;

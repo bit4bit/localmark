@@ -17,6 +17,7 @@ use File::Spec;
 use Carp;
 use URI ();
 use Data::Dumper;
+use List::Util qw(first);
 
 use Moose;
 use namespace::autoclean;
@@ -118,11 +119,46 @@ sub using_strategy {
                 filter => $args{filter}
                 );
         }
+        when( 'video' ) {
+            $self->video(
+                $url,
+                package => $package,
+                site => $url,
+                site_description => $description,
+                site_title => $title
+                );
+        }
         default {
             croak "unknown strategy";
         }
     }
 
+}
+
+sub video {
+    my ($self, $url, %args) = @_;
+
+    my $package = $args{package} or croak "requires 'package'";
+    my $site = $args{site} or croak "requires 'site'";
+
+    my $site_description = $args{site_description} || '';
+    my $site_title =  $args{site_title} || $self->guess_site_title($url) || $site;
+
+    my $directory_for_download = mkdtemp( '/tmp/download-video-XXXX' );
+    my ($directory, @files) = $self->downloader->video($url);
+
+    my $index_file = first { defined($_) } @files;
+    my $index = File::Basename::basename($index_file);
+
+    $self->storage->import_files(
+        $directory, \@files,
+        package => $package,
+        site => $site,
+        site_title => $site_title,
+        site_root => "/" . $index,
+        site_description => $site_description,
+        site_url => $url
+        );
 }
 
 sub link {
