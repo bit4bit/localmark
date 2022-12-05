@@ -13,8 +13,7 @@ WriteMakefile(
         'Dancer2' => '0.30',
             'Moose' => '2.20',
             'DBD::SQLite' => '1.66',
-            'File::Slurper' => '0.012',
-            'Object::Pad' => '0.73'
+            'File::Slurper' => '0.012'
     },
     TEST_REQUIRES => {
         'Test2::Suite' => '0.000140'
