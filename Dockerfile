@@ -10,7 +10,10 @@ WORKDIR /usr/src/app
 RUN cpanm --installdeps --notest .
 RUN cpanm install -n -f Starman
 
+# otras dependencias
 RUN pip install --upgrade youtube-dl
+RUN curl https://dist.ipfs.tech/ipget/v0.9.1/ipget_v0.9.1_linux-amd64.tar.gz -o /tmp/ipget.tar.gz
+RUN cd /tmp/ && tar -xf ipget.tar.gz && cp ipget/ipget /usr/bin && chmod a+rx /usr/bin/ipget
 
 ENV DANCER_PORT=5000
 VOLUME ["/localmark_storage"]

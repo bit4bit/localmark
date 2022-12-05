@@ -50,6 +50,7 @@
                   <option value="mirror_website">Mirror Website</option>
                   <option value="code">Source Code</option>
                   <option value="video">Video</option>
+                  <option value="ipfs_site">IPFS Site</option>
                 </select>
               </div>
 

@@ -55,4 +55,16 @@ cmp_ok($sites[0]->title, 'eq', 'GNU MediaLab logo animation - YouTube', 'video d
 cmp_ok($sites[0]->url, 'eq', "https://www.youtube.com/watch?v=Z2d4OkX8GBg");
 cmp_ok($sites[0]->root, 'eq', "/GNU MediaLab logo animation-Z2d4OkX8GBg.mp4");
 
+
+# download a ipfs file
+$download->ipfs_site( '/ipfs/QmNhFJjGcMPqpuYfxL62VVB9528NXqDNMFXiqN5bgFYiZ1/its-time-for-the-permanent-web.html',
+                      package => 'ipfstest',
+                      site => 'ipfstest',
+                      site_url => 'ipfstest' );
+%site_of = $store->sites();
+@sites = @{ $site_of{'ipfstest'} };
+cmp_ok(scalar(@sites), '==', 1, 'length of array');
+cmp_ok($sites[0]->url, 'eq', "/ipfs/QmNhFJjGcMPqpuYfxL62VVB9528NXqDNMFXiqN5bgFYiZ1/its-time-for-the-permanent-web.html");
+cmp_ok($sites[0]->root, 'eq', "/its-time-for-the-permanent-web.html");
+
 done_testing;

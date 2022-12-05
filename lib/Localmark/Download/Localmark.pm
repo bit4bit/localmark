@@ -10,6 +10,7 @@ use utf8;
 use strict;
 use warnings;
 
+use URI;
 use File::Temp qw( mkdtemp mktemp );
 use File::Spec;
 use File::Find qw(find);
@@ -136,6 +137,36 @@ sub video {
         );
 
     return ($video_output, @files);
+}
+
+sub ipget {
+    my ($self, $url, %args) = @_;
+
+    my $working_dir = mkdtemp( '/tmp/ipget-output-XXXX' );
+    my $command = qq( ipget '$url' );
+
+    # hack libgen.rs
+    my $uri = URI->new($url);
+    my %query = $uri->query_form;
+    my $libgen_filename = $query{'filename'};
+    if (defined $libgen_filename) {
+        $command = qq( ipget -o '$libgen_filename' '$url' );
+    }
+
+    qx( cd $working_dir && timeout 60s $command ) ;
+
+    my @files = ( );
+    find(
+        sub {
+            my $filename = $File::Find::name;
+            return if ! -f $filename;
+
+            push @files, $filename
+        },
+        $working_dir
+        );
+
+    return ($working_dir, @files);
 }
 
 # obtiene una pagina
