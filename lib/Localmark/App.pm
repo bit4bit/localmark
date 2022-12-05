@@ -59,7 +59,7 @@ get '/' => sub {
     };
 };
 
-post '/' => sub {
+post '/download' => sub {
     my $storage = current_storage();
 
     my $package = body_parameters->get('package');
@@ -174,7 +174,7 @@ get '/view/:package/:site/**?' => sub {
     }
 };
 
-post '/action' => sub {
+post '/sites/action' => sub {
     my $storage = current_storage();
     my $action = body_parameters->get('action');
     my $site_package = body_parameters->get('site_package');
