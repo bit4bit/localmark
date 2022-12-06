@@ -53,9 +53,12 @@ get '/' => sub {
                            package => $filter_package,
                            content => $filter_content
                        });
+    my $strategies = downloader()->strategies();
+
     template index => {
         sites => $sites,
-        filter_package => $filter_package
+        filter_package => $filter_package,
+        strategies => $strategies
     };
 };
 

@@ -43,6 +43,19 @@ sub output {
     $self->downloader->output;
 }
 
+sub strategies {
+    [
+     {'name' => 'single_page', 'title' => 'Single Page'},
+     {'name' => 'link', 'title' => 'Link'},
+     {'name' => 'downward_website', 'title' => 'Downward Website'},
+     {'name' => 'upward_website', 'title' => 'Upward Website'},
+     {'name' => 'mirror_website', 'title' => 'Mirror Website'},
+     {'name' => 'code', 'title' => 'Code'},
+     {'name' => 'video', 'title' => 'Video'},
+     {'name' => 'ipfs_site', 'title' => 'IPFS Site'}
+    ]
+}
+
 sub using_strategy {
     my ($self, $strategy, $url, %args) = @_;
 
