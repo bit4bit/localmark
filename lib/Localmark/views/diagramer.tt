@@ -1,4 +1,4 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
   <head>
       <title>Localmark</title>
@@ -20,6 +20,7 @@
       </div>
 
       <script>
+          const areaCodeMinWidthPx = 250;
           var eFormCode = document.getElementById('form-code');
           var eAreaCodeCursorPosition = document.getElementById('area-code-cursor-position');
           var eAreaCode = document.getElementById('area-code');
@@ -31,10 +32,26 @@
               }
               return true;
           }
+          function adjustTextArea() {
+              var e = document.getElementById('area-code');
+              if (e.value) {
+                  var long_line = e.value.split("\n").sort((a, b) => { return a.length > b.length }).pop();
+                  e.style.width = Math.max(areaCodeMinWidthPx, (long_line.length * 8)) + 'px';
+              }
+          }
 
+          function autoAdjustTextArea() {
+              setTimeout(function() {
+                  adjustTextArea();
+                  autoAdjustTextArea();
+              }, 3000);
+          }
           // mover el cursor a la ultima posicion registrada
           eAreaCode.selectionStart = eAreaCodeCursorPosition.value;
           eAreaCode.selectionEnd = eAreaCodeCursorPosition.value;
+          adjustTextArea();
+          autoAdjustTextArea();
+
       </script>
   </body>
 </html>
