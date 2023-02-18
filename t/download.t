@@ -11,6 +11,8 @@ use Localmark::Download::Localmark;
 use Localmark::Download;
 use Localmark::Storage::Localmark;
 
+perl_critic_ok ['lib'];
+
 my $downloader = Localmark::Download::Localmark->new();
 isa_ok( $downloader, 'Localmark::Download::Localmark' );
 my  ($directory, @files) = $downloader->single_page( 'http://bit4bit.github.io/index.html' );

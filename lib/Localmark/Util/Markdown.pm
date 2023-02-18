@@ -1,4 +1,6 @@
 package Localmark::Util::Markdown;
+use strict;
+use warnings "all";
 use v5.28;
 
 use Text::Markdown ();
@@ -76,7 +78,7 @@ sub process_fence_blocks {
         chomp $fence_body;
 
         $fence_id =~ s/[^\w:\d]//;
-        my $fence_name = $fence_id =~ s/:.*//r;        
+        my $fence_name = $fence_id =~ s/:.*//r;
 
         if (exists $processors->{$fence_name}) {
             my $output = $processors->{$fence_name}($fence_body);
@@ -91,7 +93,7 @@ sub process_fence_blocks {
         # thanks gordonfish
         $text =~ s/~~~\s*$fence_id\R.*?\R~~~/$fence_body/sg;
     }
-    
+
     return $text;
 }
 1;

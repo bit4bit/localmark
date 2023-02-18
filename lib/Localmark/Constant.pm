@@ -1,4 +1,6 @@
 package Localmark::Constant;
+use strict;
+use warnings "all";
 
 require Exporter;
 our @ISA = qw( Exporter );
