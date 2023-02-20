@@ -1,0 +1,33 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>Localmark</title>
+    </head>
+    <body>
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <form action="/" method="GET">
+                                <input type="submit" value="Root"/>
+                            </form>
+                        </td>
+                        <td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <table>
+            <thead>
+                <tr><td>URL</td><td>STATE</td></tr>
+            </thead>
+            <tbody>
+                [% FOREACH download IN downloads %]
+                    <tr><td>[% download.name %]</td><td>[% download.state %]</td>
+                [% END %]
+            </tbody>
+        </table>
+    </body>
+</html>
