@@ -6,14 +6,15 @@ use syntax 'try';
 use v5.14;
 
 use Dotenv;
-use Data::Dumper;
 
 use Localmark::Storage;
 use Localmark::Storage::Localmark;
 use Localmark::Download;
+use Localmark::Download::Manager;
 use Localmark::Download::Localmark;
 
 use Dancer2;
+set session => "Simple";
 
 our $VERSION = '0.005';
 
@@ -202,6 +203,19 @@ post '/sites/action' => sub {
     }
 };
 
+use Carp;
+use Data::Dumper;
+
+get '/downloads' => sub {
+    my $download = downloader();
+
+    my @downloads = $download->downloads();
+    my $downloads = \@downloads;
+    template downloads => {
+        downloads => $downloads
+    };
+};
+
 sub current_storage {
     my $storage_directory = $ENV{'STORAGE_DIRECTORY'}
     || die 'requires environment STORAGE_DIRECTORY';
@@ -218,10 +232,12 @@ sub downloader {
     my $storage = current_storage();
 
     my $downloader = Localmark::Download::Localmark->new();
+    my $download_manager = Localmark::Download::Manager->new(storage_path => '/tmp/session');
 
     return Localmark::Download->new(
         storage => $storage,
-        downloader => $downloader
+        downloader => $downloader,
+        manager => $download_manager
         );
 }
 

@@ -14,6 +14,10 @@
                           </form>
                       </td>
                       <td>
+                          <form action="/downloads" method="GET">
+                              <input type="submit" value="Downloads"/>
+                          </form>
+                      <td>
                           <form action="/diagramer" method="GET">
                               <input type="submit" value="Diagramer"/>
                           </form>

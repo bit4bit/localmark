@@ -19,6 +19,7 @@ use URI ();
 use Data::Dumper;
 use List::Util qw(first);
 
+use Localmark::Download::Manager;
 use Moose;
 use namespace::autoclean;
 
@@ -34,8 +35,23 @@ has 'storage' => (
 
 has 'downloader' => (
     is => 'ro',
+    isa => 'Localmark::Download::Localmark',
     required => 1
     );
+
+has 'manager' => (
+    is => 'ro',
+    isa => 'Localmark::Download::Manager',
+    default => sub {
+        Localmark::Download::Manager->new();
+    }
+    );
+
+sub downloads {
+    my $self = shift;
+
+    return @{$self->manager->downloads()};
+}
 
 sub output {
     my $self = shift;
@@ -63,6 +79,7 @@ sub using_strategy {
     my $description = $args{description} || '';
     my $title = $args{title};
 
+    $self->manager->start_download($url);
     given ($strategy) {
         when ( 'single_page' ) {
             $self->single_page(
@@ -144,7 +161,7 @@ sub using_strategy {
             croak "unknown strategy $strategy" ;
         }
     }
-
+    $self->manager->stop_download($url);
 }
 
 sub video {
