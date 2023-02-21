@@ -20,6 +20,8 @@ use Data::Dumper;
 use List::Util qw(first);
 
 use Localmark::Download::Manager;
+use Localmark::Download::StrategyFactory;
+
 use Moose;
 use namespace::autoclean;
 
@@ -47,6 +49,13 @@ has 'manager' => (
     }
     );
 
+has 'strategy_factory' => (
+    is => 'ro',
+    default => sub {
+        Localmark::Download::StrategyFactory->new();
+    }
+    );
+
 sub downloads {
     my $self = shift;
 
@@ -60,6 +69,7 @@ sub output {
 }
 
 sub strategies {
+    # TODO: mover a strategyFactory
     [
      {'name' => 'single_page', 'title' => 'Single Page'},
      {'name' => 'link', 'title' => 'Link'},
@@ -80,87 +90,9 @@ sub using_strategy {
     my $title = $args{title};
 
     $self->manager->start_download($url);
-    given ($strategy) {
-        when ( 'single_page' ) {
-            $self->single_page(
-                $url,
-                package => $package,
-                site => $url,
-                site_description => $description,
-                site_title => $title
-                );
-        }
-        when ( 'link' ) {
-            $self->link(
-                $url,
-                package => $package,
-                site => $url,
-                site_description => $description,
-                site_title => $title
-                );
-        }
-        when ( 'downward_website' ) {
-            $self->single_website(
-                $url,
-                package => $package,
-                site => $url,
-                site_descriptio => $description,
-                site_title => $title,
-                filter => $args{filter}
-                );
-        }
-        when ( 'upward_website' ) {
-            $self->single_website(
-                $url,
-                package => $package,
-                site => $url,
-                site_description => $description,
-                site_title => $title,
-                allow_parent => 1,
-                filter => $args{filter}
-                );
-        }
-        when ( 'mirror_website' ) {
-            $self->mirror_website(
-                $url,
-                package => $package,
-                site => $url,
-                site_description => $description,
-                site_title => $title
-                );
-        }
-        when( 'code' ) {
-            $self->code(
-                $url,
-                package => $package,
-                site => $url,
-                site_description => $description,
-                site_title => $title,
-                filter => $args{filter}
-                );
-        }
-        when( 'video' ) {
-            $self->video(
-                $url,
-                package => $package,
-                site => $url,
-                site_description => $description,
-                site_title => $title
-                );
-        }
-        when( 'ipfs_site' ) {
-            $self->ipfs_site(
-                $url,
-                package => $package,
-                site => $url,
-                site_description => $description,
-                site_title => $title
-                );
-        }
-        default {
-            croak "unknown strategy $strategy" ;
-        }
-    }
+    $self->strategy_factory
+        ->of($strategy, $self, $self->downloader)
+        ->execute($url, %args);
     $self->manager->stop_download($url);
 }
 
