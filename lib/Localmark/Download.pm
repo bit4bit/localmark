@@ -138,18 +138,6 @@ sub ipfs_site {
     $self->import_site($url, $directory, \@files, %args);
 }
 
-sub link {
-    my ($self, $url, %args) = @_;
-
-    my $dirwebsite = mkdtemp( '/tmp/download-link-XXXX' );
-    my $empty_page = File::Spec->catfile( $dirwebsite, 'index.html' );
-    open( my $fh, '>', $empty_page ) or croak "couldn't open file: $!";
-    print $fh qq{<!DOCTYPE><html><head><meta http-equiv="refresh" content="1; url = $url"/></head><body><h1>localmark link to $url</h1></body></html> };
-    close( $fh );
-
-    $self->import_site($url, $dirwebsite, [$empty_page], %args);
-};
-
 # descargar una unica pagina
 sub single_page {
     my ($self, $url, %args) = @_;

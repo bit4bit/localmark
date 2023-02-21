@@ -9,6 +9,7 @@ descarga una sola pagina
 use strict;
 use warnings;
 use Carp;
+use File::Temp qw( mkdtemp );
 
 use Moose;
 
@@ -17,17 +18,14 @@ extends 'Localmark::Download::Strategy::Base';
 sub execute {
     my ($self, $url, %args) = @_;
 
-    my $package = $args{package} || croak "requires 'package'";
-    my $description = $args{description} || '';
-    my $title = $args{title};
+    my $dirwebsite = mkdtemp( '/tmp/download-link-XXXX' );
+    my $empty_page = File::Spec->catfile( $dirwebsite, 'index.html' );
+    open( my $fh, '>', $empty_page ) or croak "couldn't open file: $!";
+    print $fh qq{<!DOCTYPE><html><head><meta http-equiv="refresh" content="1; url = $url"/></head><body><h1>localmark link to $url</h1></body></html> };
+    close( $fh );
 
-    $self->download->link(
-        $url,
-        package => $package,
-        site => $url,
-        site_description => $description,
-        site_title => $title
-        );
+    $args{site} = $url;
+    $self->download->import_site($url, $dirwebsite, [$empty_page], %args);
 }
 
 no Moose;
