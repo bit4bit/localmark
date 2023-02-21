@@ -96,60 +96,50 @@ sub using_strategy {
     $self->manager->stop_download($url);
 }
 
-sub video {
-    my ($self, $url, %args) = @_;
-
-    my $package = $args{package} or croak "requires 'package'";
-    my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    my $site_title =  $args{site_title} || $self->guess_site_title($url) || $site;
-
-    my ($directory, @files) = $self->downloader->video($url);
-    my $index_file = first { defined($_) } @files;
-    my $index = File::Basename::basename($index_file);
-
-    $self->storage->import_files(
-        $directory, \@files,
-        package => $package,
-        site => $site,
-        site_title => $site_title,
-        site_root => "/" . $index,
-        site_description => $site_description,
-        site_url => $url
-        );
-}
-
-sub ipfs_site {
-    my ($self, $url, %args) = @_;
-
-    my $package = $args{package} or croak "requires 'package'";
-    my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    my $site_title =  $args{site_title} || $self->guess_site_title($url) || $site;
-
-    my ($directory, @files) = $self->downloader->ipget($url);
-    my $index_file = first { defined($_) } @files;
-    my $index = File::Basename::basename($index_file);
-
-    $self->storage->import_files(
-        $directory, \@files,
-        package => $package,
-        site => $site,
-        site_title => $site_title,
-        site_root => "/" . $index,
-        site_description => $site_description,
-        site_url => $url
-        );
-}
-
-sub link {
-    my ($self, $url, %args) = @_;
+sub import_site {
+    my ($self, $url, $directory, $files, %args) = @_;
 
     my $package = $args{package} or croak "requires 'package'";
     my $site = $args{site} or croak "requires 'site'";
     my $site_description = $args{site_description} || '';
     my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
-    my $site_root = $self->guess_site_root($url) || '/index.html';
+    my $site_root = $args{site_root} || $self->guess_site_root($url) || '/index.html';
+
+    $self->storage->import_files(
+        $directory, $files,
+        package => $package,
+        site => $site,
+        site_title => $site_title,
+        site_root => $site_root,
+        site_description => $site_description,
+        site_url => $url
+        );
+}
+
+sub video {
+    my ($self, $url, %args) = @_;
+
+    my ($directory, @files) = $self->downloader->video($url);
+    my $index_file = first { defined($_) } @files;
+    my $index = File::Basename::basename($index_file);
+
+    $args{site_root} = "/" . $index;
+    $self->import_site($url, $directory, \@files, %args);
+}
+
+sub ipfs_site {
+    my ($self, $url, %args) = @_;
+
+    my ($directory, @files) = $self->downloader->ipget($url);
+    my $index_file = first { defined($_) } @files;
+    my $index = File::Basename::basename($index_file);
+
+    $args{site_root} = "/" . $index;
+    $self->import_site($url, $directory, \@files, %args);
+}
+
+sub link {
+    my ($self, $url, %args) = @_;
 
     my $dirwebsite = mkdtemp( '/tmp/download-link-XXXX' );
     my $empty_page = File::Spec->catfile( $dirwebsite, 'index.html' );
@@ -157,48 +147,20 @@ sub link {
     print $fh qq{<!DOCTYPE><html><head><meta http-equiv="refresh" content="1; url = $url"/></head><body><h1>localmark link to $url</h1></body></html> };
     close( $fh );
 
-    $self->storage->import_files(
-        $dirwebsite, [$empty_page],
-        package => $package,
-        site => $site,
-        site_title => $site_title,
-        site_root => '/index.html',
-        site_description => $site_description,
-        site_url => $url
-        );
+    $self->import_site($url, $dirwebsite, [$empty_page], %args);
 };
 
 # descargar una unica pagina
 sub single_page {
     my ($self, $url, %args) = @_;
 
-    my $package = $args{package} or croak "requires 'package'";
-    my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
-    my $site_root = $self->guess_site_root($url) || '/index.html';
-
     my ($directory, @files) = $self->downloader->single_page($url);
 
-    $self->storage->import_files(
-        $directory, \@files,
-        package => $package,
-        site => $site,
-        site_title => $site_title,
-        site_root => $site_root,
-        site_description => $site_description,
-        site_url => $url
-        );
+    $self->import_site($url, $directory, \@files, %args);
 }
 
 sub single_website {
     my ($self, $url, %args) = @_;
-
-    my $package = $args{package} or croak "requires 'package'";
-    my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
-    my $site_root = $self->guess_site_root($url) || '/index.html';
 
     my $filter_files = $args{filter}->{files} || '';
     my ($directory, @files) = $self->downloader->single_website(
@@ -206,60 +168,24 @@ sub single_website {
         allow_parent => $args{allow_parent} || 0,
         filter => $filter_files);
 
-    $self->storage->import_files(
-        $directory, \@files,
-        package => $package,
-        site => $site,
-        site_title => $site_title,
-        site_root => $site_root,
-        site_description => $site_description,
-        site_url => $url
-        );
+    $self->import_site($url, $directory, \@files, %args);
 }
 
 sub mirror_website {
     my ($self, $url, %args) = @_;
 
-    my $package = $args{package} or croak "requires 'package'";
-    my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
-    my $site_root = $self->guess_site_root($url) || '/index.html';
-
     my ($directory, @files) = $self->downloader->mirror_website( $url );
-
-    $self->storage->import_files(
-        $directory, \@files,
-        package => $package,
-        site => $site,
-        site_title => $site_title,
-        site_root => $site_root,
-        site_description => $site_description,
-        site_url => $url
-        );
+    $self->import_site($url, $directory, \@files, %args);
 }
 
 sub code {
     my ($self, $url, %args) = @_;
 
-    my $package = $args{package} or croak "requires 'package'";
-    my $site = $args{site} or croak "requires 'site'";
-    my $site_description = $args{site_description} || '';
-    my $site_title = $args{site_title} || $self->guess_site_title($url) || $site;
-    my $site_root = '/index.html';
-
     my $filter_files = $args{filter}->{files} || '';
     my ($directory, @files) = $self->downloader->code($url, filter => $filter_files);
 
-    $self->storage->import_files(
-        $directory, \@files,
-        package => $package,
-        site => $site,
-        site_title => $site_title,
-        site_root => $site_root,
-        site_description => $site_description,
-        site_url => $url
-        );
+    $args{site_root} = '/index.html';
+    $self->import_site($url, $directory, \@files, %args);
 }
 
 sub guess_site_title {

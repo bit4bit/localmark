@@ -39,6 +39,7 @@ $download->using_strategy(
     title => 'bit4bit.github.io'
     );
 
+
 my %site_of = $store->sites();
 my @sites = @{ $site_of{'testlocalmarklink'} };
 cmp_ok($sites[0]->url, 'eq', 'http://bit4bit.github.io', 'found site');
