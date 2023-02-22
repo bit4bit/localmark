@@ -14,16 +14,7 @@ use Carp;
 
 use Moose;
 
-has 'strategy' => (
-    is => 'ro',
-    required => 1
-    );
-
 has 'download' => (
-    is => 'ro'
-    );
-
-has 'downloader' => (
     is => 'ro'
     );
 
