@@ -81,6 +81,7 @@ post '/download' => sub {
         $strategy,
         $url,
         package => $package,
+        site => $url,
         description => $description,
         title => $title,
         filter => {
@@ -151,21 +152,32 @@ get '/view/:package/:site/**?' => sub {
     # url relativa del sitio web
     # no usa splat debido a que todo el resto de la ruta
     # es la uri incluido los parametros query
-    my $resource_path = request->path =~ s/\/view\/$package\/$site//r;
+    my $main_resource_path = request->path =~ s/\/view\/$package\/$site//r;
     my $storage = current_storage();
 
-    my $resource = $storage->resource(
-        package => $package,
-        site  => $site,
-        path => $resource_path
+    my @guess_resource_path = (
+        sub {
+            $main_resource_path;
+        },
+        sub {
+            $main_resource_path . ".html"
+        }
         );
 
-    if (not defined $resource) {
-        return send_error("not found package: $package site: $site path: $resource_path" , 404);
-    } else {
-        header( 'content-type' => $resource->mime_type );
-        return $resource->render;
+    for my $guess_path (@guess_resource_path) {
+        my $resource_path = $guess_path->();
+        my $resource = $storage->resource(
+            package => $package,
+            site  => $site,
+            path => $resource_path
+            );
+        if (defined $resource) {
+            header( 'content-type' => $resource->mime_type );
+            return $resource->render;
+        }
     }
+
+    return send_error("not found package: $package site: $site path: $main_resource_path" , 404);
 };
 
 post '/sites/action' => sub {

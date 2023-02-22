@@ -39,4 +39,9 @@ $response = $test->request(GET "/view/test-package/$site_name/index.html");
 ok($response->is_success, Dumper($response));
 is($response->content, "<html><h1>hello</h1></html>\n", 'response content');
 
+# BUG sino tiene sufijo se intenta .html
+$response = $test->request(GET "/view/test-package/$site_name/index");
+ok($response->is_success, Dumper($response));
+is($response->content, "<html><h1>hello</h1></html>\n", 'response content');
+
 done_testing;
