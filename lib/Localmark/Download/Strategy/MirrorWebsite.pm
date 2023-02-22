@@ -13,21 +13,13 @@ use Carp;
 use Moose;
 
 extends 'Localmark::Download::Strategy::Base';
+with 'Localmark::Download::Strategy::Websiteable';
 
 sub execute {
     my ($self, $url, %args) = @_;
 
-    my $package = $args{package} || croak "requires 'package'";
-    my $description = $args{description} || '';
-    my $title = $args{title};
-
-    $self->download->mirror_website(
-        $url,
-        package => $package,
-        site => $url,
-        site_description => $description,
-        site_title => $title
-        );
+    my ($directory, @files) = $self->mirror_website( $url );
+    $self->download->import_site($url, $directory, \@files, %args);
 }
 
 no Moose;

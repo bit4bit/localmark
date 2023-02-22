@@ -39,9 +39,7 @@ $download->using_strategy(
     title => 'bit4bit.github.io'
     );
 
-done_testing;
 
-=begin
 my %site_of = $store->sites();
 my @sites = @{ $site_of{'testlocalmarklink'} };
 cmp_ok($sites[0]->url, 'eq', 'http://bit4bit.github.io', 'found site');
@@ -52,6 +50,7 @@ $download->using_strategy(
     'single_page',
     'http://www.gnu.org',
     package => 'testlocalmark_single_page',
+    site => 'testlocalmark_single_page',
     title => 'www.gnu.org'
     );
 
@@ -65,6 +64,7 @@ $download->using_strategy(
     'downward_website',
     'http://www.bit4bit.in',
     package => 'testlocalmark_downward_website',
+    site => 'testlocalmark_downward_website',
     title => 'www.bit4bit.io'
     );
 
@@ -77,6 +77,7 @@ $download->using_strategy(
     'upward_website',
     'http://www.bit4bit.in',
     package => 'testlocalmark_upward_website',
+    site => 'testlocalmark_upward_website',
     title => 'www.bit4bit.io'
     );
 
@@ -89,6 +90,7 @@ $download->using_strategy(
     'mirror_website',
     'http://www.bit4bit.in',
     package => 'testlocalmark_mirror_website',
+    site => 'testlocalmark_mirror_website',
     title => 'www.bit4bit.io'
     );
 
@@ -101,6 +103,7 @@ $download->using_strategy(
     'code',
     'http://chiselapp.com/user/bit4bit/repository/localmark/index',
     package => 'testlocalmark_code_fossil',
+    site => 'testlocalmark_code_fossil',
     title => 'www.bit4bit.io'
     );
 
@@ -113,6 +116,7 @@ $download->using_strategy(
     'code',
     'https://github.com/bit4bit/localmark',
     package => 'testlocalmark_code_git',
+    site => 'testlocalmark_code_git',
     title => 'www.bit4bit.io'
     );
 
@@ -126,13 +130,14 @@ $download->using_strategy(
     'video',
     'https://vimeo.com/358950440',
     package => 'testlocalmark_video',
+    site => 'testlocalmark_video',
     title => 'vimeo'
     );
 
 %site_of = $store->sites();
 @sites = @{ $site_of{'testlocalmark_video'} };
 cmp_ok(scalar(@sites), '==', 1, 'length of array');
-cmp_ok($sites[0]->title, 'eq', 'vimeo');
+cmp_ok($sites[0]->title, 'eq', 'Amazon Music : Rap Rotation | Director&#039;s Cut on Vimeo');
 cmp_ok($sites[0]->url, 'eq', "https://vimeo.com/358950440");
 cmp_ok($sites[0]->root, 'eq', "/Amazon Music  - Rap Rotation _ Director's Cut-358950440.mp4");
 
@@ -142,6 +147,7 @@ $download->using_strategy(
     'ipfs_site',
     '/ipfs/QmNhFJjGcMPqpuYfxL62VVB9528NXqDNMFXiqN5bgFYiZ1/its-time-for-the-permanent-web.html',
     package => 'testlocalmark_ipfs_site',
+    site => 'testlocalmark_ipfs_site',
     );
 
 

@@ -154,27 +154,17 @@ get '/view/:package/:site/**?' => sub {
     my $resource_path = request->path =~ s/\/view\/$package\/$site//r;
     my $storage = current_storage();
 
-    try {
-        my $resource = $storage->resource(
-            package => $package,
-            site  => $site,
-            path => $resource_path
-            );
+    my $resource = $storage->resource(
+        package => $package,
+        site  => $site,
+        path => $resource_path
+        );
 
-        if (not defined $resource) {
-            return send_error("not found package: $package site: $site path: $resource_path" , 404);
-        } else {
-            header( 'content-type' => $resource->mime_type );
-            return $resource->render;
-        }
-    }
-    catch ($e) {
-        if ( UNIVERSAL::isa($e, 'Localmark::Exception') ) {
-            send_error( $e->error, 418 );
-        } else {
-            # TODO(bit4bit): al reemitir el die se pierde la stacktrace
-            die $e;
-        }
+    if (not defined $resource) {
+        return send_error("not found package: $package site: $site path: $resource_path" , 404);
+    } else {
+        header( 'content-type' => $resource->mime_type );
+        return $resource->render;
     }
 };
 

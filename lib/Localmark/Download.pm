@@ -11,13 +11,8 @@ use strict;
 use warnings;
 use feature 'switch';
 
-use File::Temp qw( mkdtemp mktemp );
-use File::Copy qw( move );
-use File::Spec;
 use Carp;
 use URI ();
-use Data::Dumper;
-use List::Util qw(first);
 
 use Localmark::Download::Manager;
 use Localmark::Download::StrategyFactory;
@@ -25,10 +20,14 @@ use Localmark::Download::StrategyFactory;
 use Moose;
 use namespace::autoclean;
 
-use Localmark::Util::File::Slurp qw( read_text );
 use Localmark::Util::MIME::Type qw(mime_type_from_path mime_type_from_url);
 
 
+has 'download_debug' => (
+    is => 'rw',
+    isa => 'Str',
+    default => sub { '' }
+    );
 
 has 'storage' => (
     is => 'ro',
@@ -65,33 +64,21 @@ sub downloads {
 sub output {
     my $self = shift;
 
-    $self->downloader->output;
+    $self->download_debug;
 }
 
 sub strategies {
-    # TODO: mover a strategyFactory
-    [
-     {'name' => 'single_page', 'title' => 'Single Page'},
-     {'name' => 'link', 'title' => 'Link'},
-     {'name' => 'downward_website', 'title' => 'Downward Website'},
-     {'name' => 'upward_website', 'title' => 'Upward Website'},
-     {'name' => 'mirror_website', 'title' => 'Mirror Website'},
-     {'name' => 'code', 'title' => 'Code'},
-     {'name' => 'video', 'title' => 'Video'},
-     {'name' => 'ipfs_site', 'title' => 'IPFS Site'}
-    ]
+    my $self = shift;
+
+    $self->strategy_factory->selectors();
 }
 
 sub using_strategy {
     my ($self, $strategy, $url, %args) = @_;
 
-    my $package = $args{package} || croak "requires 'package'";
-    my $description = $args{description} || '';
-    my $title = $args{title};
-
     $self->manager->start_download($url);
     $self->strategy_factory
-        ->of($strategy, $self, $self->downloader)
+        ->of($strategy, $self)
         ->execute($url, %args);
     $self->manager->stop_download($url);
 }
@@ -114,66 +101,6 @@ sub import_site {
         site_description => $site_description,
         site_url => $url
         );
-}
-
-sub video {
-    my ($self, $url, %args) = @_;
-
-    my ($directory, @files) = $self->downloader->video($url);
-    my $index_file = first { defined($_) } @files;
-    my $index = File::Basename::basename($index_file);
-
-    $args{site_root} = "/" . $index;
-    $self->import_site($url, $directory, \@files, %args);
-}
-
-sub ipfs_site {
-    my ($self, $url, %args) = @_;
-
-    my ($directory, @files) = $self->downloader->ipget($url);
-    my $index_file = first { defined($_) } @files;
-    my $index = File::Basename::basename($index_file);
-
-    $args{site_root} = "/" . $index;
-    $self->import_site($url, $directory, \@files, %args);
-}
-
-# descargar una unica pagina
-sub single_page {
-    my ($self, $url, %args) = @_;
-
-    my ($directory, @files) = $self->downloader->single_page($url);
-
-    $self->import_site($url, $directory, \@files, %args);
-}
-
-sub single_website {
-    my ($self, $url, %args) = @_;
-
-    my $filter_files = $args{filter}->{files} || '';
-    my ($directory, @files) = $self->downloader->single_website(
-        $url,
-        allow_parent => $args{allow_parent} || 0,
-        filter => $filter_files);
-
-    $self->import_site($url, $directory, \@files, %args);
-}
-
-sub mirror_website {
-    my ($self, $url, %args) = @_;
-
-    my ($directory, @files) = $self->downloader->mirror_website( $url );
-    $self->import_site($url, $directory, \@files, %args);
-}
-
-sub code {
-    my ($self, $url, %args) = @_;
-
-    my $filter_files = $args{filter}->{files} || '';
-    my ($directory, @files) = $self->downloader->code($url, filter => $filter_files);
-
-    $args{site_root} = '/index.html';
-    $self->import_site($url, $directory, \@files, %args);
 }
 
 sub guess_site_title {

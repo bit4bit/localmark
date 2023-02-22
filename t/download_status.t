@@ -26,6 +26,7 @@ $download->using_strategy(
     'single_page',
     'http://bit4bit.github.io',
     package => 'testbit4bit',
+    site => 'testbit4bit',
     title => 'bit4bit.github.io'
     );
 
@@ -33,6 +34,7 @@ $download->using_strategy(
     'single_page',
     'http://www.gnu.org',
     package => 'testgnu',
+    site => 'testgnu',
     title => 'gnu'
     );
 

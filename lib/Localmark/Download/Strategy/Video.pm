@@ -2,13 +2,16 @@ package Localmark::Download::Strategy::Video;
 
 =head DESCRIPTION
 
-codigo fuente
+obvio no?
 
 =cut
 
 use strict;
 use warnings;
 use Carp;
+use List::Util qw(first);
+use File::Find qw(find);
+use File::Temp qw( mkdtemp );
 
 use Moose;
 
@@ -17,17 +20,33 @@ extends 'Localmark::Download::Strategy::Base';
 sub execute {
     my ($self, $url, %args) = @_;
 
-    my $package = $args{package} || croak "requires 'package'";
-    my $description = $args{description} || '';
-    my $title = $args{title};
+    my ($directory, @files) = $self->video($url);
+    my $index_file = first { defined($_) } @files;
+    my $index = File::Basename::basename($index_file);
 
-    $self->download->video(
-        $url,
-        package => $package,
-        site => $url,
-        site_description => $description,
-        site_title => $title
+    $args{site_root} = "/" . $index;
+    $self->download->import_site($url, $directory, \@files, %args);
+}
+
+sub video {
+    my ($self, $url, %args) = @_;
+
+    my $command = qq( youtube-dl -q --no-progress --abort-on-error --no-cache-dir --prefer-free-formats --youtube-skip-dash-manifest --no-check-certificate $url );
+
+    my $video_output = mkdtemp( '/tmp/video-output-XXXX' );
+    qx( cd $video_output && $command );
+
+    my @files = ( );
+    find(
+        sub {
+            my $filename = $File::Find::name;
+            return if ! -f $filename;
+            push @files, $filename
+        },
+        $video_output
         );
+
+    return ($video_output, @files);
 }
 
 no Moose;
