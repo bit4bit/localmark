@@ -23,33 +23,48 @@ use Localmark::Download::Strategy::IpfsSite;
 
 use Moose;
 
+sub selectors {
+    my ($self) = @_;
+
+    [
+     {'name' => 'single_page', 'title' => 'Single Page'},
+     {'name' => 'link', 'title' => 'Link'},
+     {'name' => 'downward_website', 'title' => 'Downward Website'},
+     {'name' => 'upward_website', 'title' => 'Upward Website'},
+     {'name' => 'mirror_website', 'title' => 'Mirror Website'},
+     {'name' => 'code', 'title' => 'Code'},
+     {'name' => 'video', 'title' => 'Video'},
+     {'name' => 'ipfs_site', 'title' => 'IPFS Site'}
+    ]
+}
+
 sub of {
-    my ($self, $strategy, $download, $downloader) = @_;
+    my ($self, $strategy, $download) = @_;
 
     given ($strategy) {
         when ( 'single_page' ) {
-            return Localmark::Download::Strategy::SinglePage->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::SinglePage->new(download => $download)
         }
         when ( 'link' ) {
-            return Localmark::Download::Strategy::Link->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::Link->new(download => $download)
         }
         when ( 'downward_website' ) {
-            return Localmark::Download::Strategy::DownwardWebsite->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::DownwardWebsite->new(download => $download)
         }
         when ( 'upward_website' ) {
-            return Localmark::Download::Strategy::UpwardWebsite->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::UpwardWebsite->new(download => $download)
         }
         when ( 'mirror_website' ) {
-            return Localmark::Download::Strategy::MirrorWebsite->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::MirrorWebsite->new(download => $download)
         }
         when ( 'code' ) {
-            return Localmark::Download::Strategy::Code->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::Code->new(download => $download)
         }
         when ( 'video' ) {
-            return Localmark::Download::Strategy::Video->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::Video->new(download => $download)
         }
         when ( 'ipfs_site' ) {
-            return Localmark::Download::Strategy::IpfsSite->new(strategy => $strategy, download => $download, downloader => $downloader)
+            return Localmark::Download::Strategy::IpfsSite->new(download => $download)
         }
         default {
             croak "unknown strategy $strategy";

@@ -2,7 +2,7 @@ package Localmark::Download::Strategy::Link;
 
 =head DESCRIPTION
 
-descarga una sola pagina
+descarga enlace
 
 =cut
 
@@ -10,6 +10,7 @@ use strict;
 use warnings;
 use Carp;
 use File::Temp qw( mkdtemp );
+use File::Spec;
 
 use Moose;
 

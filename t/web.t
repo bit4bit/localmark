@@ -14,7 +14,6 @@ use Localmark::App;
 use Dotenv -load => 'test.env';
 
 my $app = Localmark::App->to_app;
-
 my $test = Plack::Test->create($app);
 
 $ENV{'STORAGE_DIRECTORY'} = tempdir( CLEANUP => 1 );
