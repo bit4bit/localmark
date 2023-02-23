@@ -39,32 +39,59 @@ sub selectors {
 }
 
 sub of {
-    my ($self, $strategy, $download) = @_;
+    my ($self, %args) = @_;
+    my $strategy = $args{strategy} or croak 'requires argument strategy';
+    my $download = $args{download} or croak 'requires argument download';
+    my $download_state = $args{download_state} or croak 'requires argument download_state';
 
     given ($strategy) {
         when ( 'single_page' ) {
-            return Localmark::Download::Strategy::SinglePage->new(download => $download)
+            return Localmark::Download::Strategy::SinglePage->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         when ( 'link' ) {
-            return Localmark::Download::Strategy::Link->new(download => $download)
+            return Localmark::Download::Strategy::Link->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         when ( 'downward_website' ) {
-            return Localmark::Download::Strategy::DownwardWebsite->new(download => $download)
+            return Localmark::Download::Strategy::DownwardWebsite->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         when ( 'upward_website' ) {
-            return Localmark::Download::Strategy::UpwardWebsite->new(download => $download)
+            return Localmark::Download::Strategy::UpwardWebsite->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         when ( 'mirror_website' ) {
-            return Localmark::Download::Strategy::MirrorWebsite->new(download => $download)
+            return Localmark::Download::Strategy::MirrorWebsite->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         when ( 'code' ) {
-            return Localmark::Download::Strategy::Code->new(download => $download)
+            return Localmark::Download::Strategy::Code->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         when ( 'video' ) {
-            return Localmark::Download::Strategy::Video->new(download => $download)
+            return Localmark::Download::Strategy::Video->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         when ( 'ipfs_site' ) {
-            return Localmark::Download::Strategy::IpfsSite->new(download => $download)
+            return Localmark::Download::Strategy::IpfsSite->new(
+                download => $download,
+                download_state => $download_state
+                )
         }
         default {
             croak "unknown strategy $strategy";

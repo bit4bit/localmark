@@ -45,7 +45,7 @@ sub single_website {
     my $res = $self->_wget( $command, {
         allow_parent => $args{allow_parent}
                      });
-    $self->download->download_debug($res->{output});
+    $self->download_state->debug($res->{output});
 
 
     my ($directory, @files) = @{ $res->{files} };

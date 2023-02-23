@@ -21,11 +21,12 @@
 
         <table>
             <thead>
-                <tr><td>URL</td><td>STATE</td></tr>
+                <tr><td>URL</td><td>STATE</td><td>DEBUG</td></tr>
             </thead>
             <tbody>
                 [% FOREACH download IN downloads %]
                     <tr><td>[% download.name %]</td><td>[% download.state %]</td>
+                        <td><textarea>[% download.debug %]</textarea></td></tr>
                 [% END %]
             </tbody>
         </table>
