@@ -43,7 +43,9 @@ sub ipget {
         $command = qq( ipget -o '$libgen_filename' '$url' );
     }
 
-    qx( cd $working_dir && timeout 60s $command ) ;
+    $self->download_state->debug( "running: $command" );
+    my $output = qx( cd $working_dir && timeout 60s $command ) ;
+    $self->download_state->debug( $output );
 
     my @files = ( );
     find(

@@ -8,6 +8,8 @@ obvio no?
 
 use strict;
 use warnings;
+use feature 'try';
+
 use Carp;
 use List::Util qw(first);
 use File::Find qw(find);
@@ -32,9 +34,11 @@ sub video {
     my ($self, $url, %args) = @_;
 
     my $command = qq( youtube-dl -q --no-progress --abort-on-error --no-cache-dir --prefer-free-formats --youtube-skip-dash-manifest --no-check-certificate $url );
-
     my $video_output = mkdtemp( '/tmp/video-output-XXXX' );
-    qx( cd $video_output && $command );
+
+    $self->download_state->debug( "running: $command" );
+    my $output = qx( cd $video_output && $command );
+    $self->download_state->debug( $output );
 
     my @files = ( );
     find(
