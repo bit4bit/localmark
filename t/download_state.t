@@ -43,7 +43,9 @@ my @downloads = $download->downloads();
 cmp_ok(scalar(@downloads), '==', 2, 'has downloads');
 cmp_ok($downloads[0]->name, 'eq', 'http://bit4bit.github.io');
 cmp_ok($downloads[0]->state, 'eq', 'done');
+cmp_ok($downloads[0]->debug, 'ne', '');
 cmp_ok($downloads[1]->name, 'eq', 'http://www.gnu.org');
 cmp_ok($downloads[1]->state, 'eq', 'done');
+cmp_ok($downloads[1]->debug, 'ne', '');
 
 done_testing;

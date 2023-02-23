@@ -11,7 +11,7 @@ use utf8;
 use warnings;
 use Data::Dumper;
 use Carp;
-use Storable;
+use Storable qw(store retrieve) ;
 use File::Temp qw/ :POSIX /;
 
 use Localmark::Download::State;
@@ -46,34 +46,30 @@ sub downloads {
     return $self->download_history;
 }
 
-sub start_download {
+sub new_download {
     my ($self, $id) = @_;
 
-    push(@{$self->download_history}, Localmark::Download::State->new(
-             name => $id,
-             state => 'starting'
-         ));
-    $self->_save();
+    my $state = Localmark::Download::State->new(
+        name => $id,
+        state => 'new',
+        manager => $self
+        );
+    push(@{$self->download_history}, $state);
+    $self->sync();
+
+    $state;
 }
 
-sub stop_download {
-    my ($self, $id) = @_;
-    for my $download (@{$self->download_history}) {
-        if ($download->name eq $id) {
-            $download->state('done');
-        }
-    }
-    $self->_save();
-}
-
-sub _save {
+sub sync {
     my $self = shift;
-    store($self->download_history, $self->storage_path);
+    store($self->download_history, $self->storage_path) || die "can't store Manager\n";
 }
 
 sub _restore {
     my $self = shift;
-    $self->download_history(retrieve($self->storage_path));
+
+    my $store = retrieve($self->storage_path) || die "can't store Manager\n";
+    $self->download_history($store);
 }
 
 no Moose;

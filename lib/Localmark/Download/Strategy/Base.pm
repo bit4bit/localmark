@@ -18,6 +18,10 @@ has 'download' => (
     is => 'ro'
     );
 
+has 'download_state' => (
+    is => 'ro'
+    );
+
 sub execute {
     my ($self, $url, %args) = @_;
 

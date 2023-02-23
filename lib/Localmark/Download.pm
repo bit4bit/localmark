@@ -76,11 +76,14 @@ sub strategies {
 sub using_strategy {
     my ($self, $strategy, $url, %args) = @_;
 
-    $self->manager->start_download($url);
+    my $download_state = $self->manager->new_download($url);
+    $download_state->start_download();
     $self->strategy_factory
-        ->of($strategy, $self)
+        ->of(strategy => $strategy,
+             download => $self,
+             download_state => $download_state)
         ->execute($url, %args);
-    $self->manager->stop_download($url);
+    $download_state->stop_download();
 }
 
 sub import_site {
