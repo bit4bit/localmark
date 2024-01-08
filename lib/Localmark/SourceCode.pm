@@ -28,6 +28,19 @@ my $has_fossil = system('fossil version > /dev/null') == 0;
 my $has_hg = system('hg --version > /dev/null') == 0;
 my %cloners = ( "git" => $has_git, "fossil" => $has_fossil, "hg" => $has_hg );
 
+unless ($has_highlight) {
+    warn "!!DISABLED SUPPORT FOR `hightlight`";
+}
+unless ($has_git) {
+    warn "!!DISABLED SUPPORT FOR `git`";
+}
+unless ($has_hg) {
+    warn "!!DISABLED SUPPORT FOR `hg`";
+}
+unless ($has_fossil) {
+    warn "!!DISABLED SUPPORT FOR `fossil`";
+}
+
 sub clone {
     my ($url) = @_;
 
