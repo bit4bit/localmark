@@ -1,6 +1,7 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
     <title>Localmark</title>
   </head>
   <body>
@@ -63,7 +64,7 @@
                   <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.pod|\.txt|\.md|\.proto|\.sql|\.py|\.c|\.h|\.cpp|\.cxx">Python Project</option>
                   <option value="docker|Docker|\.cfg|\.rnc|\.xml|\.md|\.txt|\.proto|\.sql|\.php|\.inc|\.html">PHP Project</option>
                 </select>
-                <input type="text" name="filter-files-extras" cols="100" placeholder="only include files match perl regexp"></textarea>
+                <input type="text" name="filter-files-extras" cols="100" placeholder="only include files match perl regexp" />
 
                 <textarea placeholder="description for website in original markdown syntax" name="description" cols="100"></textarea>
               </div>
