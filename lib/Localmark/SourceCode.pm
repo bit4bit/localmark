@@ -18,7 +18,7 @@ use File::Basename qw( dirname );
 use File::Temp qw( mkdtemp );
 use File::Copy qw( copy );
 use Digest::MD5 qw(md5_hex);
-use Localmark::Util::File::Slurp qw( write_text );
+use Localmark::Util::File::Slurp qw( write_text wrap_file );
 
 our @EXPORT_OK = qw( htmlify );
 
@@ -101,14 +101,14 @@ sub htmlify {
             my $filename_out = catfile( $dest_directory, $filename_relative_out );
 
             make_path( dirname( $filename_out ) );
-            
+
             my $cmd = qq{highlight --inline-css -a -l -i "$filename" -o "$filename_out"};
             carp "HTMLIFY: " . $cmd;
 
-            
+            # desconocidos los envolvemos con pre
             if (system($cmd) != 0) {
                 carp "command $cmd failed: $?";
-                copy( $filename, $filename_out );
+                wrap_html( $filename, $filename_out );
             }
             push @converted_files, $filename_relative_out;
         },
@@ -127,4 +127,10 @@ sub htmlify {
     carp "HTMLIFY: create $path_index";
 
     return $dest_directory;
+}
+
+sub wrap_html {
+    my ($source, $dest) = @_;
+
+    wrap_file( $source, $dest, "<!DOCTYPE html><html><body><pre>", "</pre></body></html>");
 }
