@@ -172,7 +172,7 @@ get '/view/:package/:site/**?' => sub {
             path => $resource_path
             );
         if (defined $resource) {
-            header( 'content-type' => $resource->mime_type );
+            response_header( 'content-type' => $resource->mime_type );
             return $resource->render;
         }
     }
