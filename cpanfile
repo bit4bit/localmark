@@ -1,5 +1,6 @@
 requires 'perl', '>= 5.28.0';
 requires 'Moose', '>= 2.20, < 3.0';
+requires 'MooseX::SetOnce', '>=0';
 requires 'Moo', '>= 0';
 requires 'Dancer2', '>= 0.265, < 1.0';
 requires 'Dancer2::Template::Mason2', '>= 0.00';
@@ -24,7 +25,8 @@ requires 'Template', '>= 0';
 requires 'Guard', '>= 0';
 
 on 'test' => sub {
-    requires 'Test2::Suite', '>= 0.000140, < 1.0';
+    requires 'Test::Simple', '>= 0';
+    requires 'Test2::Suite', '>= 0';
     requires 'Test2::Tools::PerlCritic', '>= 0.04';
     requires 'Plack::Test', '>= 0';
     requires 'Plack::Handler::Starman', '>= 0';
