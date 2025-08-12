@@ -73,7 +73,15 @@ post '/download' => sub {
     my $title = body_parameters->get('title');
     my $filter_files = body_parameters->get('filter-files');
     my $filter_files_extras = body_parameters->get('filter-files-extras');
+    my $filter_package = query_parameters->get('filter_package');
+    my $filter_content = query_parameters->get('filter_content');
+
     my $download = downloader();
+    my $strategies = $download->strategies();
+
+    if ($filter_content) {
+        $filter_content =~ s/^[^%](.+)[^%]$/%$1%/ms;
+    }
 
     $filter_files .= $filter_files_extras;
 
@@ -88,12 +96,17 @@ post '/download' => sub {
             files => $filter_files
         }
         );
+     my $sites = sites( $storage,
+                           filter => {
+                               package => $filter_package,
+                               content => $filter_content
+                           });
 
-    my $sites = sites( $storage );
     template index => {
         sites => $sites,
         download_output => $download->output,
-        package => $package
+        package => $package,
+        strategies => $strategies
     };
 };
 
