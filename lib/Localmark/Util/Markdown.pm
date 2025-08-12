@@ -6,8 +6,10 @@ use v5.28;
 use Text::Markdown ();
 
 use Localmark::Util::File::Slurp qw( read_text );
+use Localmark::Util::Shell qw( has_command exec_command);
 use File::Temp qw( tempfile tempdir );
 use File::Basename qw( basename );
+
 use Carp;
 use Data::Dumper;
 
@@ -15,7 +17,7 @@ require Exporter;
 our @ISA = qw( Exporter );
 our @EXPORT = qw( markdown plantuml_fence_block);
 
-my $has_plantuml = system('plantuml -version > /dev/null') == 0;
+my $has_plantuml = has_command('plantuml');
 
 sub markdown {
     my ($text, %args) = @_;
@@ -46,7 +48,7 @@ sub plantuml_fence_block {
 
     close $fh;
 
-    my $cmd = "plantuml -tsvg $filename";
+    my $cmd = exec_command("plantuml", "-tsvg", $filename);
 
     carp "PLANTUML: $cmd";
 
