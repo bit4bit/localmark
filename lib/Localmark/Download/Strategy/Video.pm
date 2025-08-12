@@ -46,12 +46,21 @@ sub video {
         sub {
             my $filename = $File::Find::name;
             return if ! -f $filename;
-            push @files, $filename
+
+            my $sanitized_filename = sanitize_filename($filename);
+            rename $filename, $sanitized_filename or carp "Could not rename $filename to $sanitized_filename: $!";
+            push @files, $sanitized_filename;
         },
         $video_output
     );
 
     return ($video_output, @files);
+}
+
+sub sanitize_filename {
+    my ($input) = @_;
+    $input =~ s/[^[:print:]]//g;
+    return $input;
 }
 
 no Moose;
