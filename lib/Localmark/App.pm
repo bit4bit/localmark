@@ -41,19 +41,9 @@ post '/diagramer' => sub {
 };
 
 get '/' => sub {
-    my $filter_package = query_parameters->get('filter_package');
-    my $filter_content = query_parameters->get('filter_content');
-
-    if ($filter_content) {
-        $filter_content =~ s/^[^%](.+)[^%]$/%$1%/ms;
-    }
-
+    my ($filter_package, $filter_content) = get_request_filters();
     my $storage = current_storage();
-    my $sites = sites( $storage,
-                       filter => {
-                           package => $filter_package,
-                           content => $filter_content
-                       });
+    my $sites = get_filtered_sites($storage, $filter_package, $filter_content);
     my $strategies = downloader()->strategies();
 
     template index => {
@@ -73,15 +63,10 @@ post '/download' => sub {
     my $title = body_parameters->get('title');
     my $filter_files = body_parameters->get('filter-files');
     my $filter_files_extras = body_parameters->get('filter-files-extras');
-    my $filter_package = query_parameters->get('filter_package');
-    my $filter_content = query_parameters->get('filter_content');
+    my ($filter_package, $filter_content) = get_request_filters();
 
     my $download = downloader();
     my $strategies = $download->strategies();
-
-    if ($filter_content) {
-        $filter_content =~ s/^[^%](.+)[^%]$/%$1%/ms;
-    }
 
     $filter_files .= $filter_files_extras;
 
@@ -96,11 +81,8 @@ post '/download' => sub {
             files => $filter_files
         }
         );
-     my $sites = sites( $storage,
-                           filter => {
-                               package => $filter_package,
-                               content => $filter_content
-                           });
+
+    my $sites = get_filtered_sites($storage, $filter_package, $filter_content);
 
     template index => {
         sites => $sites,
@@ -254,6 +236,27 @@ sub downloader {
         downloader => $downloader,
         manager => $download_manager
         );
+}
+
+sub get_request_filters {
+    my $filter_package = query_parameters->get('filter_package');
+    my $filter_content = query_parameters->get('filter_content');
+
+    if ($filter_content) {
+        $filter_content =~ s/^[^%](.+)[^%]$/%$1%/ms;
+    }
+
+    return ($filter_package, $filter_content);
+}
+
+sub get_filtered_sites {
+    my ($storage, $filter_package, $filter_content) = @_;
+
+    return sites($storage,
+                filter => {
+                    package => $filter_package,
+                    content => $filter_content
+                });
 }
 
 sub sites {
