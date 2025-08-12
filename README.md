@@ -1,6 +1,6 @@
 # localmark (MIRROR)
 
-easy source code annotations
+LocalMark provides an easy way to create source code annotations, allowing users to download, store, and annotate various types of content from different sources.
 
 # usage
 
