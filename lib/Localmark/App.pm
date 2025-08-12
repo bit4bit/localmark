@@ -83,7 +83,7 @@ post '/download' => sub {
         package => $package,
         site => $url,
         description => $description,
-        title => $title,
+        site_title => $title,
         filter => {
             files => $filter_files
         }
