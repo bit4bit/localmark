@@ -15,7 +15,6 @@ require Exporter;
 our @ISA = qw( Exporter );
 our @EXPORT = qw( markdown plantuml_fence_block);
 
-
 my $has_plantuml = system('plantuml -version > /dev/null') == 0;
 
 sub markdown {

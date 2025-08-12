@@ -3,19 +3,20 @@ package Localmark::Download::Strategy::Websiteable;
 use Carp;
 use File::Temp qw( mkdtemp mktemp );
 use Localmark::Util::File::Slurp qw(read_text);
+use Localmark::Util::Shell qw(find_command);
 use File::Find qw(find);
 use File::Copy qw( move );
 
 use Moose::Role;
 
 sub path_wget {
-    my $path_wget2 = qx(bash -c 'type -p wget2');
-    if ($? == 0) {
+    my $path_wget2 = find_command("wget2");
+    if (-f $path_wget2) {
         chomp $path_wget2;
         carp "WGET2 FOUND AT $path_wget2";
         return $path_wget2;
     } else {
-        my $path_binary = qx(bash -c 'type -p wget');
+        my $path_binary = find_command("wget");
         croak "not found wget binary at: $path_binary" if ! -f $path_binary;
         return $path_binary;
     }

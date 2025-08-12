@@ -16,6 +16,7 @@ RUN curl https://dist.ipfs.tech/ipget/v0.9.1/ipget_v0.9.1_linux-amd64.tar.gz -o 
 RUN cd /tmp/ && tar -xf ipget.tar.gz && cp ipget/ipget /usr/bin && chmod a+rx /usr/bin/ipget
 
 ENV DANCER_PORT=5000
+ENV APP_ENV=prod
 VOLUME ["/localmark_storage"]
 
 COPY docker.prod.env /usr/src/app/prod.env
