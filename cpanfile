@@ -4,6 +4,7 @@ requires 'MooseX::SetOnce', '>=0';
 requires 'Moo', '>= 0';
 requires 'Dancer2', '>= 0.265, < 1.0';
 requires 'Dancer2::Template::Mason2', '>= 0.00';
+requires 'Mason', '>= 0';
 requires 'DBD::SQLite', '>= 1.62';
 requires 'Devel::Declare', '>= 0';
 requires 'Dotenv', '== 0.002';

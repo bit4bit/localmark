@@ -12,8 +12,10 @@ use Carp;
 use List::Util qw(first);
 use File::Find qw(find);
 use File::Temp qw( mkdtemp );
+use Localmark::Util::Shell qw(find_command);
 use URI ();
 
+use Carp;
 use Moose;
 
 extends 'Localmark::Download::Strategy::Base';
@@ -33,7 +35,8 @@ sub ipget {
     my ($self, $url, %args) = @_;
 
     my $working_dir = mkdtemp( '/tmp/ipget-output-XXXX' );
-    my $command = qq( ipget '$url' );
+    my $cmd_path = find_command('ipget') || croak "ipget command not found";
+    my $command = qq( $cmd_path '$url' );
 
     # hack libgen.rs
     my $uri = URI->new($url);

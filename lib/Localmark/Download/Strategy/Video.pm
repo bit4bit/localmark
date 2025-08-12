@@ -14,6 +14,7 @@ use Carp;
 use List::Util qw(first);
 use File::Find qw(find);
 use File::Temp qw( mkdtemp );
+use Localmark::Util::Shell qw(find_command);
 
 use Moose;
 
@@ -32,8 +33,8 @@ sub execute {
 
 sub video {
     my ($self, $url, %args) = @_;
-
-    my $command = qq( yt-dlp -q --no-progress --abort-on-error --no-cache-dir --prefer-free-formats --youtube-skip-dash-manifest --no-check-certificate $url );
+    my $cmd_path = find_command("yt-dlp") || croak "yt-dlp not found";
+    my $command = qq( $cmd_path -q --no-progress --abort-on-error --no-cache-dir --prefer-free-formats --youtube-skip-dash-manifest --no-check-certificate $url );
     my $video_output = mkdtemp( '/tmp/video-output-XXXX' );
 
     $self->download_state->debug( "running: $command" );
@@ -48,7 +49,7 @@ sub video {
             push @files, $filename
         },
         $video_output
-        );
+    );
 
     return ($video_output, @files);
 }

@@ -182,6 +182,15 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
+  Class-Unload-0.12
+    pathname: I/IL/ILMARI/Class-Unload-0.12.tar.gz
+    provides:
+      Class::Unload 0.12
+    requirements:
+      Class::Inspector 0
+      ExtUtils::MakeMaker 0
+      strict 0
+      warnings 0
   Clone-0.45
     pathname: A/AT/ATOOMIC/Clone-0.45.tar.gz
     provides:
@@ -1104,6 +1113,14 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
+  JSON-4.10
+    pathname: I/IS/ISHIGAKI/JSON-4.10.tar.gz
+    provides:
+      JSON 4.10
+      JSON::Backend::PP 4.10
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   JSON-MaybeXS-1.004008
     pathname: E/ET/ETHER/JSON-MaybeXS-1.004008.tar.gz
     provides:
@@ -1237,6 +1254,63 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.006
+  Mason-2.24
+    pathname: J/JS/JSWARTZ/Mason-2.24.tar.gz
+    provides:
+      Mason 2.24
+      Mason::App 2.24
+      Mason::CodeCache 2.24
+      Mason::Compilation 2.24
+      Mason::Component 2.24
+      Mason::Component::ClassMeta 2.24
+      Mason::Component::Import 2.24
+      Mason::Component::Moose 2.24
+      Mason::DynamicFilter 2.24
+      Mason::Exceptions 2.24
+      Mason::Filters::Standard 2.24
+      Mason::Interp 2.24
+      Mason::Moose 2.24
+      Mason::Moose::Role 2.24
+      Mason::Plugin 2.24
+      Mason::Plugin::Defer 2.24
+      Mason::Plugin::DollarDot 2.24
+      Mason::Plugin::LvalueAttributes 2.24
+      Mason::Plugin::TidyObjectFiles 2.24
+      Mason::PluginBundle 2.24
+      Mason::PluginBundle::Default 2.24
+      Mason::PluginManager 2.24
+      Mason::PluginRole 2.24
+      Mason::Request 2.24
+      Mason::Result 2.24
+      Mason::TieHandle 2.24
+      Mason::Types 2.24
+    requirements:
+      Capture::Tiny 0
+      Class::Load 0
+      Class::Unload 0
+      Devel::GlobalDestruction 0
+      Exception::Class 0
+      ExtUtils::MakeMaker 0
+      File::Spec 0
+      File::Temp 0
+      Guard 0
+      IPC::System::Simple 0
+      JSON 0
+      Log::Any 0.08
+      Memoize 0
+      Method::Signatures::Simple 0
+      Moose 1.15
+      MooseX::HasDefaults 0.03
+      MooseX::StrictConstructor 0.13
+      Scalar::Util 1.01
+      Try::Tiny 0
+  Method-Signatures-Simple-1.07
+    pathname: R/RH/RHESA/Method-Signatures-Simple-1.07.tar.gz
+    provides:
+      Method::Signatures::Simple 1.07
+    requirements:
+      Devel::Declare 0.003001
+      ExtUtils::MakeMaker 6.30
   Module-Build-0.4231
     pathname: L/LE/LEONT/Module-Build-0.4231.tar.gz
     provides:
@@ -1871,6 +1945,18 @@ DISTRIBUTIONS
       parent 0.223
       strict 1.03
       warnings 1.03
+  MooseX-HasDefaults-0.03
+    pathname: S/SA/SARTAK/MooseX-HasDefaults-0.03.tar.gz
+    provides:
+      MooseX::HasDefaults 0.03
+      MooseX::HasDefaults::Meta::IsRO undef
+      MooseX::HasDefaults::Meta::IsRW undef
+      MooseX::HasDefaults::RO undef
+      MooseX::HasDefaults::RW undef
+    requirements:
+      ExtUtils::MakeMaker 6.42
+      Moose 0.94
+      Test::Exception 0
   MooseX-SetOnce-0.203
     pathname: R/RJ/RJBS/MooseX-SetOnce-0.203.tar.gz
     provides:
@@ -1882,6 +1968,22 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 6.78
       Moose::Role 0.90
       perl 5.012
+      strict 0
+      warnings 0
+  MooseX-StrictConstructor-0.21
+    pathname: D/DR/DROLSKY/MooseX-StrictConstructor-0.21.tar.gz
+    provides:
+      MooseX::StrictConstructor 0.21
+      MooseX::StrictConstructor::Trait::Class 0.21
+      MooseX::StrictConstructor::Trait::Method::Constructor 0.21
+    requirements:
+      B 0
+      ExtUtils::MakeMaker 0
+      Moose 0.94
+      Moose::Exporter 0
+      Moose::Role 0
+      Moose::Util::MetaRole 0
+      namespace::autoclean 0
       strict 0
       warnings 0
   Net-HTTP-6.23

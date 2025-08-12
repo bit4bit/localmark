@@ -19,13 +19,14 @@ use File::Temp qw( mkdtemp );
 use File::Copy qw( copy );
 use Digest::MD5 qw(md5_hex);
 use Localmark::Util::File::Slurp qw( write_text wrap_file );
+use Localmark::Util::Shell qw( has_command find_command exec_command );
 
 our @EXPORT_OK = qw( htmlify );
 
-my $has_highlight = system('highlight --version > /dev/null') == 0;
-my $has_git = system('git --version > /dev/null') == 0;
-my $has_fossil = system('fossil version > /dev/null') == 0;
-my $has_hg = system('hg --version > /dev/null') == 0;
+my $has_highlight = has_command('highlight');
+my $has_git = has_command('git');
+my $has_fossil = has_command('fossil');
+my $has_hg = has_command('hg');
 my %cloners = ( "git" => $has_git, "fossil" => $has_fossil, "hg" => $has_hg );
 
 unless ($has_highlight) {
@@ -48,31 +49,31 @@ sub clone {
     my %clone_cmd_of = (
         "git" => sub {
             my ($dest_directory) = @_;
-            qq{git clone --depth 1 --single-branch "$url" "$dest_directory"}
+            exec_command("git", "clone", "--depth", "1", "--single-branch", "$url", "$dest_directory");
         },
         "fossil" => sub {
             my ($dest_directory) = @_;
-            qq{fossil open -f "$url" --repodir "$dest_directory" --workdir "$dest_directory"}
+            exec_command("fossil", "open", "-f", "$url", "--repodir", "$dest_directory", "--workdir", "$dest_directory");
         },
         "hg" => sub {
             my ($dest_directory) = @_;
-            qq{hg clone -yv --insecure "$url" "$dest_directory"}
+            exec_command("hg", "clone", "-yv", "--insecure", "$url", "$dest_directory");
         }
         );
-    
+
     for my $repo (keys %clone_cmd_of) {
         my $dest_directory = mkdtemp( '/tmp/localmark-source-code-XXXX' );
 
         next if (not defined $cloners{$repo});
-        
+
         my $clone_cmd = $clone_cmd_of{$repo}->($dest_directory);
         carp "CLONE: $clone_cmd";
-        
+
         return $dest_directory if system($clone_cmd) == 0;
-        
+
         carp "CLONE: failed $repo trying next cloner..";
     }
-    
+
     return;
 }
 
@@ -82,7 +83,7 @@ sub htmlify {
     $has_highlight or return carp "HTMLIFY: not found command highlight in PATH";
 
     my $dest_directory = mkdtemp( '/tmp/localmark-htmlify-XXXX' );
-    
+
     croak "invalid source directory" if !-d $src_directory;
     make_path( $dest_directory );
 
@@ -95,14 +96,13 @@ sub htmlify {
             return if $filename =~ m|/\.|;
             return if $filename =~ m|\.git[/]?|;
             return if $filename =~ m|\.fossil|;
-            
+
             my $filename_relative = $filename =~ s|$src_directory/?||r;
             my $filename_relative_out = "$filename_relative.html";
             my $filename_out = catfile( $dest_directory, $filename_relative_out );
 
             make_path( dirname( $filename_out ) );
-
-            my $cmd = qq{highlight --inline-css -a -l -i "$filename" -o "$filename_out"};
+            my $cmd = exec_command("highlight", "--inline-css", "-a", "-l", "-i", $filename, "-o", $filename_out);
             carp "HTMLIFY: " . $cmd;
 
             # desconocidos los envolvemos con pre
