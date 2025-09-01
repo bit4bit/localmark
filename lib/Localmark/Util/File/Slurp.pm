@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use File::Slurper ();
+use Encode qw(decode);
 
 use base qw( Exporter );
 our @EXPORT_OK = qw(read_binary read_text write_text wrap_file);
@@ -29,7 +30,8 @@ sub write_text {
 sub wrap_file {
     my ($source, $dest, $header, $footer) = @_;
 
-    my $content = File::Slurper::read_text( $source );
+    my $content = decode('UTF-8', File::Slurper::read_binary($source), Encode::FB_DEFAULT);
+
     return File::Slurper::write_text( $dest, $header . $content . $footer);
 }
 1;

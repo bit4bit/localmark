@@ -89,6 +89,7 @@ sub htmlify {
 
     # convertimos archivos de repositorio usando highlight
     my @converted_files;
+    my @source_files;
     find(
         sub {
             my $filename = $File::Find::name;
@@ -97,22 +98,26 @@ sub htmlify {
             return if $filename =~ m|\.git[/]?|;
             return if $filename =~ m|\.fossil|;
 
-            my $filename_relative = $filename =~ s|$src_directory/?||r;
-            my $filename_relative_out = "$filename_relative.html";
-            my $filename_out = catfile( $dest_directory, $filename_relative_out );
-
-            make_path( dirname( $filename_out ) );
-            my $cmd = exec_command("highlight", "--inline-css", "-a", "-l", "-i", $filename, "-o", $filename_out);
-            carp "HTMLIFY: " . $cmd;
-
-            # desconocidos los envolvemos con pre
-            if (system($cmd) != 0) {
-                carp "command $cmd failed: $?";
-                wrap_html( $filename, $filename_out );
-            }
-            push @converted_files, $filename_relative_out;
+            push @source_files, $filename;
         },
         $src_directory);
+
+    for my $filename (@source_files) {
+        my $filename_relative = $filename =~ s|$src_directory/?||r;
+        my $filename_relative_out = "$filename_relative.html";
+        my $filename_out = catfile( $dest_directory, $filename_relative_out );
+
+        make_path( dirname( $filename_out ) );
+        my $cmd = exec_command("highlight", "--inline-css", "-a", "-l", "-i", $filename, "-o", $filename_out);
+        carp "HTMLIFY: " . $cmd;
+
+        # desconocidos los envolvemos con pre
+        if (system($cmd) != 0) {
+            carp "command $cmd failed: $?";
+            wrap_html( $filename, $filename_out );
+        }
+        push @converted_files, $filename_relative_out;
+    }
 
     # generamos indice
     my $index = '<!DOCTYPE><html><head><title>Source Code</title></head><body>';
