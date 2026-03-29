@@ -14,7 +14,8 @@ Migrate existing tests to Test::BDD::Cucumber framework with proper carton-based
 | 4 | Resource annotate feature | **COMPLETED** |
 | 5 | Diagramer create feature | **COMPLETED** |
 | 6 | Download state feature | **COMPLETED** |
-| 7 | Integration smoke tests | **IN PROGRESS** |
+| 7 | Integration smoke tests | **COMPLETED** |
+| 8 | Unit tests | **IN PROGRESS** |
 | 3 | Site browse feature | PENDING |
 | 4 | Resource annotate feature | PENDING |
 | 5 | Diagramer create feature | PENDING |
