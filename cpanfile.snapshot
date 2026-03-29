@@ -31,6 +31,36 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Test::More 0
       perl 5.008008
+  Archive-Zip-1.68
+    pathname: P/PH/PHRED/Archive-Zip-1.68.tar.gz
+    provides:
+      Archive::Zip 1.68
+      Archive::Zip::Archive 1.68
+      Archive::Zip::BufferedFileHandle 1.68
+      Archive::Zip::DirectoryMember 1.68
+      Archive::Zip::FileMember 1.68
+      Archive::Zip::Member 1.68
+      Archive::Zip::MemberRead 1.68
+      Archive::Zip::MockFileHandle 1.68
+      Archive::Zip::NewFileMember 1.68
+      Archive::Zip::StringMember 1.68
+      Archive::Zip::Tree 1.68
+      Archive::Zip::ZipFileMember 1.68
+    requirements:
+      Compress::Raw::Zlib 2.017
+      Encode 0
+      ExtUtils::MakeMaker 0
+      File::Basename 0
+      File::Copy 0
+      File::Find 0
+      File::Path 0
+      File::Spec 0.80
+      File::Temp 0
+      IO::File 0
+      IO::Handle 0
+      IO::Seekable 0
+      Time::Local 0
+      perl 5.006
   B-Hooks-EndOfScope-0.28
     pathname: E/ET/ETHER/B-Hooks-EndOfScope-0.28.tar.gz
     provides:
@@ -97,6 +127,12 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
+  Canary-Stability-2013
+    pathname: M/ML/MLEHMANN/Canary-Stability-2013.tar.gz
+    provides:
+      Canary::Stability 2013
+    requirements:
+      ExtUtils::MakeMaker 0
   Capture-Tiny-0.48
     pathname: D/DA/DAGOLDEN/Capture-Tiny-0.48.tar.gz
     provides:
@@ -111,6 +147,18 @@ DISTRIBUTIONS
       Scalar::Util 0
       perl 5.006
       strict 0
+      warnings 0
+  Carp-Assert-0.22
+    pathname: Y/YV/YVES/Carp-Assert-0.22.tar.gz
+    provides:
+      Carp::Assert 0.22
+    requirements:
+      Carp 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      perl 5.006
+      strict 0
+      vars 0
       warnings 0
   Class-Data-Inheritable-0.08
     pathname: T/TM/TMTM/Class-Data-Inheritable-0.08.tar.gz
@@ -222,6 +270,19 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       utf8 0
+  Const-Fast-0.014
+    pathname: L/LE/LEONT/Const-Fast-0.014.tar.gz
+    provides:
+      Const::Fast 0.014
+    requirements:
+      Carp 0
+      Module::Build::Tiny 0.021
+      Scalar::Util 0
+      Storable 0
+      Sub::Exporter::Progressive 0.001007
+      perl 5.008
+      strict 0
+      warnings 0
   Cookie-Baker-0.11
     pathname: K/KA/KAZEBURO/Cookie-Baker-0.11.tar.gz
     provides:
@@ -247,6 +308,21 @@ DISTRIBUTIONS
       overload 0
       strict 0
       warnings 0
+  Cucumber-TagExpressions-9.1.0
+    pathname: C/CU/CUKEBOT/Cucumber-TagExpressions-9.1.0.tar.gz
+    provides:
+      Cucumber::TagExpressions v9.1.0
+      Cucumber::TagExpressions::AndNode v9.1.0
+      Cucumber::TagExpressions::ExpressionNode v9.1.0
+      Cucumber::TagExpressions::LiteralNode v9.1.0
+      Cucumber::TagExpressions::Node v9.1.0
+      Cucumber::TagExpressions::NotNode v9.1.0
+      Cucumber::TagExpressions::OrNode v9.1.0
+    requirements:
+      ExtUtils::MakeMaker 0
+      List::Util 1.70
+      Moo 0
+      perl 5.014004
   DBD-SQLite-1.66
     pathname: I/IS/ISHIGAKI/DBD-SQLite-1.66.tar.gz
     provides:
@@ -541,6 +617,75 @@ DISTRIBUTIONS
       Sub::Install 0.921
       strict 0
       warnings 0
+  Data-Perl-0.002011
+    pathname: T/TO/TOBYINK/Data-Perl-0.002011.tar.gz
+    provides:
+      Data::Perl 0.002011
+      Data::Perl::Bool 0.002011
+      Data::Perl::Code 0.002011
+      Data::Perl::Collection::Array 0.002011
+      Data::Perl::Collection::Hash 0.002011
+      Data::Perl::Counter 0.002011
+      Data::Perl::Number 0.002011
+      Data::Perl::Role::Bool 0.002011
+      Data::Perl::Role::Code 0.002011
+      Data::Perl::Role::Collection::Array 0.002011
+      Data::Perl::Role::Collection::Hash 0.002011
+      Data::Perl::Role::Counter 0.002011
+      Data::Perl::Role::Number 0.002011
+      Data::Perl::Role::String 0.002011
+      Data::Perl::String 0.002011
+    requirements:
+      Class::Method::Modifiers 0
+      ExtUtils::MakeMaker 0
+      List::MoreUtils 0
+      List::Util 0
+      Module::Runtime 0
+      Role::Tiny 0
+      Scalar::Util 0
+      parent 0
+      strictures 0
+  Data-Printer-1.002001
+    pathname: G/GA/GARU/Data-Printer-1.002001.tar.gz
+    provides:
+      DDP 1.002001
+      Data::Printer 1.002001
+      Data::Printer::Common undef
+      Data::Printer::Config undef
+      Data::Printer::Filter undef
+      Data::Printer::Filter::ARRAY undef
+      Data::Printer::Filter::CODE undef
+      Data::Printer::Filter::ContentType undef
+      Data::Printer::Filter::DB undef
+      Data::Printer::Filter::DateTime undef
+      Data::Printer::Filter::Digest undef
+      Data::Printer::Filter::FORMAT undef
+      Data::Printer::Filter::GLOB undef
+      Data::Printer::Filter::GenericClass undef
+      Data::Printer::Filter::HASH undef
+      Data::Printer::Filter::OBJECT undef
+      Data::Printer::Filter::REF undef
+      Data::Printer::Filter::Regexp undef
+      Data::Printer::Filter::SCALAR undef
+      Data::Printer::Filter::VSTRING undef
+      Data::Printer::Filter::Web undef
+      Data::Printer::Object undef
+      Data::Printer::Profile undef
+      Data::Printer::Profile::Dumper undef
+      Data::Printer::Profile::JSON undef
+      Data::Printer::Theme undef
+      Data::Printer::Theme::Classic undef
+      Data::Printer::Theme::Material undef
+      Data::Printer::Theme::Monokai undef
+      Data::Printer::Theme::Solarized undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      Fcntl 0
+      File::Spec 0
+      File::Temp 0
+      Scalar::Util 0
+      Test::More 0
+      version 0.77
   Devel-Declare-0.006022
     pathname: E/ET/ETHER/Devel-Declare-0.006022.tar.gz
     provides:
@@ -756,6 +901,18 @@ DISTRIBUTIONS
       File::Spec 0
       URI::Escape 0
       perl 5.008006
+  File-Find-Rule-0.35
+    pathname: R/RC/RCLAMP/File-Find-Rule-0.35.tar.gz
+    provides:
+      File::Find::Rule 0.35
+      File::Find::Rule::Test::ATeam undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      File::Find 0
+      File::Spec 0
+      Number::Compare 0
+      Test::More 0
+      Text::Glob 0.07
   File-Listing-6.16
     pathname: P/PL/PLICEASE/File-Listing-6.16.tar.gz
     provides:
@@ -1053,6 +1210,17 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       perl 5.008001
+  IO-Capture-0.05
+    pathname: R/RE/REYNOLDS/IO-Capture-0.05.tar.gz
+    provides:
+      IO::Capture 0.05
+      IO::Capture::Stderr undef
+      IO::Capture::Stdout undef
+      IO::Capture::Tie_STDx undef
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      Test::More 0
   IO-HTML-1.004
     pathname: C/CJ/CJM/IO-HTML-1.004.tar.gz
     provides:
@@ -1080,6 +1248,20 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Net::SSLeay 1.46
       Scalar::Util 0
+  IO-String-1.08
+    pathname: G/GA/GAAS/IO-String-1.08.tar.gz
+    provides:
+      IO::String 1.08
+    requirements:
+      ExtUtils::MakeMaker 0
+  IPC-Run3-0.049
+    pathname: R/RJ/RJBS/IPC-Run3-0.049.tar.gz
+    provides:
+      IPC::Run3 0.049
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.31
+      Time::HiRes 0
   IPC-System-Simple-1.30
     pathname: J/JK/JKEENAN/IPC-System-Simple-1.30.tar.gz
     provides:
@@ -1125,6 +1307,43 @@ DISTRIBUTIONS
       JSON::PP 2.27300
       Scalar::Util 0
       perl 5.006
+  JSON-Path-1.0.6
+    pathname: P/PO/POPEFELIX/JSON-Path-1.0.6.tar.gz
+    provides:
+      JSON::Path v1.0.6
+      JSON::Path::Constants v1.0.6
+      JSON::Path::Evaluator v1.0.6
+      JSON::Path::Tokenizer v1.0.6
+    requirements:
+      Carp::Assert 0
+      Exporter::Tiny 0
+      ExtUtils::MakeMaker 0
+      JSON::MaybeXS 0
+      LV 0
+      List::Util 1.45
+      Readonly 0
+      Try::Tiny 0
+      perl 5.010
+  JSON-XS-4.04
+    pathname: M/ML/MLEHMANN/JSON-XS-4.04.tar.gz
+    provides:
+      JSON::XS 4.04
+    requirements:
+      Canary::Stability 0
+      ExtUtils::MakeMaker 6.52
+      Types::Serialiser 0
+      common::sense 0
+  LV-0.006
+    pathname: T/TO/TOBYINK/LV-0.006.tar.gz
+    provides:
+      LV 0.006
+      LV::Backend::Magic 0.006
+      LV::Backend::Sentinel 0.006
+      LV::Backend::Tie 0.006
+      LV::Backend::Tie::TiedScalar 0.006
+    requirements:
+      ExtUtils::MakeMaker 6.17
+      perl 5.006000
   LWP-MediaTypes-6.04
     pathname: O/OA/OALDERS/LWP-MediaTypes-6.04.tar.gz
     provides:
@@ -1440,6 +1659,22 @@ DISTRIBUTIONS
       Sub::Defer 2.006006
       Sub::Quote 2.006006
       perl 5.006
+  MooX-HandlesVia-0.001009
+    pathname: T/TO/TOBYINK/MooX-HandlesVia-0.001009.tar.gz
+    provides:
+      Data::Perl::Bool::MooseLike 0.001009
+      Data::Perl::Collection::Array::MooseLike 0.001009
+      Data::Perl::Collection::Hash::MooseLike 0.001009
+      Data::Perl::Number::MooseLike 0.001009
+      Data::Perl::String::MooseLike 0.001009
+      MooX::HandlesVia 0.001009
+    requirements:
+      Class::Method::Modifiers 0
+      Data::Perl 0.002006
+      ExtUtils::MakeMaker 0
+      Module::Runtime 0
+      Moo 1.003000
+      Role::Tiny 0
   MooX-SetOnce-0.001003
     pathname: H/HA/HAARG/MooX-SetOnce-0.001003.tar.gz
     provides:
@@ -2035,6 +2270,13 @@ DISTRIBUTIONS
       POSIX 0
       Socket 0
       Time::HiRes 0
+  Number-Compare-0.03
+    pathname: R/RC/RCLAMP/Number-Compare-0.03.tar.gz
+    provides:
+      Number::Compare 0.03
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0
   POSIX-strftime-Compiler-0.44
     pathname: K/KA/KAZEBURO/POSIX-strftime-Compiler-0.44.tar.gz
     provides:
@@ -2375,6 +2617,49 @@ DISTRIBUTIONS
       strict 0
       vars 0
       warnings 0
+  Params-ValidationCompiler-0.31
+    pathname: D/DR/DROLSKY/Params-ValidationCompiler-0.31.tar.gz
+    provides:
+      Params::ValidationCompiler 0.31
+      Params::ValidationCompiler::Compiler 0.31
+      Params::ValidationCompiler::Exceptions 0.31
+    requirements:
+      B 0
+      Carp 0
+      Eval::Closure 0
+      Exception::Class 0
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      List::Util 1.29
+      Scalar::Util 0
+      overload 0
+      strict 0
+      warnings 0
+  Path-Class-0.37
+    pathname: K/KW/KWILLIAMS/Path-Class-0.37.tar.gz
+    provides:
+      Path::Class 0.37
+      Path::Class::Dir 0.37
+      Path::Class::Entity 0.37
+      Path::Class::File 0.37
+    requirements:
+      Carp 0
+      Cwd 0
+      Exporter 0
+      ExtUtils::MakeMaker 6.30
+      File::Copy 0
+      File::Path 0
+      File::Spec 3.26
+      File::Temp 0
+      File::stat 0
+      IO::Dir 0
+      IO::File 0
+      Module::Build 0.3601
+      Perl::OSType 0
+      Scalar::Util 0
+      overload 0
+      parent 0
+      strict 0
   Path-Tiny-0.118
     pathname: D/DA/DAGOLDEN/Path-Tiny-0.118.tar.gz
     provides:
@@ -2923,6 +3208,17 @@ DISTRIBUTIONS
       ExtUtils::MakeMaker 0
       Scalar::Util 0
       perl 5.006
+  Scalar-List-Utils-1.70
+    pathname: P/PE/PEVANS/Scalar-List-Utils-1.70.tar.gz
+    provides:
+      List::Util 1.70
+      List::Util::XS 1.70
+      Scalar::List::Utils 1.70
+      Scalar::Util 1.70
+      Sub::Util 1.70
+    requirements:
+      ExtUtils::MakeMaker 0
+      perl 5.006
   Starman-0.4017
     pathname: M/MI/MIYAGAWA/Starman-0.4017.tar.gz
     provides:
@@ -3120,6 +3416,101 @@ DISTRIBUTIONS
       File::Spec 0.8
       File::Temp 0.12
       Scalar::Util 0
+  Test-BDD-Cucumber-0.87
+    pathname: E/EH/EHUELS/Test-BDD-Cucumber-0.87.tar.gz
+    provides:
+      App::pherkin 0.87
+      TAP::Parser::Iterator::PherkinStream 0.87
+      TAP::Parser::SourceHandler::Feature 0.87
+      Test::BDD::Cucumber 0.87
+      Test::BDD::Cucumber::Errors 0.87
+      Test::BDD::Cucumber::Executor 0.87
+      Test::BDD::Cucumber::Extension 0.87
+      Test::BDD::Cucumber::Harness 0.87
+      Test::BDD::Cucumber::Harness::Data 0.87
+      Test::BDD::Cucumber::Harness::JSON 0.87
+      Test::BDD::Cucumber::Harness::TAP 0.87
+      Test::BDD::Cucumber::Harness::TermColor 0.87
+      Test::BDD::Cucumber::Harness::TestBuilder 0.87
+      Test::BDD::Cucumber::I18N::Data 0.87
+      Test::BDD::Cucumber::I18n 0.87
+      Test::BDD::Cucumber::Loader 0.87
+      Test::BDD::Cucumber::Model::Dataset 0.87
+      Test::BDD::Cucumber::Model::Document 0.87
+      Test::BDD::Cucumber::Model::Feature 0.87
+      Test::BDD::Cucumber::Model::Line 0.87
+      Test::BDD::Cucumber::Model::Result 0.87
+      Test::BDD::Cucumber::Model::Scenario 0.87
+      Test::BDD::Cucumber::Model::Step 0.87
+      Test::BDD::Cucumber::Model::TagSpec 0.87
+      Test::BDD::Cucumber::Parser 0.87
+      Test::BDD::Cucumber::StepContext 0.87
+      Test::BDD::Cucumber::StepFile 0.87
+      Test::BDD::Cucumber::Util 0.87
+    requirements:
+      Cucumber::TagExpressions v5.0.5
+      ExtUtils::MakeMaker 0
+      File::Find::Rule 0
+      JSON::MaybeXS v1.1.0
+      List::Util 1.33
+      Module::Runtime 0
+      Moo v2.2.2
+      MooX::HandlesVia 0
+      Path::Class 0
+      TAP::Parser::Iterator 0
+      TAP::Parser::SourceHandler 0
+      Term::ANSIColor 3.00
+      Test2::API 1.302087
+      Test2::Tools::Basic 0
+      Test::More 0
+      Types::Standard 0
+      YAML 1.15
+      perl 5.014
+  Test-BDD-Cucumber-Definitions-0.41
+    pathname: I/IV/IVANYCH/Test-BDD-Cucumber-Definitions-0.41.tar.gz
+    provides:
+      Test::BDD::Cucumber::Definitions 0.41
+      Test::BDD::Cucumber::Definitions::Base 0.41
+      Test::BDD::Cucumber::Definitions::Base::In 0.41
+      Test::BDD::Cucumber::Definitions::Base::Ru 0.41
+      Test::BDD::Cucumber::Definitions::File 0.41
+      Test::BDD::Cucumber::Definitions::File::In 0.41
+      Test::BDD::Cucumber::Definitions::File::Ru 0.41
+      Test::BDD::Cucumber::Definitions::HTTP 0.41
+      Test::BDD::Cucumber::Definitions::HTTP::In 0.41
+      Test::BDD::Cucumber::Definitions::HTTP::Ru 0.41
+      Test::BDD::Cucumber::Definitions::Struct 0.41
+      Test::BDD::Cucumber::Definitions::Struct::In 0.41
+      Test::BDD::Cucumber::Definitions::Struct::Ru 0.41
+      Test::BDD::Cucumber::Definitions::TBCD::In 0.41
+      Test::BDD::Cucumber::Definitions::TBCD::Ru 0.41
+      Test::BDD::Cucumber::Definitions::Var 0.41
+      Test::BDD::Cucumber::Definitions::Var::In 0.41
+      Test::BDD::Cucumber::Definitions::Var::Ru 0.41
+      Test::BDD::Cucumber::Definitions::Zip 0.41
+      Test::BDD::Cucumber::Definitions::Zip::In 0.41
+      Test::BDD::Cucumber::Definitions::Zip::Ru 0.41
+    requirements:
+      Archive::Zip 0
+      Const::Fast 0
+      DBI 0
+      Data::Printer 0
+      File::Slurper 0
+      HTTP::Response 0
+      HTTP::Tiny 0
+      Hash::MultiValue 0
+      IO::Capture 0
+      IO::String 0
+      IPC::Run3 0
+      JSON::Path 0
+      JSON::XS 0
+      Module::Build::Tiny 0.035
+      Moose 0
+      Params::ValidationCompiler 0.22
+      Test::BDD::Cucumber 0
+      Test::More 0
+      Try::Tiny 0
+      perl 5.006
   Test-CPAN-Meta-0.25
     pathname: B/BA/BARBIE/Test-CPAN-Meta-0.25.tar.gz
     provides:
@@ -3330,6 +3721,15 @@ DISTRIBUTIONS
       Exporter 0
       ExtUtils::MakeMaker 0
       perl 5.006
+  Text-Glob-0.11
+    pathname: R/RC/RCLAMP/Text-Glob-0.11.tar.gz
+    provides:
+      Text::Glob 0.11
+    requirements:
+      Exporter 0
+      ExtUtils::MakeMaker 0
+      constant 0
+      perl 5.005030
   Text-Markdown-1.000031
     pathname: B/BO/BOBTFISH/Text-Markdown-1.000031.tar.gz
     provides:
@@ -3482,6 +3882,16 @@ DISTRIBUTIONS
       Role::Hooks 0
       Types::Standard 1.012
       perl 5.008001
+  Types-Serialiser-1.01
+    pathname: M/ML/MLEHMANN/Types-Serialiser-1.01.tar.gz
+    provides:
+      JSON::PP::Boolean 1.01
+      Types::Serialiser 1.01
+      Types::Serialiser::BooleanBase 1.01
+      Types::Serialiser::Error 1.01
+    requirements:
+      ExtUtils::MakeMaker 0
+      common::sense 0
   URI-5.09
     pathname: O/OA/OALDERS/URI-5.09.tar.gz
     provides:
@@ -3686,6 +4096,12 @@ DISTRIBUTIONS
       perl 5.008001
       strict 0
       warnings 0
+  common-sense-3.75
+    pathname: M/ML/MLEHMANN/common-sense-3.75.tar.gz
+    provides:
+      common::sense 3.75
+    requirements:
+      ExtUtils::MakeMaker 0
   indirect-0.39
     pathname: V/VP/VPIT/indirect-0.39.tar.gz
     provides:

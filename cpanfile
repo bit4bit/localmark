@@ -31,4 +31,6 @@ on 'test' => sub {
     requires 'Test2::Tools::PerlCritic', '>= 0.04';
     requires 'Plack::Test', '>= 0';
     requires 'Plack::Handler::Starman', '>= 0';
+    requires 'Test::BDD::Cucumber', '>= 0';
+    requires 'Test::BDD::Cucumber::Definitions', '>= 0.09';
 }
