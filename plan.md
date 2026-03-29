@@ -9,7 +9,8 @@ Migrate existing tests to Test::BDD::Cucumber framework with proper carton-based
 | Commit | Description | Status |
 |--------|-------------|--------|
 | 1 | Setup dependencies & infrastructure | **COMPLETED** |
-| 2 | Resource view feature | **IN PROGRESS** |
+| 2 | Resource view feature | **COMPLETED** |
+| 3 | Site browse feature | **IN PROGRESS** |
 | 3 | Site browse feature | PENDING |
 | 4 | Resource annotate feature | PENDING |
 | 5 | Diagramer create feature | PENDING |
