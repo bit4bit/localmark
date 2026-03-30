@@ -11,10 +11,22 @@ bit4bit/localmark
 
 then [OPEN](http://localhost:5000)
 
-# examples
+# Examples
 
 see [examples](/examples)
 
-# contributing
+
+# testing
+
+## Run all tests
+carton exec prove -l t/
+
+## Run BDD tests only
+carton exec prove -l t/run_bdd.t
+
+## Run integration tests (with real network)
+CI_REAL_TESTS=1 carton exec prove -l t/integration/smoke.t
+
+# Contributing
 
 please see [CONTRIBUTING](chiselapp.com/user/bit4bit/repository/localmark/)
