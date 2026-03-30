@@ -71,7 +71,8 @@ sub _wget {
 
     my @extra_options = ( "-U '" . Localmark::Constant::WebAgent . "'" );
     push @extra_options, "--no-parent" if (not $args->{allow_parent});
-
+    push @extra_options, "--show-progress";
+        
     my $wget_options = join ' ', @extra_options;
     my $wget_command = qq( $command $wget_options -P $website -nH -E -a $command_output );
     carp 'WGET:', $wget_command;
