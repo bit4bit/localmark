@@ -9,6 +9,7 @@ WriteMakefile(
     AUTHOR => 'Jovany Leandro G.C <bit4bit@riseup.net>',
     VERSION_FROM => 'lib/Localmark/App.pm',
     LICENSE => 'MIT',
+    MIN_PERL_VERSION => '5.40.0',
     PREREQ_PM => {
         'Dancer2' => '0.30',
         'Moose' => '2.20',

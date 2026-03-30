@@ -1,4 +1,4 @@
-requires 'perl', '>= 5.28.0';
+requires 'perl', '>= 5.40.0';
 requires 'Moose', '>= 2.20, < 3.0';
 requires 'MooseX::SetOnce', '>=0';
 requires 'Moo', '>= 0';

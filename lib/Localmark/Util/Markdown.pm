@@ -1,7 +1,7 @@
 package Localmark::Util::Markdown;
 use strict;
 use warnings "all";
-use v5.28;
+use v5.40;
 
 use Text::Markdown ();
 

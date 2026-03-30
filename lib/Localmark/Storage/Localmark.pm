@@ -10,7 +10,7 @@ uso sqlite como medio.
 use utf8;
 use strict;
 use warnings;
-use v5.16;
+use v5.40;
 
 use File::Spec;
 use Data::Dumper;
@@ -399,7 +399,7 @@ sub site_as_id {
     md5_hex($site);
 }
 
-sub dbh() {
+sub dbh {
     my ($self, $package, $cb) = @_;
 
     my $path = File::Spec->catfile( $self->path, "$package.localmark" );

@@ -8,7 +8,6 @@ comportamiento general de descarga
 
 use strict;
 use warnings;
-use feature 'switch';
 
 use Carp;
 

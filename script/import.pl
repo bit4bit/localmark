@@ -3,7 +3,7 @@
 use utf8;
 use strict;
 use warnings;
-use v5.32;
+use v5.40;
 
 use Cwd qw(abs_path);
 

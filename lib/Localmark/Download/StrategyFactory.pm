@@ -8,7 +8,8 @@ estrategias de descarga
 
 use strict;
 use warnings;
-use feature 'switch';
+use v5.40;
+use experimental 'switch';
 use Carp;
 
 use Localmark::Download::Strategy::Base;

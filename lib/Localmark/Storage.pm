@@ -2,7 +2,7 @@ package Localmark::Storage;
 
 use strict;
 use warnings;
-use v5.16;
+use v5.40;
 
 use Carp;
 use File::Glob ':bsd_glob';

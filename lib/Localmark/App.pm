@@ -2,8 +2,9 @@ package Localmark::App;
 
 use strict;
 use warnings;
+use v5.40;
+use experimental 'switch';
 use syntax 'try';
-use v5.14;
 
 use Dotenv;
 
@@ -182,7 +183,7 @@ post '/sites/action' => sub {
     my $site_name = body_parameters->get('site_name');
 
 
-    for ($action) {
+    given ($action) {
         when ('view') {
             my $site = $storage->site($site_package, $site_name);
             my $site_root = $site->root;

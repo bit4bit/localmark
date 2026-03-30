@@ -9,7 +9,6 @@ Descarga y empaqueta sitio web.
 use utf8;
 use strict;
 use warnings;
-use feature 'switch';
 
 use Carp;
 use URI ();

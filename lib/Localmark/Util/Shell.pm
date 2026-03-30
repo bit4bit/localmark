@@ -1,7 +1,7 @@
 package Localmark::Util::Shell;
 use strict;
 use warnings "all";
-use v5.36;
+use v5.40;
 
 require Exporter;
 our @ISA = qw( Exporter );
