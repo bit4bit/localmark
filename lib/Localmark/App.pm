@@ -13,6 +13,7 @@ use Localmark::Storage::Localmark;
 use Localmark::Download;
 use Localmark::Download::Manager;
 use Localmark::Download::Localmark;
+use Localmark::MCP::Server;
 
 use Dancer2;
 set session => "Simple";
@@ -277,3 +278,74 @@ sub sites {
 
     [@sites];
 }
+
+# MCP Server endpoint
+any '/mcp' => sub {
+    my $storage_directory = $ENV{'STORAGE_DIRECTORY'}
+        || die 'requires environment STORAGE_DIRECTORY';
+    
+    # Always set CORS headers first
+    header 'Access-Control-Allow-Origin' => '*';
+    header 'Access-Control-Allow-Methods' => 'POST, GET, OPTIONS';
+    header 'Access-Control-Allow-Headers' => 'Content-Type, Accept, mcp-protocol-version, mcp-session-id';
+    
+    # Handle CORS preflight
+    if (request->method eq 'OPTIONS') {
+        status 200;
+        return '';
+    }
+    
+    # Only POST is valid for MCP
+    unless (request->method eq 'POST') {
+        status 405;
+        content_type 'application/json';
+        return JSON::PP::encode_json({ error => 'Method not allowed. Use POST.' });
+    }
+    
+    my $mcp_server = Localmark::MCP::Server->new(storage_path => $storage_directory);
+    
+    # Get JSON-RPC request body
+    my $body = request->body;
+    
+    unless ($body) {
+        status 400;
+        content_type 'application/json';
+        return JSON::PP::encode_json({ error => 'Empty request body' });
+    }
+    
+    # Decode the request
+    my $request;
+    eval {
+        require JSON::PP;
+        $request = JSON::PP::decode_json($body);
+    };
+    
+    if ($@) {
+        status 400;
+        content_type 'application/json';
+        return JSON::PP::encode_json({ error => 'Invalid JSON: ' . $@ });
+    }
+    
+    unless (ref $request eq 'HASH') {
+        status 400;
+        content_type 'application/json';
+        return JSON::PP::encode_json({ error => 'Request must be a JSON object' });
+    }
+    
+    # Handle the request through MCP server
+    my $response;
+    eval {
+        $response = $mcp_server->mcp_server->handle($request, {});
+    };
+    if ($@) {
+        status 500;
+        content_type 'application/json';
+        return JSON::PP::encode_json({ error => 'Internal server error: ' . $@ });
+    }
+    
+    # Return response with CORS headers
+    status 200;
+    content_type 'application/json';
+    return JSON::PP::encode_json($response) if $response;
+    return '{}';
+};

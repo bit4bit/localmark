@@ -24,6 +24,7 @@ requires 'File::Slurp', '>= 0';
 requires 'Import::Into', '>= 0';
 requires 'Template', '>= 0';
 requires 'Guard', '>= 0';
+requires 'MCP', '>= 0.08';
 
 on 'test' => sub {
     requires 'Test::Simple', '>= 0';
