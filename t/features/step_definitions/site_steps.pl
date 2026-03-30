@@ -134,11 +134,10 @@ Then qr/I see (\d+) sites?/, sub {
     my ($context) = @_;
     my $expected_count = $context->matches->[0];
     
-    my $packages = $context->stash->{scenario}->{packages} // {};
-    my $total = 0;
-    for my $sites (values %$packages) {
-        $total += scalar(@$sites);
-    }
+    my $content = $context->stash->{scenario}->{response}->content;
+    # Count site list items in the HTML response
+    my @sites = ($content =~ /<li id="[^"]+">/g);
+    my $total = scalar(@sites);
     
     is($total, $expected_count, "found $expected_count sites");
 };
